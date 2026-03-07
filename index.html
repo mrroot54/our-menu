@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Menu | Spice Kitchen</title>
+    <title>Menu | The Royal Kitchen</title>
     
-    <!-- Fonts -->
+    <!-- Fonts: Playfair for Royal Look -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -21,15 +21,16 @@
             theme: {
                 extend: {
                     colors: {
-                        'premium': '#44403c', // Dark Brown (Softer than Black)
-                        'muted': '#a8a29e',   // Warm Grey
-                        'bg-main': '#FFF7ED', // Warm Off-White
-                        'brand': '#F97316',   // Warm Orange
-                        'bg-card': '#FFFFFF', // Cards stay White
+                        'premium': '#1C1C1C', // Charcoal
+                        'muted': '#737373',   // Neutral Grey
+                        'bg-main': '#FFFFFF', // Pure White
+                        'brand': '#D4AF37',   // Gold
+                        'brand-light': '#F9F1D8', // Light Gold background
+                        'border': '#E5E5E5',  // Light Border
                     },
                     fontFamily: {
                         'sans': ['Inter', 'sans-serif'],
-                        'serif': ['Playfair Display', 'serif'],
+                        'serif': ['Cormorant Garamond', 'serif'], // More Royal font
                     }
                 }
             }
@@ -38,7 +39,7 @@
 
     <style>
         body {
-            background-color: #FFF7ED; /* Warm Background */
+            background-color: #FFFFFF;
             font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -52,48 +53,44 @@
         .slider-container { position: relative; overflow: hidden; }
         .slider-track { display: flex; }
 
-        /* Card Styling on Warm Background */
+        /* Card Styling - Royal (Clean & Sharp) */
         .menu-item-card {
             background-color: #FFFFFF;
-            border-radius: 16px;
             padding: 16px;
             margin-bottom: 12px;
-            border: 1px solid #FED7AA; /* Light Orange Border */
-            box-shadow: 0 2px 10px rgba(251, 146, 60, 0.05);
-            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            border-bottom: 1px solid #E5E5E5; /* Simple separator */
+            transition: background-color 0.3s ease;
         }
         .menu-item-card:active {
-            transform: scale(0.98);
-            box-shadow: 0 5px 20px rgba(251, 146, 60, 0.15);
+            background-color: #FAFAFA;
         }
 
-        .img-zoom-container { overflow: hidden; border-radius: 12px; }
+        .img-zoom-container { overflow: hidden; border-radius: 4px; } /* Sharp corners for luxury */
         .img-zoom-container img { transition: transform 0.6s ease; }
         .menu-item-card:hover .img-zoom-container img { transform: scale(1.05); }
 
         /* Filter Buttons */
         .filter-btn.active {
-            background-color: #F97316; /* Orange */
-            color: white;
-            border-color: #F97316;
-            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+            background-color: #1C1C1C; /* Charcoal for contrast */
+            color: #D4AF37; /* Gold Text */
+            border-color: #1C1C1C;
         }
 
-        /* Slider Buttons (Orange) */
+        /* Slider Buttons (Gold) */
         .slider-btn {
             width: 36px;
             height: 36px;
-            background: #F97316; /* Orange */
+            background: #D4AF37; /* Gold */
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4); /* Orange Shadow */
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); /* Gold Glow */
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
             z-index: 20;
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.5);
             color: white;
             touch-action: manipulation;
         }
@@ -106,10 +103,10 @@
 </head>
 <body class="text-premium pb-20">
 
-    <!-- HEADER -->
-    <header class="fixed top-0 left-0 right-0 z-50 bg-bg-main/90 backdrop-blur-md border-b border-orange-100">
+    <!-- HEADER (Clean White) -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-border">
         <div class="max-w-3xl mx-auto px-5 h-14 flex items-center justify-between">
-            <a href="#" class="font-serif text-xl tracking-tight text-premium">Spice Kitchen</a>
+            <a href="#" class="font-serif text-2xl tracking-wide text-premium">The Royal</a>
             
             <div class="flex items-center gap-4">
                 <button id="searchBtn" class="text-muted hover:text-brand transition-colors p-2">
@@ -129,20 +126,20 @@
     <!-- MAIN CONTENT -->
     <main class="max-w-3xl mx-auto px-5 pt-20">
 
-        <!-- HERO TEXT -->
-        <section class="mb-10 fade-up">
-            <h1 class="font-serif text-3xl leading-tight mb-1">Our Menu</h1>
-            <p class="text-muted text-xs tracking-wide">Authentic Flavors, Modern Twist.</p>
+        <!-- HERO TEXT (Elegant) -->
+        <section class="mb-12 fade-up">
+            <h1 class="font-serif text-4xl leading-tight mb-1 text-premium">Culinary Excellence</h1>
+            <p class="text-muted text-xs tracking-widest uppercase">Experience the taste of luxury</p>
         </section>
 
         <!-- CHEF'S SELECTION (Slider) -->
         <section class="mb-12">
             <div class="flex justify-between items-center mb-4 fade-up">
-                <h2 class="text-xs font-semibold uppercase tracking-widest text-muted">Chef's Selection</h2>
+                <h2 class="text-xs font-semibold uppercase tracking-widest text-muted">Signature Dishes</h2>
             </div>
 
             <div class="slider-container" id="topPicksWrapper">
-                <!-- Left Arrow (Orange) -->
+                <!-- Left Arrow (Gold) -->
                 <button class="slider-btn left" id="prevBtn">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -153,7 +150,7 @@
                     <!-- Cards Injected via JS -->
                 </div>
 
-                <!-- Right Arrow (Orange) -->
+                <!-- Right Arrow (Gold) -->
                 <button class="slider-btn right" id="nextBtn">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -162,7 +159,7 @@
             </div>
         </section>
 
-        <!-- CATEGORIES -->
+        <!-- CATEGORIES (Sharp) -->
         <section class="mb-6 fade-up">
             <div class="flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5" id="categoryFilters">
                 <!-- Buttons Injected via JS -->
@@ -177,14 +174,14 @@
     </main>
 
     <!-- FOOTER -->
-    <footer class="text-center py-8 text-xs text-muted mt-10">
-        © 2024 Spice Kitchen
+    <footer class="text-center py-8 text-xs text-muted mt-10 border-t border-border">
+        © 2024 The Royal Kitchen
     </footer>
 
     <!-- JAVASCRIPT -->
     <script>
         // ==========================================
-        // 💾 DATA
+        // 💾 DATA (Same)
         // ==========================================
         const categories = [
             { id: 1, name: "Starters" },
@@ -195,22 +192,22 @@
 
         const menuItems = [
             // STARTERS
-            { id: 1, category_id: 1, name: "Paneer Tikka", desc: "Marinated cottage cheese cubes grilled in tandoor", price: "250", img: "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=400", top: true },
-            { id: 2, category_id: 1, name: "Veg Spring Roll", desc: "Crispy rolls stuffed with fresh vegetables", price: "180", img: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=400", top: false },
-            { id: 3, category_id: 1, name: "Hara Bhara Kebab", desc: "Spinach and peas patties, crisp and healthy", price: "190", img: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=400", top: true },
+            { id: 1, category_id: 1, name: "Paneer Tikka", desc: "Marinated cottage cheese cubes grilled in tandoor", price: "350", img: "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=400", top: true },
+            { id: 2, category_id: 1, name: "Veg Spring Roll", desc: "Crispy rolls stuffed with fresh vegetables", price: "220", img: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=400", top: false },
+            { id: 3, category_id: 1, name: "Hara Bhara Kebab", desc: "Spinach and peas patties, crisp and healthy", price: "240", img: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=400", top: true },
             
             // MAIN COURSE
-            { id: 4, category_id: 2, name: "Butter Chicken", desc: "Creamy tomato curry with tender chicken pieces", price: "320", img: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=400", top: true },
-            { id: 5, category_id: 2, name: "Veg Biryani", desc: "Fragrant basmati rice cooked with mixed veggies", price: "280", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=400", top: true },
-            { id: 6, category_id: 2, name: "Dal Makhani", desc: "Black lentils slow cooked overnight", price: "240", img: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=400", top: false },
+            { id: 4, category_id: 2, name: "Butter Chicken", desc: "Creamy tomato curry with tender chicken pieces", price: "450", img: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=400", top: true },
+            { id: 5, category_id: 2, name: "Veg Biryani", desc: "Fragrant basmati rice cooked with mixed veggies", price: "380", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=400", top: true },
+            { id: 6, category_id: 2, name: "Dal Makhani", desc: "Black lentils slow cooked overnight", price: "320", img: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=400", top: false },
             
             // DRINKS
-            { id: 7, category_id: 3, name: "Mango Lassi", desc: "Sweet yogurt drink with fresh mango pulp", price: "90", img: "https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=400", top: true },
-            { id: 8, category_id: 3, name: "Fresh Lime Soda", desc: "Sparkling soda with fresh lime and mint", price: "60", img: "https://images.unsplash.com/photo-1534353473418-4cfa6c56fd38?auto=format&fit=crop&w=400", top: false },
+            { id: 7, category_id: 3, name: "Mango Lassi", desc: "Sweet yogurt drink with fresh mango pulp", price: "150", img: "https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=400", top: true },
+            { id: 8, category_id: 3, name: "Fresh Lime Soda", desc: "Sparkling soda with fresh lime and mint", price: "90", img: "https://images.unsplash.com/photo-1534353473418-4cfa6c56fd38?auto=format&fit=crop&w=400", top: false },
             
             // DESSERTS
-            { id: 9, category_id: 4, name: "Gulab Jamun", desc: "Deep fried milk balls soaked in sugar syrup", price: "100", img: "https://images.unsplash.com/photo-1666190077425-1e751fa0a4bb?auto=format&fit=crop&w=400", top: true },
-            { id: 10, category_id: 4, name: "Rasmalai", desc: "Soft paneer discs in sweet creamy milk", price: "110", img: "https://images.unsplash.com/photo-1645177628172-a94c1f96e6db?auto=format&fit=crop&w=400", top: false }
+            { id: 9, category_id: 4, name: "Gulab Jamun", desc: "Deep fried milk balls soaked in sugar syrup", price: "180", img: "https://images.unsplash.com/photo-1666190077425-1e751fa0a4bb?auto=format&fit=crop&w=400", top: true },
+            { id: 10, category_id: 4, name: "Rasmalai", desc: "Soft paneer discs in sweet creamy milk", price: "190", img: "https://images.unsplash.com/photo-1645177628172-a94c1f96e6db?auto=format&fit=crop&w=400", top: false }
         ];
 
         // ==========================================
@@ -309,15 +306,15 @@
                 const card = document.createElement('div');
                 card.className = "pick-card flex-shrink-0 mr-4"; 
                 card.innerHTML = `
-                    <div class="w-36 rounded-2xl overflow-hidden bg-white shadow-sm border border-orange-50">
+                    <div class="w-36 rounded-sm overflow-hidden bg-white border border-border shadow-sm">
                         <div class="h-28 w-full overflow-hidden">
                             <img src="${item.img}" class="w-full h-full object-cover">
                         </div>
                         <div class="p-3">
                             <h4 class="text-sm font-semibold text-premium truncate">${item.name}</h4>
                             <p class="text-xs text-muted mt-0.5 mb-2">₹${item.price}</p>
-                            <!-- View Button -->
-                            <button class="w-full text-center text-xs font-semibold bg-brand text-white py-1.5 rounded-full hover:bg-orange-600 transition active:scale-95 shadow-sm">
+                            <!-- View Button (Outline Style) -->
+                            <button class="w-full text-center text-xs font-semibold border border-brand text-brand py-1.5 rounded-sm hover:bg-brand hover:text-white transition active:scale-95">
                                 View
                             </button>
                         </div>
@@ -341,7 +338,7 @@
 
         function createFilterBtn(name, id) {
             const btn = document.createElement('button');
-            btn.className = `filter-btn px-4 py-2 text-xs font-medium border border-orange-200 rounded-full whitespace-nowrap transition-colors hover:bg-orange-50 text-premium ${id === 'all' ? 'active' : ''}`;
+            btn.className = `filter-btn px-4 py-2 text-xs font-medium border border-border rounded-sm whitespace-nowrap transition-colors hover:border-premium text-premium ${id === 'all' ? 'active' : ''}`;
             btn.textContent = name;
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -359,7 +356,7 @@
             menuList.innerHTML = '';
             
             if (items.length === 0) {
-                menuList.innerHTML = `<p class="text-center text-muted py-20 text-sm bg-white rounded-xl">No items found.</p>`;
+                menuList.innerHTML = `<p class="text-center text-muted py-20 text-sm bg-white">No items found.</p>`;
                 return;
             }
 
@@ -377,7 +374,7 @@
                             <p class="text-xs text-muted leading-relaxed mt-0.5 line-clamp-2">${item.desc}</p>
                         </div>
                         
-                        <div class="img-zoom-container w-20 h-20 bg-orange-50 flex-shrink-0">
+                        <div class="img-zoom-container w-20 h-20 bg-gray-50 flex-shrink-0">
                             <img src="${item.img}" class="w-full h-full object-cover">
                         </div>
                     </div>
