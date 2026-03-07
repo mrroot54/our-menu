@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Menu | Green Leaf Kitchen</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'premium': '#333333', // Dark Grey
+                        'muted': '#64748b',   // Slate Grey
+                        'bg-main': '#FFFFFF', // Pure White
+                        'brand': '#14B8A6',   // Teal Green
+                        'brand-light': '#CCFBF1', // Very Light Teal
+                        'brand-dark': '#0D9488', // Darker Teal for hover
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                        'head': ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FFFFFF;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        .fade-up { opacity: 0; transform: translateY(20px); }
+
+        .slider-container { position: relative; overflow: hidden; }
+        .slider-track { display: flex; }
+
+        /* Card Styling - Fresh & Light */
+        .menu-item-card {
+            background-color: #FFFFFF;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 16px; /* Rounded for friendly feel */
+            border: 1px solid #F1F5F9;
+            transition: transform 0.2s ease, border-color 0.3s ease;
+        }
+        .menu-item-card:active {
+            transform: scale(0.98);
+            border-color: #CCFBF1; /* Light green border on tap */
+        }
+
+        .img-zoom-container { overflow: hidden; border-radius: 12px; }
+        .img-zoom-container img { transition: transform 0.6s ease; }
+        .menu-item-card:hover .img-zoom-container img { transform: scale(1.05); }
+
+        /* Filter Buttons */
+        .filter-btn.active {
+            background-color: #14B8A6; /* Green */
+            color: white;
+            border-color: #14B8A6;
+        }
+
+        /* Slider Buttons (Green) */
+        .slider-btn {
+            width: 36px;
+            height: 36px;
+            background: #14B8A6; /* Green */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(20, 184, 166, 0.3); /* Green Glow */
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 20;
+            border: none;
+            color: white;
+            touch-action: manipulation;
+        }
+        .slider-btn:active { transform: translateY(-50%) scale(0.95); background: #0D9488; }
+        
+        .slider-btn.left { left: 8px; }
+        .slider-btn.right { right: 8px; }
+
+    </style>
+</head>
+<body class="text-premium pb-20">
+
+    <!-- HEADER -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
+        <div class="max-w-3xl mx-auto px-5 h-14 flex items-center justify-between">
+            <a href="#" class="font-head text-xl font-bold tracking-tight text-brand">Green Leaf 🥗</a>
+            
+            <div class="flex items-center gap-4">
+                <button id="searchBtn" class="text-muted hover:text-brand transition-colors p-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Search Overlay -->
+        <div id="searchOverlay" class="hidden absolute top-full left-0 right-0 bg-white border-b shadow-sm p-4">
+            <input type="text" id="searchInput" placeholder="Search healthy dishes..." class="w-full text-sm border-b-2 border-brand pb-2 outline-none bg-transparent placeholder-gray-300">
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-3xl mx-auto px-5 pt-20">
+
+        <!-- HERO TEXT -->
+        <section class="mb-10 fade-up">
+            <h1 class="font-head text-3xl font-bold leading-tight mb-1 text-premium">Eat Fresh, Stay Healthy</h1>
+            <p class="text-muted text-xs tracking-wide">Nutritious & Delicious food for you.</p>
+        </section>
+
+        <!-- CHEF'S SELECTION (Slider) -->
+        <section class="mb-12">
+            <div class="flex justify-between items-center mb-4 fade-up">
+                <h2 class="text-xs font-semibold uppercase tracking-widest text-muted">Recommended</h2>
+            </div>
+
+            <div class="slider-container" id="topPicksWrapper">
+                <!-- Left Arrow (Green) -->
+                <button class="slider-btn left" id="prevBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+
+                <div class="slider-track" id="topPicksContainer">
+                    <!-- Cards Injected via JS -->
+                </div>
+
+                <!-- Right Arrow (Green) -->
+                <button class="slider-btn right" id="nextBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- CATEGORIES -->
+        <section class="mb-6 fade-up">
+            <div class="flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5" id="categoryFilters">
+                <!-- Buttons Injected via JS -->
+            </div>
+        </section>
+
+        <!-- MENU ITEMS LIST -->
+        <section id="menuList">
+            <!-- Items Injected via JS -->
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="text-center py-8 text-xs text-muted mt-10 border-t border-gray-50">
+        © 2024 Green Leaf Kitchen
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // ==========================================
+        // 💾 DATA
+        // ==========================================
+        const categories = [
+            { id: 1, name: "Salads" },
+            { id: 2, name: "Main Course" },
+            { id: 3, name: "Smoothies" },
+            { id: 4, name: "Desserts" }
+        ];
+
+        const menuItems = [
+            // SALADS
+            { id: 1, category_id: 1, name: "Greek Salad", desc: "Fresh cucumber, tomatoes, olives, feta cheese", price: "220", img: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=400", top: true },
+            { id: 2, category_id: 1, name: "Caesar Salad", desc: "Romaine lettuce, croutons, parmesan", price: "200", img: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?auto=format&fit=crop&w=400", top: false },
+            { id: 3, category_id: 1, name: "Sprouts Salad", desc: "Healthy mix of sprouted lentils and veggies", price: "150", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400", top: true },
+            
+            // MAIN COURSE
+            { id: 4, category_id: 2, name: "Quinoa Bowl", desc: "Quinoa, roasted veggies, hummus", price: "320", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400", top: true },
+            { id: 5, category_id: 2, name: "Grilled Salmon", desc: "Omega rich salmon with asparagus", price: "450", img: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=400", top: true },
+            { id: 6, category_id: 2, name: "Veg Wrap", desc: "Whole wheat wrap filled with fresh greens", price: "180", img: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=400", top: false },
+            
+            // SMOOTHIES
+            { id: 7, category_id: 3, name: "Green Detox", desc: "Spinach, apple, banana, kale", price: "130", img: "https://images.unsplash.com/photo-1610970881699-44a5587cabec?auto=format&fit=crop&w=400", top: true },
+            { id: 8, category_id: 3, name: "Berry Blast", desc: "Mix of blueberries, strawberries", price: "140", img: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=400", top: false },
+            
+            // DESSERTS
+            { id: 9, category_id: 4, name: "Chia Pudding", desc: "Healthy pudding with fresh fruits", price: "160", img: "https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=400", top: true },
+            { id: 10, category_id: 4, name: "Fruit Yogurt", desc: "Low fat yogurt with seasonal fruits", price: "110", img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=400", top: false }
+        ];
+
+        // ==========================================
+        // 🔨 DOM ELEMENTS
+        // ==========================================
+        const topPicksContainer = document.getElementById('topPicksContainer');
+        const topPicksWrapper = document.getElementById('topPicksWrapper');
+        const categoryFilters = document.getElementById('categoryFilters');
+        const menuList = document.getElementById('menuList');
+        const searchBtn = document.getElementById('searchBtn');
+        const searchOverlay = document.getElementById('searchOverlay');
+        const searchInput = document.getElementById('searchInput');
+        
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        let currentFilter = 'all';
+        let sliderPosition = 0;
+        let cardWidth = 160; 
+        let totalCards = 0;
+
+        // ==========================================
+        // ⚡ INIT
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.to(".fade-up", {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                stagger: 0.1,
+                ease: "power2.out"
+            });
+
+            renderTopPicks();
+            renderCategories();
+            renderMenuItems(menuItems);
+            initEvents();
+            initSlider();
+        });
+
+        // ==========================================
+        // 🎠 SLIDER LOGIC
+        // ==========================================
+        function initSlider() {
+            const cards = topPicksContainer.querySelectorAll('.pick-card');
+            totalCards = cards.length;
+            updateSliderButtons();
+        }
+
+        function slideNext() {
+            const containerWidth = topPicksWrapper.offsetWidth;
+            const maxScroll = (totalCards * cardWidth) - containerWidth;
+            
+            if (Math.abs(sliderPosition) < maxScroll) {
+                sliderPosition -= cardWidth * 1;
+                gsap.to(topPicksContainer, { x: sliderPosition, duration: 0.4, ease: "power2.out" });
+            }
+            updateSliderButtons();
+        }
+
+        function slidePrev() {
+            if (sliderPosition < 0) {
+                sliderPosition += cardWidth * 1;
+                gsap.to(topPicksContainer, { x: sliderPosition, duration: 0.4, ease: "power2.out" });
+            }
+            updateSliderButtons();
+        }
+
+        function updateSliderButtons() {
+            const containerWidth = topPicksWrapper.offsetWidth;
+            const maxScroll = (totalCards * cardWidth) - containerWidth;
+
+            if(sliderPosition >= 0) {
+                gsap.to(prevBtn, { autoAlpha: 0, scale: 0.8, duration: 0.2 });
+            } else {
+                gsap.to(prevBtn, { autoAlpha: 1, scale: 1, duration: 0.2 });
+            }
+
+            if (Math.abs(sliderPosition) >= maxScroll - 10) {
+                gsap.to(nextBtn, { autoAlpha: 0, scale: 0.8, duration: 0.2 });
+            } else {
+                gsap.to(nextBtn, { autoAlpha: 1, scale: 1, duration: 0.2 });
+            }
+        }
+
+        // ==========================================
+        // 🔨 RENDER FUNCTIONS
+        // ==========================================
+        
+        // 1. Top Picks
+        function renderTopPicks() {
+            const picks = menuItems.filter(i => i.top);
+            topPicksContainer.innerHTML = '';
+
+            picks.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "pick-card flex-shrink-0 mr-4"; 
+                card.innerHTML = `
+                    <div class="w-36 rounded-2xl overflow-hidden bg-white shadow-sm border border-gray-100">
+                        <div class="h-28 w-full overflow-hidden">
+                            <img src="${item.img}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-3">
+                            <h4 class="text-sm font-semibold text-premium truncate">${item.name}</h4>
+                            <p class="text-xs text-muted mt-0.5 mb-2">₹${item.price}</p>
+                            <!-- View Button (Green Filled) -->
+                            <button class="w-full text-center text-xs font-semibold bg-brand text-white py-1.5 rounded-full hover:bg-brand-dark transition active:scale-95 shadow-sm">
+                                View
+                            </button>
+                        </div>
+                    </div>
+                `;
+                topPicksContainer.appendChild(card);
+            });
+        }
+
+        // 2. Categories
+        function renderCategories() {
+            categoryFilters.innerHTML = '';
+            const allBtn = createFilterBtn('All', 'all');
+            categoryFilters.appendChild(allBtn);
+
+            categories.forEach(cat => {
+                const btn = createFilterBtn(cat.name, cat.id);
+                categoryFilters.appendChild(btn);
+            });
+        }
+
+        function createFilterBtn(name, id) {
+            const btn = document.createElement('button');
+            btn.className = `filter-btn px-4 py-2 text-xs font-medium border border-gray-200 rounded-full whitespace-nowrap transition-colors hover:border-brand text-premium ${id === 'all' ? 'active' : ''}`;
+            btn.textContent = name;
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = id;
+                
+                if(id === 'all') renderMenuItems(menuItems);
+                else renderMenuItems(menuItems.filter(i => i.category_id == id));
+            });
+            return btn;
+        }
+
+        // 3. Menu Items
+        function renderMenuItems(items) {
+            menuList.innerHTML = '';
+            
+            if (items.length === 0) {
+                menuList.innerHTML = `<p class="text-center text-muted py-20 text-sm bg-white rounded-xl">No items found.</p>`;
+                return;
+            }
+
+            items.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = "menu-item-card fade-up";
+                
+                card.innerHTML = `
+                    <div class="flex gap-4 items-center">
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start mb-1">
+                                <h3 class="text-sm font-semibold text-premium">${item.name}</h3>
+                                <span class="text-sm font-bold text-brand">₹${item.price}</span>
+                            </div>
+                            <p class="text-xs text-muted leading-relaxed mt-0.5 line-clamp-2">${item.desc}</p>
+                        </div>
+                        
+                        <div class="img-zoom-container w-20 h-20 bg-gray-50 flex-shrink-0">
+                            <img src="${item.img}" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                `;
+                
+                menuList.appendChild(card);
+            });
+
+            gsap.from(menuList.children, {
+                y: 20,
+                opacity: 0,
+                duration: 0.4,
+                stagger: 0.03,
+                ease: "power1.out"
+            });
+        }
+
+        // ==========================================
+        // ⚙️ EVENTS
+        // ==========================================
+        function initEvents() {
+            nextBtn.addEventListener('click', slideNext);
+            prevBtn.addEventListener('click', slidePrev);
+
+            searchBtn.addEventListener('click', () => {
+                searchOverlay.classList.toggle('hidden');
+                if(!searchOverlay.classList.contains('hidden')) searchInput.focus();
+            });
+
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                if(!term) { renderMenuItems(menuItems); return; }
+                
+                const res = menuItems.filter(i => 
+                    i.name.toLowerCase().includes(term) || 
+                    i.desc.toLowerCase().includes(term)
+                );
+                renderMenuItems(res);
+            });
+        }
+    </script>
+</body>
+</html>
