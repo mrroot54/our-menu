@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Menu | The Modern Kitchen</title>
+    <title>Menu | Spice Kitchen</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,10 +21,11 @@
             theme: {
                 extend: {
                     colors: {
-                        'premium': '#0f0f0f',
-                        'muted': '#8a8a8a',
-                        'bg': '#ffffff',
-                        'brand': '#EC4899', // Pink-500
+                        'premium': '#44403c', // Dark Brown (Softer than Black)
+                        'muted': '#a8a29e',   // Warm Grey
+                        'bg-main': '#FFF7ED', // Warm Off-White
+                        'brand': '#F97316',   // Warm Orange
+                        'bg-card': '#FFFFFF', // Cards stay White
                     },
                     fontFamily: {
                         'sans': ['Inter', 'sans-serif'],
@@ -37,7 +38,7 @@
 
     <style>
         body {
-            background-color: #ffffff;
+            background-color: #FFF7ED; /* Warm Background */
             font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -51,29 +52,43 @@
         .slider-container { position: relative; overflow: hidden; }
         .slider-track { display: flex; }
 
-        .menu-item-card { transition: background-color 0.3s ease; }
-        .menu-item-card:active { background-color: #fafafa; }
+        /* Card Styling on Warm Background */
+        .menu-item-card {
+            background-color: #FFFFFF;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid #FED7AA; /* Light Orange Border */
+            box-shadow: 0 2px 10px rgba(251, 146, 60, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+        }
+        .menu-item-card:active {
+            transform: scale(0.98);
+            box-shadow: 0 5px 20px rgba(251, 146, 60, 0.15);
+        }
 
-        .img-zoom-container { overflow: hidden; }
+        .img-zoom-container { overflow: hidden; border-radius: 12px; }
         .img-zoom-container img { transition: transform 0.6s ease; }
         .menu-item-card:hover .img-zoom-container img { transform: scale(1.05); }
 
+        /* Filter Buttons */
         .filter-btn.active {
-            background-color: #0f0f0f;
+            background-color: #F97316; /* Orange */
             color: white;
-            border-color: #0f0f0f;
+            border-color: #F97316;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
         }
 
-        /* Pink Slider Buttons */
+        /* Slider Buttons (Orange) */
         .slider-btn {
             width: 36px;
             height: 36px;
-            background: #EC4899; /* Pink */
+            background: #F97316; /* Orange */
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4); /* Orange Shadow */
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
@@ -92,12 +107,12 @@
 <body class="text-premium pb-20">
 
     <!-- HEADER -->
-    <header class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100">
+    <header class="fixed top-0 left-0 right-0 z-50 bg-bg-main/90 backdrop-blur-md border-b border-orange-100">
         <div class="max-w-3xl mx-auto px-5 h-14 flex items-center justify-between">
-            <a href="#" class="font-serif text-xl tracking-tight">Spice Kitchen</a>
+            <a href="#" class="font-serif text-xl tracking-tight text-premium">Spice Kitchen</a>
             
             <div class="flex items-center gap-4">
-                <button id="searchBtn" class="text-muted hover:text-premium transition-colors p-2">
+                <button id="searchBtn" class="text-muted hover:text-brand transition-colors p-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
@@ -127,7 +142,7 @@
             </div>
 
             <div class="slider-container" id="topPicksWrapper">
-                <!-- Left Arrow (Pink) -->
+                <!-- Left Arrow (Orange) -->
                 <button class="slider-btn left" id="prevBtn">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -138,7 +153,7 @@
                     <!-- Cards Injected via JS -->
                 </div>
 
-                <!-- Right Arrow (Pink) -->
+                <!-- Right Arrow (Orange) -->
                 <button class="slider-btn right" id="nextBtn">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -148,7 +163,7 @@
         </section>
 
         <!-- CATEGORIES -->
-        <section class="mb-6 border-b border-gray-100 pb-4 fade-up">
+        <section class="mb-6 fade-up">
             <div class="flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5" id="categoryFilters">
                 <!-- Buttons Injected via JS -->
             </div>
@@ -162,14 +177,14 @@
     </main>
 
     <!-- FOOTER -->
-    <footer class="text-center py-8 border-t border-gray-50 text-xs text-muted mt-10">
+    <footer class="text-center py-8 text-xs text-muted mt-10">
         © 2024 Spice Kitchen
     </footer>
 
     <!-- JAVASCRIPT -->
     <script>
         // ==========================================
-        // 💾 INDIAN FOOD DATA
+        // 💾 DATA
         // ==========================================
         const categories = [
             { id: 1, name: "Starters" },
@@ -214,7 +229,7 @@
 
         let currentFilter = 'all';
         let sliderPosition = 0;
-        let cardWidth = 160; // Approx width + gap
+        let cardWidth = 160; 
         let totalCards = 0;
 
         // ==========================================
@@ -285,7 +300,7 @@
         // 🔨 RENDER FUNCTIONS
         // ==========================================
         
-        // 1. Top Picks (Chef's Selection)
+        // 1. Top Picks
         function renderTopPicks() {
             const picks = menuItems.filter(i => i.top);
             topPicksContainer.innerHTML = '';
@@ -294,7 +309,7 @@
                 const card = document.createElement('div');
                 card.className = "pick-card flex-shrink-0 mr-4"; 
                 card.innerHTML = `
-                    <div class="w-36 rounded-2xl overflow-hidden bg-white shadow-sm border border-gray-50">
+                    <div class="w-36 rounded-2xl overflow-hidden bg-white shadow-sm border border-orange-50">
                         <div class="h-28 w-full overflow-hidden">
                             <img src="${item.img}" class="w-full h-full object-cover">
                         </div>
@@ -302,7 +317,7 @@
                             <h4 class="text-sm font-semibold text-premium truncate">${item.name}</h4>
                             <p class="text-xs text-muted mt-0.5 mb-2">₹${item.price}</p>
                             <!-- View Button -->
-                            <button class="w-full text-center text-xs font-medium bg-brand text-white py-1.5 rounded-full hover:opacity-90 transition active:scale-95">
+                            <button class="w-full text-center text-xs font-semibold bg-brand text-white py-1.5 rounded-full hover:bg-orange-600 transition active:scale-95 shadow-sm">
                                 View
                             </button>
                         </div>
@@ -326,7 +341,7 @@
 
         function createFilterBtn(name, id) {
             const btn = document.createElement('button');
-            btn.className = `filter-btn px-4 py-2 text-xs font-medium border border-gray-200 rounded-full whitespace-nowrap transition-colors hover:border-premium ${id === 'all' ? 'active' : ''}`;
+            btn.className = `filter-btn px-4 py-2 text-xs font-medium border border-orange-200 rounded-full whitespace-nowrap transition-colors hover:bg-orange-50 text-premium ${id === 'all' ? 'active' : ''}`;
             btn.textContent = name;
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -339,30 +354,30 @@
             return btn;
         }
 
-        // 3. Menu Items List
+        // 3. Menu Items
         function renderMenuItems(items) {
             menuList.innerHTML = '';
             
             if (items.length === 0) {
-                menuList.innerHTML = `<p class="text-center text-muted py-20 text-sm">No items found.</p>`;
+                menuList.innerHTML = `<p class="text-center text-muted py-20 text-sm bg-white rounded-xl">No items found.</p>`;
                 return;
             }
 
             items.forEach((item, index) => {
                 const card = document.createElement('div');
-                card.className = "menu-item-card border-b border-gray-50 py-5 fade-up";
+                card.className = "menu-item-card fade-up";
                 
                 card.innerHTML = `
                     <div class="flex gap-4 items-center">
                         <div class="flex-1">
                             <div class="flex justify-between items-start mb-1">
                                 <h3 class="text-sm font-semibold text-premium">${item.name}</h3>
-                                <span class="text-sm font-medium text-premium">₹${item.price}</span>
+                                <span class="text-sm font-bold text-brand">₹${item.price}</span>
                             </div>
                             <p class="text-xs text-muted leading-relaxed mt-0.5 line-clamp-2">${item.desc}</p>
                         </div>
                         
-                        <div class="img-zoom-container w-20 h-20 rounded-xl overflow-hidden bg-gray-50 flex-shrink-0 shadow-sm">
+                        <div class="img-zoom-container w-20 h-20 bg-orange-50 flex-shrink-0">
                             <img src="${item.img}" class="w-full h-full object-cover">
                         </div>
                     </div>
