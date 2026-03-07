@@ -24,7 +24,7 @@
                         'premium': '#333333',
                         'muted': '#64748b',
                         'bg-main': '#FFFFFF',
-                        'brand': '#14B8A6',      // Teal Green
+                        'brand': '#14B8A6',
                         'brand-light': '#CCFBF1',
                         'brand-dark': '#0D9488',
                     },
@@ -181,7 +181,7 @@
     <!-- JAVASCRIPT -->
     <script>
         // ==========================================
-        // 💾 EXPANDED DATA (Specific to Categories)
+        // 💾 DATA
         // ==========================================
         const categories = [
             { id: 1, name: "Salads" },
@@ -248,7 +248,7 @@
 
             renderTopPicks();
             renderCategories();
-            renderMenuItems(menuItems); // Show all initially
+            renderMenuItems(menuItems); 
             initEvents();
             initSlider();
         });
@@ -340,16 +340,13 @@
             btn.textContent = name;
             
             btn.addEventListener('click', () => {
-                // Update active class
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 
                 currentFilter = id;
                 
-                // Filter Logic
-                if(id === 'all') {
-                    animateMenuRendering(menuItems);
-                } else {
+                if(id === 'all') animateMenuRendering(menuItems);
+                else {
                     const filtered = menuItems.filter(i => i.category_id == id);
                     animateMenuRendering(filtered);
                 }
@@ -357,58 +354,55 @@
             return btn;
         }
 
-        // 3. Animate Menu Rendering (GSAP MAGIC)
+        // 3. Animate Menu Rendering
         function animateMenuRendering(items) {
-            // 1. Fade Out existing items
             gsap.to("#menuList > div", {
                 opacity: 0,
                 y: -20,
-                stagger: 0.02, // Fast stagger
+                stagger: 0.02,
                 duration: 0.2,
                 ease: "power2.in",
                 onComplete: () => {
-                    // 2. Clear and Render New Items
                     renderMenuItems(items);
-                    
-                    // 3. Fade In new items
                     gsap.fromTo("#menuList > div", 
                         { opacity: 0, y: 30 }, 
-                        { 
-                            opacity: 1, 
-                            y: 0, 
-                            stagger: 0.05, 
-                            duration: 0.4, 
-                            ease: "power2.out" 
-                        }
+                        { opacity: 1, y: 0, stagger: 0.05, duration: 0.4, ease: "power2.out" }
                     );
                 }
             });
         }
 
-        // 4. Render Menu Items (Helper)
+        // 4. Render Menu Items (Updated Price Position)
         function renderMenuItems(items) {
             menuList.innerHTML = '';
             
             if (items.length === 0) {
-                menuList.innerHTML = `<p class="text-center text-muted py-20 text-sm bg-gray-50 rounded-xl">No items found in this category.</p>`;
+                menuList.innerHTML = `<p class="text-center text-muted py-20 text-sm bg-gray-50 rounded-xl">No items found.</p>`;
                 return;
             }
 
-            items.forEach((item, index) => {
+            items.forEach((item) => {
                 const card = document.createElement('div');
                 card.className = "menu-item-card";
                 
+                // NEW LAYOUT: Flex Column for Text, Price at Bottom Left
                 card.innerHTML = `
-                    <div class="flex gap-4 items-center">
-                        <div class="flex-1">
-                            <div class="flex justify-between items-start mb-1">
-                                <h3 class="text-sm font-semibold text-premium">${item.name}</h3>
+                    <div class="flex gap-4">
+                        <!-- Text Section -->
+                        <div class="flex-1 flex flex-col justify-between min-h-[80px]"> <!-- min-height to align price properly -->
+                            <div>
+                                <h3 class="text-sm font-semibold text-premium mb-1">${item.name}</h3>
+                                <p class="text-xs text-muted leading-relaxed line-clamp-2">${item.desc}</p>
+                            </div>
+                            
+                            <!-- Price at Bottom Left -->
+                            <div class="mt-2">
                                 <span class="text-sm font-bold text-brand">₹${item.price}</span>
                             </div>
-                            <p class="text-xs text-muted leading-relaxed mt-0.5 line-clamp-2">${item.desc}</p>
                         </div>
                         
-                        <div class="img-zoom-container w-20 h-20 bg-gray-50 flex-shrink-0">
+                        <!-- Image Section -->
+                        <div class="img-zoom-container w-20 h-20 bg-gray-50 flex-shrink-0 self-start">
                             <img src="${item.img}" class="w-full h-full object-cover">
                         </div>
                     </div>
