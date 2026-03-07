@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Menu | The Modern Kitchen</title>
     
-    <!-- Fonts: Inter (Slim & Modern) -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
@@ -24,6 +24,7 @@
                         'premium': '#0f0f0f',
                         'muted': '#8a8a8a',
                         'bg': '#ffffff',
+                        'brand': '#EC4899', // Pink-500
                     },
                     fontFamily: {
                         'sans': ['Inter', 'sans-serif'],
@@ -40,59 +41,46 @@
             font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            overflow-x: hidden; /* Prevent horizontal scroll on body */
+            overflow-x: hidden;
         }
 
-        /* Slim Scrollbar for Webkit browsers */
-        ::-webkit-scrollbar { width: 0px; background: transparent; } /* Hide scrollbar */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
 
-        /* Animation Classes */
         .fade-up { opacity: 0; transform: translateY(20px); }
 
-        /* Slider Container */
-        .slider-container {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .slider-track {
-            display: flex;
-            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            /* Using GSAP for animation, so transition might be overridden */
-        }
+        .slider-container { position: relative; overflow: hidden; }
+        .slider-track { display: flex; }
 
-        /* Slim Card Hover */
         .menu-item-card { transition: background-color 0.3s ease; }
-        .menu-item-card:active { background-color: #fafafa; } /* Active state for mobile */
+        .menu-item-card:active { background-color: #fafafa; }
 
-        /* Image Zoom on Hover (Desktop) / Active (Mobile) */
         .img-zoom-container { overflow: hidden; }
         .img-zoom-container img { transition: transform 0.6s ease; }
         .menu-item-card:hover .img-zoom-container img { transform: scale(1.05); }
 
-        /* Category Filter Active State */
         .filter-btn.active {
             background-color: #0f0f0f;
             color: white;
             border-color: #0f0f0f;
         }
 
-        /* Slider Buttons */
+        /* Pink Slider Buttons */
         .slider-btn {
             width: 36px;
             height: 36px;
-            background: white;
+            background: #EC4899; /* Pink */
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
             z-index: 20;
-            border: 1px solid #eee;
-            touch-action: manipulation; /* Improve touch response */
+            border: none;
+            color: white;
+            touch-action: manipulation;
         }
         .slider-btn:active { transform: translateY(-50%) scale(0.95); }
         
@@ -103,10 +91,10 @@
 </head>
 <body class="text-premium pb-20">
 
-    <!-- HEADER (Fixed, Slim) -->
+    <!-- HEADER -->
     <header class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100">
         <div class="max-w-3xl mx-auto px-5 h-14 flex items-center justify-between">
-            <a href="#" class="font-serif text-xl tracking-tight">Canvas</a>
+            <a href="#" class="font-serif text-xl tracking-tight">Spice Kitchen</a>
             
             <div class="flex items-center gap-4">
                 <button id="searchBtn" class="text-muted hover:text-premium transition-colors p-2">
@@ -119,7 +107,7 @@
 
         <!-- Search Overlay -->
         <div id="searchOverlay" class="hidden absolute top-full left-0 right-0 bg-white border-b shadow-sm p-4">
-            <input type="text" id="searchInput" placeholder="Type to search..." class="w-full text-sm border-b-2 border-premium pb-2 outline-none bg-transparent placeholder-gray-300">
+            <input type="text" id="searchInput" placeholder="Search dishes..." class="w-full text-sm border-b-2 border-brand pb-2 outline-none bg-transparent placeholder-gray-300">
         </div>
     </header>
 
@@ -129,46 +117,44 @@
         <!-- HERO TEXT -->
         <section class="mb-10 fade-up">
             <h1 class="font-serif text-3xl leading-tight mb-1">Our Menu</h1>
-            <p class="text-muted text-xs tracking-wide">Curated with passion and precision.</p>
+            <p class="text-muted text-xs tracking-wide">Authentic Flavors, Modern Twist.</p>
         </section>
 
-        <!-- CHEF'S SELECTION (Slider with Buttons) -->
+        <!-- CHEF'S SELECTION (Slider) -->
         <section class="mb-12">
             <div class="flex justify-between items-center mb-4 fade-up">
                 <h2 class="text-xs font-semibold uppercase tracking-widest text-muted">Chef's Selection</h2>
-                <!-- Dots or controls could go here, but we put arrows on sides -->
             </div>
 
             <div class="slider-container" id="topPicksWrapper">
-                <!-- Left Arrow -->
+                <!-- Left Arrow (Pink) -->
                 <button class="slider-btn left" id="prevBtn">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-premium" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
                 </button>
 
-                <!-- Slider Track -->
                 <div class="slider-track" id="topPicksContainer">
                     <!-- Cards Injected via JS -->
                 </div>
 
-                <!-- Right Arrow -->
+                <!-- Right Arrow (Pink) -->
                 <button class="slider-btn right" id="nextBtn">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-premium" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </button>
             </div>
         </section>
 
-        <!-- CATEGORIES (Slim Filters) -->
+        <!-- CATEGORIES -->
         <section class="mb-6 border-b border-gray-100 pb-4 fade-up">
             <div class="flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5" id="categoryFilters">
                 <!-- Buttons Injected via JS -->
             </div>
         </section>
 
-        <!-- MENU ITEMS LIST (Slim Cards) -->
+        <!-- MENU ITEMS LIST -->
         <section id="menuList">
             <!-- Items Injected via JS -->
         </section>
@@ -177,13 +163,13 @@
 
     <!-- FOOTER -->
     <footer class="text-center py-8 border-t border-gray-50 text-xs text-muted mt-10">
-        © 2024 Canvas Kitchen
+        © 2024 Spice Kitchen
     </footer>
 
     <!-- JAVASCRIPT -->
     <script>
         // ==========================================
-        // 💾 DATA (Same)
+        // 💾 INDIAN FOOD DATA
         // ==========================================
         const categories = [
             { id: 1, name: "Starters" },
@@ -193,20 +179,27 @@
         ];
 
         const menuItems = [
-            { id: 1, category_id: 1, name: "Tuna Tartare", desc: "Fresh tuna, avocado, citrus ponzu", price: "24", img: "https://picsum.photos/seed/11/400/400", top: true },
-            { id: 2, category_id: 1, name: "Bruschetta", desc: "Toasted sourdough, tomato, basil", price: "16", img: "https://picsum.photos/seed/12/400/400", top: false },
-            { id: 3, category_id: 1, name: "Spring Rolls", desc: "Vegetable filled, chili sauce", price: "14", img: "https://picsum.photos/seed/13/400/400", top: true },
-            { id: 4, category_id: 2, name: "Ribeye Steak", desc: "Prime cut, herb butter", price: "45", img: "https://picsum.photos/seed/14/400/400", top: true },
-            { id: 5, category_id: 2, name: "Pasta Alfredo", desc: "Fettuccine, parmesan cream", price: "22", img: "https://picsum.photos/seed/15/400/400", top: false },
-            { id: 6, category_id: 2, name: "Salmon Fillet", desc: "Pan-seared, asparagus", price: "32", img: "https://picsum.photos/seed/16/400/400", top: true },
-            { id: 7, category_id: 3, name: "Espresso Martini", desc: "Vodka, coffee liqueur", price: "15", img: "https://picsum.photos/seed/17/400/400", top: true },
-            { id: 8, category_id: 3, name: "Fresh Lemonade", desc: "Mint, lemon, sparkling", price: "8", img: "https://picsum.photos/seed/18/400/400", top: true },
-            { id: 9, category_id: 4, name: "Tiramisu", desc: "Classic Italian, mascarpone", price: "12", img: "https://picsum.photos/seed/19/400/400", top: true },
-            { id: 10, category_id: 4, name: "Cheesecake", desc: "New York style, berries", price: "11", img: "https://picsum.photos/seed/20/400/400", top: true }
+            // STARTERS
+            { id: 1, category_id: 1, name: "Paneer Tikka", desc: "Marinated cottage cheese cubes grilled in tandoor", price: "250", img: "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=400", top: true },
+            { id: 2, category_id: 1, name: "Veg Spring Roll", desc: "Crispy rolls stuffed with fresh vegetables", price: "180", img: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=400", top: false },
+            { id: 3, category_id: 1, name: "Hara Bhara Kebab", desc: "Spinach and peas patties, crisp and healthy", price: "190", img: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=400", top: true },
+            
+            // MAIN COURSE
+            { id: 4, category_id: 2, name: "Butter Chicken", desc: "Creamy tomato curry with tender chicken pieces", price: "320", img: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=400", top: true },
+            { id: 5, category_id: 2, name: "Veg Biryani", desc: "Fragrant basmati rice cooked with mixed veggies", price: "280", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=400", top: true },
+            { id: 6, category_id: 2, name: "Dal Makhani", desc: "Black lentils slow cooked overnight", price: "240", img: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=400", top: false },
+            
+            // DRINKS
+            { id: 7, category_id: 3, name: "Mango Lassi", desc: "Sweet yogurt drink with fresh mango pulp", price: "90", img: "https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=400", top: true },
+            { id: 8, category_id: 3, name: "Fresh Lime Soda", desc: "Sparkling soda with fresh lime and mint", price: "60", img: "https://images.unsplash.com/photo-1534353473418-4cfa6c56fd38?auto=format&fit=crop&w=400", top: false },
+            
+            // DESSERTS
+            { id: 9, category_id: 4, name: "Gulab Jamun", desc: "Deep fried milk balls soaked in sugar syrup", price: "100", img: "https://images.unsplash.com/photo-1666190077425-1e751fa0a4bb?auto=format&fit=crop&w=400", top: true },
+            { id: 10, category_id: 4, name: "Rasmalai", desc: "Soft paneer discs in sweet creamy milk", price: "110", img: "https://images.unsplash.com/photo-1645177628172-a94c1f96e6db?auto=format&fit=crop&w=400", top: false }
         ];
 
         // ==========================================
-        // 🔨 RENDER FUNCTIONS
+        // 🔨 DOM ELEMENTS
         // ==========================================
         const topPicksContainer = document.getElementById('topPicksContainer');
         const topPicksWrapper = document.getElementById('topPicksWrapper');
@@ -216,17 +209,18 @@
         const searchOverlay = document.getElementById('searchOverlay');
         const searchInput = document.getElementById('searchInput');
         
-        // Slider Buttons
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
 
         let currentFilter = 'all';
+        let sliderPosition = 0;
+        let cardWidth = 160; // Approx width + gap
+        let totalCards = 0;
 
         // ==========================================
         // ⚡ INIT
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
-            // GSAP Entrance Animation
             gsap.to(".fade-up", {
                 opacity: 1,
                 y: 0,
@@ -243,25 +237,11 @@
         });
 
         // ==========================================
-        // 🎠 SLIDER LOGIC (GSAP)
+        // 🎠 SLIDER LOGIC
         // ==========================================
-        let sliderPosition = 0;
-        let cardWidth = 150; // card width + gap (approx)
-        let totalCards = 0;
-
         function initSlider() {
             const cards = topPicksContainer.querySelectorAll('.pick-card');
             totalCards = cards.length;
-            
-            // Calculate card width dynamically
-            if(cards.length > 0) {
-                const style = cards[0].currentStyle || window.getComputedStyle(cards[0]);
-                // Width is 128px (w-32) + Margin
-                // Actually tailwind w-32 is 8rem = 128px. 
-                // We add a gap of 24px (gap-6) via margin-right for calculation
-                cardWidth = 152; 
-            }
-
             updateSliderButtons();
         }
 
@@ -270,7 +250,7 @@
             const maxScroll = (totalCards * cardWidth) - containerWidth;
             
             if (Math.abs(sliderPosition) < maxScroll) {
-                sliderPosition -= cardWidth * 1; // Move 1 card at a time
+                sliderPosition -= cardWidth * 1;
                 gsap.to(topPicksContainer, { x: sliderPosition, duration: 0.4, ease: "power2.out" });
             }
             updateSliderButtons();
@@ -288,14 +268,12 @@
             const containerWidth = topPicksWrapper.offsetWidth;
             const maxScroll = (totalCards * cardWidth) - containerWidth;
 
-            // Hide Prev button at start
             if(sliderPosition >= 0) {
                 gsap.to(prevBtn, { autoAlpha: 0, scale: 0.8, duration: 0.2 });
             } else {
                 gsap.to(prevBtn, { autoAlpha: 1, scale: 1, duration: 0.2 });
             }
 
-            // Hide Next button at end
             if (Math.abs(sliderPosition) >= maxScroll - 10) {
                 gsap.to(nextBtn, { autoAlpha: 0, scale: 0.8, duration: 0.2 });
             } else {
@@ -303,26 +281,38 @@
             }
         }
 
-        // 1. Top Picks Render
+        // ==========================================
+        // 🔨 RENDER FUNCTIONS
+        // ==========================================
+        
+        // 1. Top Picks (Chef's Selection)
         function renderTopPicks() {
             const picks = menuItems.filter(i => i.top);
             topPicksContainer.innerHTML = '';
 
             picks.forEach(item => {
                 const card = document.createElement('div');
-                card.className = "pick-card flex-shrink-0 mr-6"; // Margin for gap
+                card.className = "pick-card flex-shrink-0 mr-4"; 
                 card.innerHTML = `
-                    <div class="w-32 h-32 rounded-2xl overflow-hidden mb-3 bg-gray-100 shadow-sm">
-                        <img src="${item.img}" class="w-full h-full object-cover">
+                    <div class="w-36 rounded-2xl overflow-hidden bg-white shadow-sm border border-gray-50">
+                        <div class="h-28 w-full overflow-hidden">
+                            <img src="${item.img}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-3">
+                            <h4 class="text-sm font-semibold text-premium truncate">${item.name}</h4>
+                            <p class="text-xs text-muted mt-0.5 mb-2">₹${item.price}</p>
+                            <!-- View Button -->
+                            <button class="w-full text-center text-xs font-medium bg-brand text-white py-1.5 rounded-full hover:opacity-90 transition active:scale-95">
+                                View
+                            </button>
+                        </div>
                     </div>
-                    <h4 class="text-sm font-medium text-premium">${item.name}</h4>
-                    <p class="text-xs text-muted mt-1">$${item.price}</p>
                 `;
                 topPicksContainer.appendChild(card);
             });
         }
 
-        // 2. Categories Render
+        // 2. Categories
         function renderCategories() {
             categoryFilters.innerHTML = '';
             const allBtn = createFilterBtn('All', 'all');
@@ -341,20 +331,15 @@
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                
                 currentFilter = id;
                 
-                if(id === 'all') {
-                    renderMenuItems(menuItems);
-                } else {
-                    const filtered = menuItems.filter(i => i.category_id == id);
-                    renderMenuItems(filtered);
-                }
+                if(id === 'all') renderMenuItems(menuItems);
+                else renderMenuItems(menuItems.filter(i => i.category_id == id));
             });
             return btn;
         }
 
-        // 3. Menu Items Render
+        // 3. Menu Items List
         function renderMenuItems(items) {
             menuList.innerHTML = '';
             
@@ -372,7 +357,7 @@
                         <div class="flex-1">
                             <div class="flex justify-between items-start mb-1">
                                 <h3 class="text-sm font-semibold text-premium">${item.name}</h3>
-                                <span class="text-sm font-medium text-premium">$${item.price}</span>
+                                <span class="text-sm font-medium text-premium">₹${item.price}</span>
                             </div>
                             <p class="text-xs text-muted leading-relaxed mt-0.5 line-clamp-2">${item.desc}</p>
                         </div>
@@ -399,25 +384,18 @@
         // ⚙️ EVENTS
         // ==========================================
         function initEvents() {
-            // Slider Buttons
             nextBtn.addEventListener('click', slideNext);
             prevBtn.addEventListener('click', slidePrev);
 
-            // Search Toggle
             searchBtn.addEventListener('click', () => {
                 searchOverlay.classList.toggle('hidden');
-                if(!searchOverlay.classList.contains('hidden')) {
-                    searchInput.focus();
-                }
+                if(!searchOverlay.classList.contains('hidden')) searchInput.focus();
             });
 
-            // Search Logic
             searchInput.addEventListener('input', (e) => {
                 const term = e.target.value.toLowerCase();
-                if(!term) {
-                    renderMenuItems(menuItems);
-                    return;
-                }
+                if(!term) { renderMenuItems(menuItems); return; }
+                
                 const res = menuItems.filter(i => 
                     i.name.toLowerCase().includes(term) || 
                     i.desc.toLowerCase().includes(term)
