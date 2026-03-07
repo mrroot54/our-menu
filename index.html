@@ -1,1 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Menu | The Modern Kitchen</title>
+    
+    <!-- Fonts: Inter (Slim & Modern) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'premium': '#0f0f0f',
+                        'muted': '#8a8a8a',
+                        'bg': '#ffffff',
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                        'serif': ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden; /* Prevent horizontal scroll on body */
+        }
+
+        /* Slim Scrollbar for Webkit browsers */
+        ::-webkit-scrollbar { width: 0px; background: transparent; } /* Hide scrollbar */
+
+        /* Animation Classes */
+        .fade-up { opacity: 0; transform: translateY(20px); }
+
+        /* Slider Container */
+        .slider-container {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slider-track {
+            display: flex;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            /* Using GSAP for animation, so transition might be overridden */
+        }
+
+        /* Slim Card Hover */
+        .menu-item-card { transition: background-color 0.3s ease; }
+        .menu-item-card:active { background-color: #fafafa; } /* Active state for mobile */
+
+        /* Image Zoom on Hover (Desktop) / Active (Mobile) */
+        .img-zoom-container { overflow: hidden; }
+        .img-zoom-container img { transition: transform 0.6s ease; }
+        .menu-item-card:hover .img-zoom-container img { transform: scale(1.05); }
+
+        /* Category Filter Active State */
+        .filter-btn.active {
+            background-color: #0f0f0f;
+            color: white;
+            border-color: #0f0f0f;
+        }
+
+        /* Slider Buttons */
+        .slider-btn {
+            width: 36px;
+            height: 36px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 20;
+            border: 1px solid #eee;
+            touch-action: manipulation; /* Improve touch response */
+        }
+        .slider-btn:active { transform: translateY(-50%) scale(0.95); }
+        
+        .slider-btn.left { left: 8px; }
+        .slider-btn.right { right: 8px; }
+
+    </style>
+</head>
+<body class="text-premium pb-20">
+
+    <!-- HEADER (Fixed, Slim) -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100">
+        <div class="max-w-3xl mx-auto px-5 h-14 flex items-center justify-between">
+            <a href="#" class="font-serif text-xl tracking-tight">Canvas</a>
+            
+            <div class="flex items-center gap-4">
+                <button id="searchBtn" class="text-muted hover:text-premium transition-colors p-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Search Overlay -->
+        <div id="searchOverlay" class="hidden absolute top-full left-0 right-0 bg-white border-b shadow-sm p-4">
+            <input type="text" id="searchInput" placeholder="Type to search..." class="w-full text-sm border-b-2 border-premium pb-2 outline-none bg-transparent placeholder-gray-300">
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-3xl mx-auto px-5 pt-20">
+
+        <!-- HERO TEXT -->
+        <section class="mb-10 fade-up">
+            <h1 class="font-serif text-3xl leading-tight mb-1">Our Menu</h1>
+            <p class="text-muted text-xs tracking-wide">Curated with passion and precision.</p>
+        </section>
+
+        <!-- CHEF'S SELECTION (Slider with Buttons) -->
+        <section class="mb-12">
+            <div class="flex justify-between items-center mb-4 fade-up">
+                <h2 class="text-xs font-semibold uppercase tracking-widest text-muted">Chef's Selection</h2>
+                <!-- Dots or controls could go here, but we put arrows on sides -->
+            </div>
+
+            <div class="slider-container" id="topPicksWrapper">
+                <!-- Left Arrow -->
+                <button class="slider-btn left" id="prevBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-premium" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+
+                <!-- Slider Track -->
+                <div class="slider-track" id="topPicksContainer">
+                    <!-- Cards Injected via JS -->
+                </div>
+
+                <!-- Right Arrow -->
+                <button class="slider-btn right" id="nextBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-premium" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- CATEGORIES (Slim Filters) -->
+        <section class="mb-6 border-b border-gray-100 pb-4 fade-up">
+            <div class="flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5" id="categoryFilters">
+                <!-- Buttons Injected via JS -->
+            </div>
+        </section>
+
+        <!-- MENU ITEMS LIST (Slim Cards) -->
+        <section id="menuList">
+            <!-- Items Injected via JS -->
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="text-center py-8 border-t border-gray-50 text-xs text-muted mt-10">
+        © 2024 Canvas Kitchen
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // ==========================================
+        // 💾 DATA (Same)
+        // ==========================================
+        const categories = [
+            { id: 1, name: "Starters" },
+            { id: 2, name: "Main Course" },
+            { id: 3, name: "Drinks" },
+            { id: 4, name: "Desserts" }
+        ];
+
+        const menuItems = [
+            { id: 1, category_id: 1, name: "Tuna Tartare", desc: "Fresh tuna, avocado, citrus ponzu", price: "24", img: "https://picsum.photos/seed/11/400/400", top: true },
+            { id: 2, category_id: 1, name: "Bruschetta", desc: "Toasted sourdough, tomato, basil", price: "16", img: "https://picsum.photos/seed/12/400/400", top: false },
+            { id: 3, category_id: 1, name: "Spring Rolls", desc: "Vegetable filled, chili sauce", price: "14", img: "https://picsum.photos/seed/13/400/400", top: true },
+            { id: 4, category_id: 2, name: "Ribeye Steak", desc: "Prime cut, herb butter", price: "45", img: "https://picsum.photos/seed/14/400/400", top: true },
+            { id: 5, category_id: 2, name: "Pasta Alfredo", desc: "Fettuccine, parmesan cream", price: "22", img: "https://picsum.photos/seed/15/400/400", top: false },
+            { id: 6, category_id: 2, name: "Salmon Fillet", desc: "Pan-seared, asparagus", price: "32", img: "https://picsum.photos/seed/16/400/400", top: true },
+            { id: 7, category_id: 3, name: "Espresso Martini", desc: "Vodka, coffee liqueur", price: "15", img: "https://picsum.photos/seed/17/400/400", top: true },
+            { id: 8, category_id: 3, name: "Fresh Lemonade", desc: "Mint, lemon, sparkling", price: "8", img: "https://picsum.photos/seed/18/400/400", top: true },
+            { id: 9, category_id: 4, name: "Tiramisu", desc: "Classic Italian, mascarpone", price: "12", img: "https://picsum.photos/seed/19/400/400", top: true },
+            { id: 10, category_id: 4, name: "Cheesecake", desc: "New York style, berries", price: "11", img: "https://picsum.photos/seed/20/400/400", top: true }
+        ];
+
+        // ==========================================
+        // 🔨 RENDER FUNCTIONS
+        // ==========================================
+        const topPicksContainer = document.getElementById('topPicksContainer');
+        const topPicksWrapper = document.getElementById('topPicksWrapper');
+        const categoryFilters = document.getElementById('categoryFilters');
+        const menuList = document.getElementById('menuList');
+        const searchBtn = document.getElementById('searchBtn');
+        const searchOverlay = document.getElementById('searchOverlay');
+        const searchInput = document.getElementById('searchInput');
+        
+        // Slider Buttons
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        let currentFilter = 'all';
+
+        // ==========================================
+        // ⚡ INIT
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // GSAP Entrance Animation
+            gsap.to(".fade-up", {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                stagger: 0.1,
+                ease: "power2.out"
+            });
+
+            renderTopPicks();
+            renderCategories();
+            renderMenuItems(menuItems);
+            initEvents();
+            initSlider();
+        });
+
+        // ==========================================
+        // 🎠 SLIDER LOGIC (GSAP)
+        // ==========================================
+        let sliderPosition = 0;
+        let cardWidth = 150; // card width + gap (approx)
+        let totalCards = 0;
+
+        function initSlider() {
+            const cards = topPicksContainer.querySelectorAll('.pick-card');
+            totalCards = cards.length;
+            
+            // Calculate card width dynamically
+            if(cards.length > 0) {
+                const style = cards[0].currentStyle || window.getComputedStyle(cards[0]);
+                // Width is 128px (w-32) + Margin
+                // Actually tailwind w-32 is 8rem = 128px. 
+                // We add a gap of 24px (gap-6) via margin-right for calculation
+                cardWidth = 152; 
+            }
+
+            updateSliderButtons();
+        }
+
+        function slideNext() {
+            const containerWidth = topPicksWrapper.offsetWidth;
+            const maxScroll = (totalCards * cardWidth) - containerWidth;
+            
+            if (Math.abs(sliderPosition) < maxScroll) {
+                sliderPosition -= cardWidth * 1; // Move 1 card at a time
+                gsap.to(topPicksContainer, { x: sliderPosition, duration: 0.4, ease: "power2.out" });
+            }
+            updateSliderButtons();
+        }
+
+        function slidePrev() {
+            if (sliderPosition < 0) {
+                sliderPosition += cardWidth * 1;
+                gsap.to(topPicksContainer, { x: sliderPosition, duration: 0.4, ease: "power2.out" });
+            }
+            updateSliderButtons();
+        }
+
+        function updateSliderButtons() {
+            const containerWidth = topPicksWrapper.offsetWidth;
+            const maxScroll = (totalCards * cardWidth) - containerWidth;
+
+            // Hide Prev button at start
+            if(sliderPosition >= 0) {
+                gsap.to(prevBtn, { autoAlpha: 0, scale: 0.8, duration: 0.2 });
+            } else {
+                gsap.to(prevBtn, { autoAlpha: 1, scale: 1, duration: 0.2 });
+            }
+
+            // Hide Next button at end
+            if (Math.abs(sliderPosition) >= maxScroll - 10) {
+                gsap.to(nextBtn, { autoAlpha: 0, scale: 0.8, duration: 0.2 });
+            } else {
+                gsap.to(nextBtn, { autoAlpha: 1, scale: 1, duration: 0.2 });
+            }
+        }
+
+        // 1. Top Picks Render
+        function renderTopPicks() {
+            const picks = menuItems.filter(i => i.top);
+            topPicksContainer.innerHTML = '';
+
+            picks.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "pick-card flex-shrink-0 mr-6"; // Margin for gap
+                card.innerHTML = `
+                    <div class="w-32 h-32 rounded-2xl overflow-hidden mb-3 bg-gray-100 shadow-sm">
+                        <img src="${item.img}" class="w-full h-full object-cover">
+                    </div>
+                    <h4 class="text-sm font-medium text-premium">${item.name}</h4>
+                    <p class="text-xs text-muted mt-1">$${item.price}</p>
+                `;
+                topPicksContainer.appendChild(card);
+            });
+        }
+
+        // 2. Categories Render
+        function renderCategories() {
+            categoryFilters.innerHTML = '';
+            const allBtn = createFilterBtn('All', 'all');
+            categoryFilters.appendChild(allBtn);
+
+            categories.forEach(cat => {
+                const btn = createFilterBtn(cat.name, cat.id);
+                categoryFilters.appendChild(btn);
+            });
+        }
+
+        function createFilterBtn(name, id) {
+            const btn = document.createElement('button');
+            btn.className = `filter-btn px-4 py-2 text-xs font-medium border border-gray-200 rounded-full whitespace-nowrap transition-colors hover:border-premium ${id === 'all' ? 'active' : ''}`;
+            btn.textContent = name;
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                currentFilter = id;
+                
+                if(id === 'all') {
+                    renderMenuItems(menuItems);
+                } else {
+                    const filtered = menuItems.filter(i => i.category_id == id);
+                    renderMenuItems(filtered);
+                }
+            });
+            return btn;
+        }
+
+        // 3. Menu Items Render
+        function renderMenuItems(items) {
+            menuList.innerHTML = '';
+            
+            if (items.length === 0) {
+                menuList.innerHTML = `<p class="text-center text-muted py-20 text-sm">No items found.</p>`;
+                return;
+            }
+
+            items.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = "menu-item-card border-b border-gray-50 py-5 fade-up";
+                
+                card.innerHTML = `
+                    <div class="flex gap-4 items-center">
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start mb-1">
+                                <h3 class="text-sm font-semibold text-premium">${item.name}</h3>
+                                <span class="text-sm font-medium text-premium">$${item.price}</span>
+                            </div>
+                            <p class="text-xs text-muted leading-relaxed mt-0.5 line-clamp-2">${item.desc}</p>
+                        </div>
+                        
+                        <div class="img-zoom-container w-20 h-20 rounded-xl overflow-hidden bg-gray-50 flex-shrink-0 shadow-sm">
+                            <img src="${item.img}" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                `;
+                
+                menuList.appendChild(card);
+            });
+
+            gsap.from(menuList.children, {
+                y: 20,
+                opacity: 0,
+                duration: 0.4,
+                stagger: 0.03,
+                ease: "power1.out"
+            });
+        }
+
+        // ==========================================
+        // ⚙️ EVENTS
+        // ==========================================
+        function initEvents() {
+            // Slider Buttons
+            nextBtn.addEventListener('click', slideNext);
+            prevBtn.addEventListener('click', slidePrev);
+
+            // Search Toggle
+            searchBtn.addEventListener('click', () => {
+                searchOverlay.classList.toggle('hidden');
+                if(!searchOverlay.classList.contains('hidden')) {
+                    searchInput.focus();
+                }
+            });
+
+            // Search Logic
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                if(!term) {
+                    renderMenuItems(menuItems);
+                    return;
+                }
+                const res = menuItems.filter(i => 
+                    i.name.toLowerCase().includes(term) || 
+                    i.desc.toLowerCase().includes(term)
+                );
+                renderMenuItems(res);
+            });
+        }
+    </script>
+</body>
+</html>
