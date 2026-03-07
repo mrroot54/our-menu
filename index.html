@@ -21,12 +21,12 @@
             theme: {
                 extend: {
                     colors: {
-                        'premium': '#333333', // Dark Grey
-                        'muted': '#64748b',   // Slate Grey
-                        'bg-main': '#FFFFFF', // Pure White
-                        'brand': '#14B8A6',   // Teal Green
-                        'brand-light': '#CCFBF1', // Very Light Teal
-                        'brand-dark': '#0D9488', // Darker Teal for hover
+                        'premium': '#333333',
+                        'muted': '#64748b',
+                        'bg-main': '#FFFFFF',
+                        'brand': '#14B8A6',      // Teal Green
+                        'brand-light': '#CCFBF1',
+                        'brand-dark': '#0D9488',
                     },
                     fontFamily: {
                         'sans': ['Inter', 'sans-serif'],
@@ -42,7 +42,6 @@
             background-color: #FFFFFF;
             font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
             overflow-x: hidden;
         }
 
@@ -53,18 +52,18 @@
         .slider-container { position: relative; overflow: hidden; }
         .slider-track { display: flex; }
 
-        /* Card Styling - Fresh & Light */
+        /* Menu Card Styling */
         .menu-item-card {
             background-color: #FFFFFF;
             padding: 16px;
             margin-bottom: 12px;
-            border-radius: 16px; /* Rounded for friendly feel */
+            border-radius: 16px;
             border: 1px solid #F1F5F9;
             transition: transform 0.2s ease, border-color 0.3s ease;
         }
         .menu-item-card:active {
             transform: scale(0.98);
-            border-color: #CCFBF1; /* Light green border on tap */
+            border-color: #CCFBF1;
         }
 
         .img-zoom-container { overflow: hidden; border-radius: 12px; }
@@ -73,21 +72,22 @@
 
         /* Filter Buttons */
         .filter-btn.active {
-            background-color: #14B8A6; /* Green */
+            background-color: #14B8A6;
             color: white;
             border-color: #14B8A6;
+            box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
         }
 
-        /* Slider Buttons (Green) */
+        /* Slider Buttons */
         .slider-btn {
             width: 36px;
             height: 36px;
-            background: #14B8A6; /* Green */
+            background: #14B8A6;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 15px rgba(20, 184, 166, 0.3); /* Green Glow */
+            box-shadow: 0 4px 15px rgba(20, 184, 166, 0.3);
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
@@ -141,7 +141,6 @@
             </div>
 
             <div class="slider-container" id="topPicksWrapper">
-                <!-- Left Arrow (Green) -->
                 <button class="slider-btn left" id="prevBtn">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -152,7 +151,6 @@
                     <!-- Cards Injected via JS -->
                 </div>
 
-                <!-- Right Arrow (Green) -->
                 <button class="slider-btn right" id="nextBtn">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -183,7 +181,7 @@
     <!-- JAVASCRIPT -->
     <script>
         // ==========================================
-        // 💾 DATA
+        // 💾 EXPANDED DATA (Specific to Categories)
         // ==========================================
         const categories = [
             { id: 1, name: "Salads" },
@@ -193,23 +191,27 @@
         ];
 
         const menuItems = [
-            // SALADS
-            { id: 1, category_id: 1, name: "Greek Salad", desc: "Fresh cucumber, tomatoes, olives, feta cheese", price: "220", img: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=400", top: true },
-            { id: 2, category_id: 1, name: "Caesar Salad", desc: "Romaine lettuce, croutons, parmesan", price: "200", img: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?auto=format&fit=crop&w=400", top: false },
-            { id: 3, category_id: 1, name: "Sprouts Salad", desc: "Healthy mix of sprouted lentils and veggies", price: "150", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400", top: true },
-            
-            // MAIN COURSE
-            { id: 4, category_id: 2, name: "Quinoa Bowl", desc: "Quinoa, roasted veggies, hummus", price: "320", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400", top: true },
-            { id: 5, category_id: 2, name: "Grilled Salmon", desc: "Omega rich salmon with asparagus", price: "450", img: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=400", top: true },
-            { id: 6, category_id: 2, name: "Veg Wrap", desc: "Whole wheat wrap filled with fresh greens", price: "180", img: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=400", top: false },
-            
-            // SMOOTHIES
-            { id: 7, category_id: 3, name: "Green Detox", desc: "Spinach, apple, banana, kale", price: "130", img: "https://images.unsplash.com/photo-1610970881699-44a5587cabec?auto=format&fit=crop&w=400", top: true },
-            { id: 8, category_id: 3, name: "Berry Blast", desc: "Mix of blueberries, strawberries", price: "140", img: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=400", top: false },
-            
-            // DESSERTS
-            { id: 9, category_id: 4, name: "Chia Pudding", desc: "Healthy pudding with fresh fruits", price: "160", img: "https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=400", top: true },
-            { id: 10, category_id: 4, name: "Fruit Yogurt", desc: "Low fat yogurt with seasonal fruits", price: "110", img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=400", top: false }
+            // --- SALADS (Category 1) ---
+            { id: 1, category_id: 1, name: "Greek Salad", desc: "Cucumber, tomatoes, olives, feta cheese, olive oil", price: "220", img: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=400", top: true },
+            { id: 2, category_id: 1, name: "Caesar Salad", desc: "Romaine lettuce, croutons, parmesan, garlic dressing", price: "200", img: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?auto=format&fit=crop&w=400", top: false },
+            { id: 3, category_id: 1, name: "Sprouts Salad", desc: "Healthy mix of sprouted lentils, onions, tomatoes", price: "150", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400", top: true },
+            { id: 4, category_id: 1, name: "Cobb Salad", desc: "Eggs, avocado, chicken, bacon, blue cheese", price: "280", img: "https://images.unsplash.com/photo-1546793665-c74683f339c1?auto=format&fit=crop&w=400", top: false },
+
+            // --- MAIN COURSE (Category 2) ---
+            { id: 5, category_id: 2, name: "Quinoa Bowl", desc: "Quinoa, roasted veggies, hummus, tahini", price: "320", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400", top: true },
+            { id: 6, category_id: 2, name: "Grilled Salmon", desc: "Omega rich salmon fillet with asparagus", price: "450", img: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=400", top: true },
+            { id: 7, category_id: 2, name: "Veg Wrap", desc: "Whole wheat wrap filled with paneer and greens", price: "180", img: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=400", top: false },
+            { id: 8, category_id: 2, name: "Brown Rice Bowl", desc: "Healthy brown rice with tofu and veggies", price: "260", img: "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=400", top: false },
+
+            // --- SMOOTHIES (Category 3) ---
+            { id: 9, category_id: 3, name: "Green Detox", desc: "Spinach, apple, banana, kale blend", price: "130", img: "https://images.unsplash.com/photo-1610970881699-44a5587cabec?auto=format&fit=crop&w=400", top: true },
+            { id: 10, category_id: 3, name: "Berry Blast", desc: "Mix of blueberries, strawberries, yogurt", price: "140", img: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=400", top: false },
+            { id: 11, category_id: 3, name: "Mango Magic", desc: "Fresh mango pulp with milk and honey", price: "120", img: "https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=400", top: true },
+
+            // --- DESSERTS (Category 4) ---
+            { id: 12, category_id: 4, name: "Chia Pudding", desc: "Chia seeds soaked in almond milk with fruits", price: "160", img: "https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=400", top: true },
+            { id: 13, category_id: 4, name: "Fruit Yogurt", desc: "Low fat yogurt with seasonal fresh fruits", price: "110", img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=400", top: false },
+            { id: 14, category_id: 4, name: "Dark Chocolate Avocado Mousse", desc: "Sugar-free, healthy sweet treat", price: "190", img: "https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?auto=format&fit=crop&w=400", top: false }
         ];
 
         // ==========================================
@@ -235,6 +237,7 @@
         // ⚡ INIT
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
+            // Initial Animations
             gsap.to(".fade-up", {
                 opacity: 1,
                 y: 0,
@@ -245,7 +248,7 @@
 
             renderTopPicks();
             renderCategories();
-            renderMenuItems(menuItems);
+            renderMenuItems(menuItems); // Show all initially
             initEvents();
             initSlider();
         });
@@ -282,17 +285,11 @@
             const containerWidth = topPicksWrapper.offsetWidth;
             const maxScroll = (totalCards * cardWidth) - containerWidth;
 
-            if(sliderPosition >= 0) {
-                gsap.to(prevBtn, { autoAlpha: 0, scale: 0.8, duration: 0.2 });
-            } else {
-                gsap.to(prevBtn, { autoAlpha: 1, scale: 1, duration: 0.2 });
-            }
+            if(sliderPosition >= 0) gsap.to(prevBtn, { autoAlpha: 0, duration: 0.2 });
+            else gsap.to(prevBtn, { autoAlpha: 1, duration: 0.2 });
 
-            if (Math.abs(sliderPosition) >= maxScroll - 10) {
-                gsap.to(nextBtn, { autoAlpha: 0, scale: 0.8, duration: 0.2 });
-            } else {
-                gsap.to(nextBtn, { autoAlpha: 1, scale: 1, duration: 0.2 });
-            }
+            if (Math.abs(sliderPosition) >= maxScroll - 10) gsap.to(nextBtn, { autoAlpha: 0, duration: 0.2 });
+            else gsap.to(nextBtn, { autoAlpha: 1, duration: 0.2 });
         }
 
         // ==========================================
@@ -315,7 +312,6 @@
                         <div class="p-3">
                             <h4 class="text-sm font-semibold text-premium truncate">${item.name}</h4>
                             <p class="text-xs text-muted mt-0.5 mb-2">₹${item.price}</p>
-                            <!-- View Button (Green Filled) -->
                             <button class="w-full text-center text-xs font-semibold bg-brand text-white py-1.5 rounded-full hover:bg-brand-dark transition active:scale-95 shadow-sm">
                                 View
                             </button>
@@ -342,29 +338,65 @@
             const btn = document.createElement('button');
             btn.className = `filter-btn px-4 py-2 text-xs font-medium border border-gray-200 rounded-full whitespace-nowrap transition-colors hover:border-brand text-premium ${id === 'all' ? 'active' : ''}`;
             btn.textContent = name;
+            
             btn.addEventListener('click', () => {
+                // Update active class
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
+                
                 currentFilter = id;
                 
-                if(id === 'all') renderMenuItems(menuItems);
-                else renderMenuItems(menuItems.filter(i => i.category_id == id));
+                // Filter Logic
+                if(id === 'all') {
+                    animateMenuRendering(menuItems);
+                } else {
+                    const filtered = menuItems.filter(i => i.category_id == id);
+                    animateMenuRendering(filtered);
+                }
             });
             return btn;
         }
 
-        // 3. Menu Items
+        // 3. Animate Menu Rendering (GSAP MAGIC)
+        function animateMenuRendering(items) {
+            // 1. Fade Out existing items
+            gsap.to("#menuList > div", {
+                opacity: 0,
+                y: -20,
+                stagger: 0.02, // Fast stagger
+                duration: 0.2,
+                ease: "power2.in",
+                onComplete: () => {
+                    // 2. Clear and Render New Items
+                    renderMenuItems(items);
+                    
+                    // 3. Fade In new items
+                    gsap.fromTo("#menuList > div", 
+                        { opacity: 0, y: 30 }, 
+                        { 
+                            opacity: 1, 
+                            y: 0, 
+                            stagger: 0.05, 
+                            duration: 0.4, 
+                            ease: "power2.out" 
+                        }
+                    );
+                }
+            });
+        }
+
+        // 4. Render Menu Items (Helper)
         function renderMenuItems(items) {
             menuList.innerHTML = '';
             
             if (items.length === 0) {
-                menuList.innerHTML = `<p class="text-center text-muted py-20 text-sm bg-white rounded-xl">No items found.</p>`;
+                menuList.innerHTML = `<p class="text-center text-muted py-20 text-sm bg-gray-50 rounded-xl">No items found in this category.</p>`;
                 return;
             }
 
             items.forEach((item, index) => {
                 const card = document.createElement('div');
-                card.className = "menu-item-card fade-up";
+                card.className = "menu-item-card";
                 
                 card.innerHTML = `
                     <div class="flex gap-4 items-center">
@@ -384,14 +416,6 @@
                 
                 menuList.appendChild(card);
             });
-
-            gsap.from(menuList.children, {
-                y: 20,
-                opacity: 0,
-                duration: 0.4,
-                stagger: 0.03,
-                ease: "power1.out"
-            });
         }
 
         // ==========================================
@@ -408,13 +432,13 @@
 
             searchInput.addEventListener('input', (e) => {
                 const term = e.target.value.toLowerCase();
-                if(!term) { renderMenuItems(menuItems); return; }
+                if(!term) { animateMenuRendering(menuItems); return; }
                 
                 const res = menuItems.filter(i => 
                     i.name.toLowerCase().includes(term) || 
                     i.desc.toLowerCase().includes(term)
                 );
-                renderMenuItems(res);
+                animateMenuRendering(res);
             });
         }
     </script>
