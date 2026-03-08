@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Item Details | Green Leaf Kitchen</title>
     
-    <!-- Fonts -->
+    <!-- Fonts (Same as Landing Page) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -14,7 +13,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- GSAP -->
+    <!-- GSAP for Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
     <script>
@@ -42,14 +41,13 @@
             background-color: #FFFFFF;
             font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
-            /* Allows scrolling if content is long */
-            overflow-x: hidden; 
+            overflow-x: hidden;
         }
 
-        /* Hero Image Styling - Mobile Optimized */
+        /* Hero Image Styling */
         .hero-image-container {
             width: 100%;
-            height: 280px; /* Fixed height for mobile */
+            height: 300px;
             position: relative;
             overflow: hidden;
             background-color: #F1F5F9;
@@ -59,10 +57,11 @@
         .content-card {
             background: white;
             border-radius: 24px 24px 0 0;
-            margin-top: -30px; /* Overlap effect */
+            margin-top: -40px;
             position: relative;
             z-index: 10;
-            padding-bottom: 60px; /* Space for footer */
+            /* Initial state for animation */
+            opacity: 0; 
         }
 
         /* Status Badges */
@@ -90,23 +89,28 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             cursor: pointer;
             transition: transform 0.2s;
             border: 1px solid rgba(255,255,255,0.5);
         }
         .back-btn:active { transform: scale(0.9); }
 
-        /* Info Block */
-        .info-block {
-            background: #F8FAFC;
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 8px;
+        /* Detail Info Cards */
+        .info-card {
+            background-color: #FFFFFF;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 16px;
+            border: 1px solid #F1F5F9;
+            transition: box-shadow 0.3s ease;
+        }
+        .info-card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
         }
     </style>
 </head>
-<body class="bg-white">
+<body class="bg-white pb-20">
 
     <!-- TOP IMAGE SECTION -->
     <header class="hero-image-container">
@@ -117,7 +121,7 @@
             </svg>
         </div>
 
-        <!-- Top Selling Badge on Image (Conditional) -->
+        <!-- Top Selling Badge on Image -->
         <div id="imgTopBadge" class="absolute top-4 right-4 z-20 bg-white/90 backdrop-blur text-[10px] font-bold text-brand-dark px-3 py-1 rounded-full shadow hidden">
             ⭐ Top Selling
         </div>
@@ -130,7 +134,7 @@
     <main class="content-card max-w-3xl mx-auto px-5 pt-6">
         
         <!-- Row 1: Category & Availability -->
-        <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center justify-between mb-3 fade-up">
             <span id="itemCategory" class="text-[10px] font-bold uppercase tracking-widest text-brand bg-brand-light px-3 py-1 rounded-full">
                 Main Course
             </span>
@@ -142,7 +146,7 @@
         </div>
 
         <!-- Row 2: Title & Price -->
-        <div class="flex justify-between items-start mb-5">
+        <div class="flex justify-between items-start mb-5 fade-up">
             <h1 id="itemName" class="font-head text-xl font-bold text-premium leading-tight pr-4">
                 Quinoa Buddha Bowl
             </h1>
@@ -153,59 +157,54 @@
         </div>
 
         <!-- Row 3: Description -->
-        <div class="mb-6">
+        <div class="mb-6 fade-up">
             <h3 class="text-xs font-semibold text-premium mb-2 uppercase tracking-wider">Description</h3>
             <p id="itemDesc" class="text-sm text-muted leading-relaxed">
                 A healthy and delicious bowl filled with protein-rich quinoa, fresh seasonal veggies, creamy hummus, and a drizzle of tahini dressing. Perfect for a nutritious lunch or dinner.
             </p>
         </div>
 
-        <!-- Row 4: Additional Info (Database Fields) -->
-        <div class="mb-6">
+        <!-- Row 4: Item Details Cards (Improved UI) -->
+        <div class="mb-6 fade-up">
             <h3 class="text-xs font-semibold text-premium mb-3 uppercase tracking-wider">Item Details</h3>
             
-            <div class="info-block flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <span class="text-lg">🍽️</span>
-                    <span class="text-xs text-muted">Category</span>
+            <div class="info-card flex items-center gap-4">
+                <div class="w-10 h-10 bg-brand-light rounded-xl flex items-center justify-center text-xl">🍽️</div>
+                <div>
+                    <span class="text-xs text-muted block">Category</span>
+                    <span id="itemCatInfo" class="text-sm font-semibold text-premium">Main Course</span>
                 </div>
-                <span id="itemCatInfo" class="text-sm font-semibold text-premium">Main Course</span>
             </div>
 
-            <div class="info-block flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <span class="text-lg">🥗</span>
-                    <span class="text-xs text-muted">Availability</span>
+            <div class="info-card flex items-center gap-4">
+                <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center text-xl">🥗</div>
+                <div>
+                    <span class="text-xs text-muted block">Availability</span>
+                    <span id="itemAvailInfo" class="text-sm font-semibold text-green-600">In Stock</span>
                 </div>
-                <span id="itemAvailInfo" class="text-sm font-semibold text-green-600">In Stock</span>
             </div>
 
-             <div class="info-block flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <span class="text-lg">⭐</span>
-                    <span class="text-xs text-muted">Top Selling</span>
+             <div class="info-card flex items-center gap-4">
+                <div class="w-10 h-10 bg-yellow-50 rounded-xl flex items-center justify-center text-xl">⭐</div>
+                <div>
+                    <span class="text-xs text-muted block">Top Selling</span>
+                    <span id="itemTopInfo" class="text-sm font-semibold text-brand">Yes</span>
                 </div>
-                <span id="itemTopInfo" class="text-sm font-semibold text-brand">Yes</span>
-            </div>
-
-            <div class="info-block flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <span class="text-lg">#️⃣</span>
-                    <span class="text-xs text-muted">Item ID</span>
-                </div>
-                <span id="itemId" class="text-sm font-semibold text-premium">16</span>
             </div>
         </div>
 
         <!-- Row 5: Thank You Note (Optional) -->
-        <div class="bg-brand-light/50 border border-brand/10 rounded-xl p-4 text-center">
-            <p class="text-xs text-brand-dark font-medium">Made with fresh ingredients 🌿</p>
+        <div class="bg-gradient-to-r from-brand-light to-white border border-brand/10 rounded-2xl p-5 text-center shadow-sm fade-up">
+            <div class="inline-block bg-white p-2 rounded-xl shadow-sm mb-2">
+                <span class="text-xl">🌿</span>
+            </div>
+            <p class="text-xs text-brand-dark font-medium">Made with love & fresh ingredients</p>
         </div>
 
     </main>
 
-    <!-- SLIM FOOTER (Same as Parent Page) -->
-    <footer class="text-center py-4 text-xs text-muted border-t border-gray-100 bg-white fixed bottom-0 left-0 right-0">
+    <!-- SLIM FOOTER (Exactly same as Landing Page) -->
+    <footer class="text-center py-4 text-xs text-muted border-t border-gray-100 bg-white mt-10">
         <div class="max-w-3xl mx-auto px-5 flex flex-col sm:flex-row justify-between items-center gap-1">
             <span>© 2024 Green Leaf Kitchen</span>
             <span class="opacity-70">Crafted with ❤️ by Atul Kumar</span>
@@ -224,8 +223,8 @@
             description: "A healthy and delicious bowl filled with protein-rich quinoa, fresh seasonal veggies, creamy hummus, and a drizzle of tahini dressing. Perfect for a nutritious lunch or dinner. Served with a side of lemon vinaigrette.",
             price: 320.00,
             image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800",
-            is_top_selling: true, // Try changing to false
-            is_available: true    // Try changing to false
+            is_top_selling: true, 
+            is_available: true    
         };
 
         const categories = [
@@ -248,7 +247,6 @@
             document.getElementById('itemName').textContent = item.name;
             document.getElementById('itemPrice').textContent = `₹${item.price}`;
             document.getElementById('itemDesc').textContent = item.description;
-            document.getElementById('itemId').textContent = item.id;
 
             // Category
             const cat = categories.find(c => c.id === item.category_id);
@@ -282,23 +280,34 @@
                 document.getElementById('itemTopInfo').className = "text-sm font-semibold text-muted";
             }
 
-            // Animations
+            // Run Animations after data load
             runAnimations();
         }
 
         // ==========================================
-        // 🎨 ANIMATIONS
+        // 🎨 ANIMATIONS (Matching Landing Page Feel)
         // ==========================================
         function runAnimations() {
-            // Image Fade
+            // 1. Image Ken Burns Effect
             gsap.fromTo("#itemImage", 
                 { scale: 1.1, opacity: 0 }, 
-                { scale: 1, opacity: 1, duration: 1, ease: "power2.out" }
+                { scale: 1, opacity: 1, duration: 1.2, ease: "power2.out" }
             );
-            // Content Slide
-            gsap.fromTo(".content-card", 
-                { y: 50, opacity: 0 }, 
-                { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }
+
+            // 2. Content Card Slide Up
+            gsap.to(".content-card", { 
+                y: 0, opacity: 1, duration: 0.8, ease: "power3.out", delay: 0.2 
+            });
+
+            // 3. Fade Up Elements Stagger
+            gsap.to(".fade-up", { 
+                opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: "power2.out", delay: 0.4 
+            });
+            
+            // 4. Info Cards Stagger (Pop effect)
+            gsap.fromTo(".info-card", 
+                { opacity: 0, y: 20, scale: 0.95 }, 
+                { opacity: 1, y: 0, scale: 1, stagger: 0.1, duration: 0.5, ease: "back.out(1.2)", delay: 0.6 }
             );
         }
 
