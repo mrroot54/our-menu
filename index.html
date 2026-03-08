@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title> MenuSnap</title>
+    <title>Menu | Green Leaf Kitchen</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -52,25 +52,30 @@
         .slider-container { position: relative; overflow: hidden; }
         .slider-track { display: flex; }
 
-        /* Menu Card Styling */
+        /* === UPDATED MENU CARD STYLE FOR 3D === */
         .menu-item-card {
             background-color: #FFFFFF;
             padding: 16px;
             margin-bottom: 12px;
             border-radius: 16px;
             border: 1px solid #F1F5F9;
-            transition: transform 0.2s ease, border-color 0.3s ease;
+            transition: transform 0.1s ease-out, box-shadow 0.3s ease; /* Smooth transition */
+            
+            /* 3D Properties */
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            will-change: transform;
         }
-        .menu-item-card:active {
-            transform: scale(0.98);
-            border-color: #CCFBF1;
+
+        /* Dynamic Shadow will be added via JS, but hover gives a base glow */
+        .menu-item-card:hover {
+            box-shadow: 0 10px 30px rgba(20, 184, 166, 0.15);
         }
 
         .img-zoom-container { overflow: hidden; border-radius: 12px; }
         .img-zoom-container img { transition: transform 0.6s ease; }
         .menu-item-card:hover .img-zoom-container img { transform: scale(1.05); }
 
-        /* Filter Buttons */
         .filter-btn.active {
             background-color: #14B8A6;
             color: white;
@@ -78,29 +83,38 @@
             box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
         }
 
-        /* Slider Buttons */
-        .slider-btn {
-            width: 36px;
-            height: 36px;
-            background: #14B8A6;
+        /* Pagination Buttons Styling */
+        .page-btn {
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 15px rgba(20, 184, 166, 0.3);
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 20;
-            border: none;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #E5E7EB;
+            transition: all 0.2s;
+        }
+        .page-btn.active {
+            background-color: #14B8A6;
             color: white;
-            touch-action: manipulation;
+            border-color: #14B8A6;
+        }
+        .page-btn:active { transform: scale(0.9); }
+
+        .slider-btn {
+            width: 36px; height: 36px;
+            background: #14B8A6;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(20, 184, 166, 0.3);
+            position: absolute; top: 50%; transform: translateY(-50%);
+            z-index: 20; border: none; color: white;
         }
         .slider-btn:active { transform: translateY(-50%) scale(0.95); background: #0D9488; }
-        
         .slider-btn.left { left: 8px; }
         .slider-btn.right { right: 8px; }
-
     </style>
 </head>
 <body class="text-premium pb-20">
@@ -108,18 +122,13 @@
     <!-- HEADER -->
     <header class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
         <div class="max-w-3xl mx-auto px-5 h-14 flex items-center justify-between">
-            <a href="#" class="font-head text-xl font-bold tracking-tight text-brand">MenuSnap 🥗</a>
-            
-            <div class="flex items-center gap-4">
-                <button id="searchBtn" class="text-muted hover:text-brand transition-colors p-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </button>
-            </div>
+            <a href="#" class="font-head text-xl font-bold tracking-tight text-brand">Green Leaf 🥗</a>
+            <button id="searchBtn" class="text-muted hover:text-brand transition-colors p-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </button>
         </div>
-
-        <!-- Search Overlay -->
         <div id="searchOverlay" class="hidden absolute top-full left-0 right-0 bg-white border-b shadow-sm p-4">
             <input type="text" id="searchInput" placeholder="Search healthy dishes..." class="w-full text-sm border-b-2 border-brand pb-2 outline-none bg-transparent placeholder-gray-300">
         </div>
@@ -127,56 +136,43 @@
 
     <!-- MAIN CONTENT -->
     <main class="max-w-3xl mx-auto px-5 pt-20">
-
-        <!-- HERO TEXT -->
+        <!-- HERO -->
         <section class="mb-10 fade-up">
             <h1 class="font-head text-3xl font-bold leading-tight mb-1 text-premium">Eat Fresh, Stay Healthy</h1>
             <p class="text-muted text-xs tracking-wide">Nutritious & Delicious food for you.</p>
         </section>
 
-        <!-- CHEF'S SELECTION (Slider) -->
+        <!-- SLIDER -->
         <section class="mb-12">
             <div class="flex justify-between items-center mb-4 fade-up">
                 <h2 class="text-xs font-semibold uppercase tracking-widest text-muted">Recommended</h2>
             </div>
-
             <div class="slider-container" id="topPicksWrapper">
                 <button class="slider-btn left" id="prevBtn">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
                 </button>
-
-                <div class="slider-track" id="topPicksContainer">
-                    <!-- Cards Injected via JS -->
-                </div>
-
+                <div class="slider-track" id="topPicksContainer"></div>
                 <button class="slider-btn right" id="nextBtn">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                 </button>
             </div>
         </section>
 
         <!-- CATEGORIES -->
         <section class="mb-6 fade-up">
-            <div class="flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5" id="categoryFilters">
-                <!-- Buttons Injected via JS -->
-            </div>
+            <div class="flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5" id="categoryFilters"></div>
         </section>
 
-        <!-- MENU ITEMS LIST -->
-        <section id="menuList">
-            <!-- Items Injected via JS -->
-        </section>
+        <!-- MENU LIST -->
+        <section id="menuList"></section>
+
+        <!-- PAGINATION BUTTONS -->
+        <div id="paginationContainer" class="flex justify-center items-center gap-2 mt-8 mb-10"></div>
 
     </main>
 
     <!-- FOOTER -->
-    <footer class="text-center py-8 text-xs text-muted mt-10 border-t border-gray-50">
-        © 2026 Crafted with ❤️ by Atul
-    </footer>
+    <footer class="text-center py-8 text-xs text-muted mt-10 border-t border-gray-50">© 2024 Green Leaf Kitchen</footer>
 
     <!-- JAVASCRIPT -->
     <script>
@@ -191,27 +187,58 @@
         ];
 
         const menuItems = [
-            // --- SALADS (Category 1) ---
-            { id: 1, category_id: 1, name: "Greek Salad", desc: "Cucumber, tomatoes, olives, feta cheese, olive oil", price: "220", img: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=400", top: true },
-            { id: 2, category_id: 1, name: "Caesar Salad", desc: "Romaine lettuce, croutons, parmesan, garlic dressing", price: "200", img: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?auto=format&fit=crop&w=400", top: false },
-            { id: 3, category_id: 1, name: "Sprouts Salad", desc: "Healthy mix of sprouted lentils, onions, tomatoes", price: "150", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400", top: true },
-            { id: 4, category_id: 1, name: "Cobb Salad", desc: "Eggs, avocado, chicken, bacon, blue cheese", price: "280", img: "https://images.unsplash.com/photo-1546793665-c74683f339c1?auto=format&fit=crop&w=400", top: false },
+            // --- SALADS (15 Items) ---
+            { id: 1, category_id: 1, name: "Greek Salad", desc: "Cucumber, tomatoes, olives, feta", price: "220", img: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=400", top: true },
+            { id: 2, category_id: 1, name: "Caesar Salad", desc: "Lettuce, croutons, parmesan", price: "200", img: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?auto=format&fit=crop&w=400", top: false },
+            { id: 3, category_id: 1, name: "Sprouts Salad", desc: "Lentils, onions, tomatoes", price: "150", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400", top: false },
+            { id: 4, category_id: 1, name: "Cobb Salad", desc: "Eggs, avocado, chicken", price: "280", img: "https://images.unsplash.com/photo-1546793665-c74683f339c1?auto=format&fit=crop&w=400", top: false },
+            { id: 5, category_id: 1, name: "Garden Fresh", desc: "Mixed seasonal veggies", price: "180", img: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=400", top: false },
+            { id: 6, category_id: 1, name: "Spinach Salad", desc: "Baby spinach, strawberries", price: "190", img: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?auto=format&fit=crop&w=400", top: false },
+            { id: 7, category_id: 1, name: "Russian Salad", desc: "Boiled veggies, mayo", price: "160", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400", top: false },
+            { id: 8, category_id: 1, name: "Bean Salad", desc: "Kidney beans, corn", price: "170", img: "https://images.unsplash.com/photo-1546793665-c74683f339c1?auto=format&fit=crop&w=400", top: false },
+            { id: 9, category_id: 1, name: "Tuna Salad", desc: "Tuna flakes, lettuce", price: "300", img: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=400", top: false },
+            { id: 10, category_id: 1, name: "Chicken Caesar", desc: "Grilled chicken, romaine", price: "320", img: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?auto=format&fit=crop&w=400", top: false },
+            { id: 11, category_id: 1, name: "Fruit Salad", desc: "Seasonal fruits mix", price: "140", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400", top: false },
+            { id: 12, category_id: 1, name: "Pasta Salad", desc: "Penne, olives, tomato", price: "210", img: "https://images.unsplash.com/photo-1546793665-c74683f339c1?auto=format&fit=crop&w=400", top: false },
+            { id: 13, category_id: 1, name: "Quinoa Salad", desc: "Quinoa, cucumber, lemon", price: "240", img: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=400", top: false },
+            { id: 14, category_id: 1, name: "Asian Slaw", desc: "Cabbage, carrot, sesame", price: "150", img: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?auto=format&fit=crop&w=400", top: false },
+            { id: 15, category_id: 1, name: "Avocado Salad", desc: "Fresh avocado, lime", price: "250", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400", top: false },
 
-            // --- MAIN COURSE (Category 2) ---
-            { id: 5, category_id: 2, name: "Quinoa Bowl", desc: "Quinoa, roasted veggies, hummus, tahini", price: "320", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400", top: true },
-            { id: 6, category_id: 2, name: "Grilled Salmon", desc: "Omega rich salmon fillet with asparagus", price: "450", img: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=400", top: true },
-            { id: 7, category_id: 2, name: "Veg Wrap", desc: "Whole wheat wrap filled with paneer and greens", price: "180", img: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=400", top: false },
-            { id: 8, category_id: 2, name: "Brown Rice Bowl", desc: "Healthy brown rice with tofu and veggies", price: "260", img: "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=400", top: false },
+            // --- MAIN COURSE (12 Items) ---
+            { id: 16, category_id: 2, name: "Quinoa Bowl", desc: "Veggies, hummus", price: "320", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400", top: true },
+            { id: 17, category_id: 2, name: "Grilled Salmon", desc: "Asparagus, lemon", price: "450", img: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=400", top: true },
+            { id: 18, category_id: 2, name: "Veg Wrap", desc: "Paneer, greens", price: "180", img: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=400", top: false },
+            { id: 19, category_id: 2, name: "Brown Rice Bowl", desc: "Tofu, veggies", price: "260", img: "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=400", top: false },
+            { id: 20, category_id: 2, name: "Grilled Chicken", desc: "Herb chicken breast", price: "380", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400", top: false },
+            { id: 21, category_id: 2, name: "Pasta Alfredo", desc: "Creamy white sauce", price: "300", img: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=400", top: false },
+            { id: 22, category_id: 2, name: "Penne Arrabbiata", desc: "Spicy tomato sauce", price: "280", img: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=400", top: false },
+            { id: 23, category_id: 2, name: "Steak", desc: "Medium rare beef", price: "550", img: "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=400", top: false },
+            { id: 24, category_id: 2, name: "Fish & Chips", desc: "Classic British", price: "400", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400", top: false },
+            { id: 25, category_id: 2, name: "Lamb Chops", desc: "Mint, rosemary", price: "600", img: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=400", top: false },
+            { id: 26, category_id: 2, name: "Veg Burger", desc: "Aloo patty, whole wheat", price: "190", img: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=400", top: false },
+            { id: 27, category_id: 2, name: "Falafel Wrap", desc: "Chickpeas, hummus", price: "210", img: "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=400", top: false },
 
-            // --- SMOOTHIES (Category 3) ---
-            { id: 9, category_id: 3, name: "Green Detox", desc: "Spinach, apple, banana, kale blend", price: "130", img: "https://images.unsplash.com/photo-1610970881699-44a5587cabec?auto=format&fit=crop&w=400", top: true },
-            { id: 10, category_id: 3, name: "Berry Blast", desc: "Mix of blueberries, strawberries, yogurt", price: "140", img: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=400", top: false },
-            { id: 11, category_id: 3, name: "Mango Magic", desc: "Fresh mango pulp with milk and honey", price: "120", img: "https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=400", top: true },
+            // --- SMOOTHIES (8 Items) ---
+            { id: 28, category_id: 3, name: "Green Detox", desc: "Spinach, apple", price: "130", img: "https://images.unsplash.com/photo-1610970881699-44a5587cabec?auto=format&fit=crop&w=400", top: true },
+            { id: 29, category_id: 3, name: "Berry Blast", desc: "Mixed berries", price: "140", img: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=400", top: false },
+            { id: 30, category_id: 3, name: "Mango Magic", desc: "Mango, honey", price: "120", img: "https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=400", top: true },
+            { id: 31, category_id: 3, name: "Banana Shake", desc: "Banana, milk", price: "100", img: "https://images.unsplash.com/photo-1610970881699-44a5587cabec?auto=format&fit=crop&w=400", top: false },
+            { id: 32, category_id: 3, name: "Strawberry Smoothie", desc: "Fresh strawberries", price: "130", img: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=400", top: false },
+            { id: 33, category_id: 3, name: "Pineapple Punch", desc: "Pineapple, mint", price: "110", img: "https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=400", top: false },
+            { id: 34, category_id: 3, name: "Oreo Shake", desc: "Oreo, vanilla ice cream", price: "150", img: "https://images.unsplash.com/photo-1610970881699-44a5587cabec?auto=format&fit=crop&w=400", top: false },
+            { id: 35, category_id: 3, name: "Chikoo Shake", desc: "Sapota, milk", price: "90", img: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=400", top: false },
 
-            // --- DESSERTS (Category 4) ---
-            { id: 12, category_id: 4, name: "Chia Pudding", desc: "Chia seeds soaked in almond milk with fruits", price: "160", img: "https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=400", top: true },
-            { id: 13, category_id: 4, name: "Fruit Yogurt", desc: "Low fat yogurt with seasonal fresh fruits", price: "110", img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=400", top: false },
-            { id: 14, category_id: 4, name: "Dark Chocolate Avocado Mousse", desc: "Sugar-free, healthy sweet treat", price: "190", img: "https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?auto=format&fit=crop&w=400", top: false }
+            // --- DESSERTS (10 Items) ---
+            { id: 36, category_id: 4, name: "Chia Pudding", desc: "Almond milk, fruits", price: "160", img: "https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=400", top: true },
+            { id: 37, category_id: 4, name: "Fruit Yogurt", desc: "Low fat yogurt", price: "110", img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=400", top: false },
+            { id: 38, category_id: 4, name: "Dark Choco Mousse", desc: "Avocado base", price: "190", img: "https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?auto=format&fit=crop&w=400", top: false },
+            { id: 39, category_id: 4, name: "Ice Cream", desc: "Vanilla, Chocolate", price: "80", img: "https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=400", top: false },
+            { id: 40, category_id: 4, name: "Brownie", desc: "Fudgy, walnuts", price: "150", img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=400", top: false },
+            { id: 41, category_id: 4, name: "Cheesecake", desc: "Blueberry topping", price: "200", img: "https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?auto=format&fit=crop&w=400", top: false },
+            { id: 42, category_id: 4, name: "Pancakes", desc: "Maple syrup, butter", price: "180", img: "https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=400", top: false },
+            { id: 43, category_id: 4, name: "Waffles", desc: "Honey, fruits", price: "180", img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=400", top: false },
+            { id: 44, category_id: 4, name: "Apple Pie", desc: "Warm, cinnamon", price: "170", img: "https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?auto=format&fit=crop&w=400", top: false },
+            { id: 45, category_id: 4, name: "Tiramisu", desc: "Coffee flavored", price: "210", img: "https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=400", top: false },
         ];
 
         // ==========================================
@@ -221,14 +248,17 @@
         const topPicksWrapper = document.getElementById('topPicksWrapper');
         const categoryFilters = document.getElementById('categoryFilters');
         const menuList = document.getElementById('menuList');
+        const paginationContainer = document.getElementById('paginationContainer');
         const searchBtn = document.getElementById('searchBtn');
         const searchOverlay = document.getElementById('searchOverlay');
         const searchInput = document.getElementById('searchInput');
-        
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
 
+        // --- STATE ---
         let currentFilter = 'all';
+        let currentPage = 1;
+        const itemsPerPage = 10;
         let sliderPosition = 0;
         let cardWidth = 160; 
         let totalCards = 0;
@@ -237,18 +267,12 @@
         // ⚡ INIT
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
-            // Initial Animations
-            gsap.to(".fade-up", {
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                stagger: 0.1,
-                ease: "power2.out"
-            });
-
+            gsap.to(".fade-up", { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: "power2.out" });
+            
             renderTopPicks();
             renderCategories();
-            renderMenuItems(menuItems); 
+            applyFilter('all'); // Initial Load
+            
             initEvents();
             initSlider();
         });
@@ -261,18 +285,15 @@
             totalCards = cards.length;
             updateSliderButtons();
         }
-
         function slideNext() {
             const containerWidth = topPicksWrapper.offsetWidth;
             const maxScroll = (totalCards * cardWidth) - containerWidth;
-            
             if (Math.abs(sliderPosition) < maxScroll) {
                 sliderPosition -= cardWidth * 1;
                 gsap.to(topPicksContainer, { x: sliderPosition, duration: 0.4, ease: "power2.out" });
             }
             updateSliderButtons();
         }
-
         function slidePrev() {
             if (sliderPosition < 0) {
                 sliderPosition += cardWidth * 1;
@@ -280,14 +301,11 @@
             }
             updateSliderButtons();
         }
-
         function updateSliderButtons() {
             const containerWidth = topPicksWrapper.offsetWidth;
             const maxScroll = (totalCards * cardWidth) - containerWidth;
-
             if(sliderPosition >= 0) gsap.to(prevBtn, { autoAlpha: 0, duration: 0.2 });
             else gsap.to(prevBtn, { autoAlpha: 1, duration: 0.2 });
-
             if (Math.abs(sliderPosition) >= maxScroll - 10) gsap.to(nextBtn, { autoAlpha: 0, duration: 0.2 });
             else gsap.to(nextBtn, { autoAlpha: 1, duration: 0.2 });
         }
@@ -300,24 +318,18 @@
         function renderTopPicks() {
             const picks = menuItems.filter(i => i.top);
             topPicksContainer.innerHTML = '';
-
             picks.forEach(item => {
                 const card = document.createElement('div');
                 card.className = "pick-card flex-shrink-0 mr-4"; 
                 card.innerHTML = `
                     <div class="w-36 rounded-2xl overflow-hidden bg-white shadow-sm border border-gray-100">
-                        <div class="h-28 w-full overflow-hidden">
-                            <img src="${item.img}" class="w-full h-full object-cover">
-                        </div>
+                        <div class="h-28 w-full overflow-hidden"><img src="${item.img}" class="w-full h-full object-cover"></div>
                         <div class="p-3">
                             <h4 class="text-sm font-semibold text-premium truncate">${item.name}</h4>
                             <p class="text-xs text-muted mt-0.5 mb-2">₹${item.price}</p>
-                            <button class="w-full text-center text-xs font-semibold bg-brand text-white py-1.5 rounded-full hover:bg-brand-dark transition active:scale-95 shadow-sm">
-                                View
-                            </button>
+                            <button class="w-full text-center text-xs font-semibold bg-brand text-white py-1.5 rounded-full">View</button>
                         </div>
-                    </div>
-                `;
+                    </div>`;
                 topPicksContainer.appendChild(card);
             });
         }
@@ -327,86 +339,141 @@
             categoryFilters.innerHTML = '';
             const allBtn = createFilterBtn('All', 'all');
             categoryFilters.appendChild(allBtn);
-
             categories.forEach(cat => {
-                const btn = createFilterBtn(cat.name, cat.id);
-                categoryFilters.appendChild(btn);
+                categoryFilters.appendChild(createFilterBtn(cat.name, cat.id));
             });
         }
 
         function createFilterBtn(name, id) {
             const btn = document.createElement('button');
-            btn.className = `filter-btn px-4 py-2 text-xs font-medium border border-gray-200 rounded-full whitespace-nowrap transition-colors hover:border-brand text-premium ${id === 'all' ? 'active' : ''}`;
+            btn.className = `filter-btn px-4 py-2 text-xs font-medium border border-gray-200 rounded-full whitespace-nowrap transition-colors hover:border-brand text-premium ${id === currentFilter ? 'active' : ''}`;
             btn.textContent = name;
-            
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                
-                currentFilter = id;
-                
-                if(id === 'all') animateMenuRendering(menuItems);
-                else {
-                    const filtered = menuItems.filter(i => i.category_id == id);
-                    animateMenuRendering(filtered);
-                }
+                applyFilter(id);
             });
             return btn;
         }
 
-        // 3. Animate Menu Rendering
+        // ==========================================
+        // 🔄 FILTER & PAGINATION LOGIC
+        // ==========================================
+        
+        function applyFilter(filterId) {
+            currentFilter = filterId;
+            currentPage = 1; // Reset to page 1 on filter change
+            updateView();
+        }
+
+        function goToPage(pageNumber) {
+            currentPage = pageNumber;
+            updateView();
+            // Scroll to top of list smoothly
+            window.scrollTo({ top: menuList.offsetTop - 80, behavior: 'smooth' });
+        }
+
+        function updateView() {
+            // 1. Filter Data
+            let filteredItems = menuItems;
+            if (currentFilter !== 'all') {
+                filteredItems = menuItems.filter(i => i.category_id == currentFilter);
+            }
+
+            // 2. Calculate Pagination
+            const totalItems = filteredItems.length;
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedItems = filteredItems.slice(startIndex, endIndex);
+
+            // 3. Render Items with Animation
+            animateMenuRendering(paginatedItems);
+
+            // 4. Render Pagination Buttons
+            renderPagination(totalPages);
+        }
+
+        function renderPagination(totalPages) {
+            paginationContainer.innerHTML = '';
+            if (totalPages <= 1) return; // Hide if only 1 page
+
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.className = `page-btn ${i === currentPage ? 'active' : 'bg-white text-premium hover:bg-gray-50'}`;
+                btn.textContent = i;
+                btn.addEventListener('click', () => goToPage(i));
+                paginationContainer.appendChild(btn);
+            }
+        }
+
+        // Animate Menu
         function animateMenuRendering(items) {
+            // Fade out existing
             gsap.to("#menuList > div", {
-                opacity: 0,
-                y: -20,
-                stagger: 0.02,
-                duration: 0.2,
-                ease: "power2.in",
+                opacity: 0, y: -10, stagger: 0.02, duration: 0.2, ease: "power2.in",
                 onComplete: () => {
                     renderMenuItems(items);
                     gsap.fromTo("#menuList > div", 
-                        { opacity: 0, y: 30 }, 
-                        { opacity: 1, y: 0, stagger: 0.05, duration: 0.4, ease: "power2.out" }
+                        { opacity: 0, y: 20 }, 
+                        { opacity: 1, y: 0, stagger: 0.03, duration: 0.3, ease: "power2.out" }
                     );
                 }
             });
         }
 
-        // 4. Render Menu Items (Updated Price Position)
+        // ==========================================
+        // 🆕 3D TILT EFFECT LOGIC
+        // ==========================================
+        function add3DTiltEffect(card) {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                // Calculate rotation (max 10 degrees)
+                const rotateX = ((y - centerY) / centerY) * -5; 
+                const rotateY = ((x - centerX) / centerX) * 5;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+            });
+        }
+
+        // Render Items (Updated to add tilt)
         function renderMenuItems(items) {
             menuList.innerHTML = '';
-            
             if (items.length === 0) {
                 menuList.innerHTML = `<p class="text-center text-muted py-20 text-sm bg-gray-50 rounded-xl">No items found.</p>`;
                 return;
             }
-
             items.forEach((item) => {
                 const card = document.createElement('div');
                 card.className = "menu-item-card";
-                
-                // NEW LAYOUT: Flex Column for Text, Price at Bottom Left
                 card.innerHTML = `
                     <div class="flex gap-4">
-                        <!-- Text Section -->
-                        <div class="flex-1 flex flex-col justify-between min-h-[80px]"> <!-- min-height to align price properly -->
+                        <div class="flex-1 flex flex-col justify-between min-h-[80px]">
                             <div>
                                 <h3 class="text-sm font-semibold text-premium mb-1">${item.name}</h3>
                                 <p class="text-xs text-muted leading-relaxed line-clamp-2">${item.desc}</p>
                             </div>
-                            
-                            <!-- Price at Bottom Left -->
                             <div class="mt-2">
                                 <span class="text-sm font-bold text-brand">₹${item.price}</span>
                             </div>
                         </div>
-                        
-                        <!-- Image Section -->
                         <div class="img-zoom-container w-20 h-20 bg-gray-50 flex-shrink-0 self-start">
                             <img src="${item.img}" class="w-full h-full object-cover">
                         </div>
-                    </div>
-                `;
+                    </div>`;
+                
+                // 🎯 Apply 3D Tilt to this card
+                add3DTiltEffect(card);
                 
                 menuList.appendChild(card);
             });
@@ -426,13 +493,16 @@
 
             searchInput.addEventListener('input', (e) => {
                 const term = e.target.value.toLowerCase();
-                if(!term) { animateMenuRendering(menuItems); return; }
+                if(!term) { applyFilter(currentFilter); return; }
                 
                 const res = menuItems.filter(i => 
                     i.name.toLowerCase().includes(term) || 
                     i.desc.toLowerCase().includes(term)
                 );
-                animateMenuRendering(res);
+                
+                currentPage = 1;
+                animateMenuRendering(res.slice(0, 10)); 
+                renderPagination(Math.ceil(res.length / itemsPerPage));
             });
         }
     </script>
