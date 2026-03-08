@@ -130,20 +130,45 @@
             flex-shrink: 0;
         }
 
-        /* 🆕 Transparent Search Overlay Style */
+        /* Transparent Search Overlay Style */
         #searchOverlay {
-            /* Fixed position so content scrolls behind it */
             position: fixed;
-            top: 56px; /* Below header */
+            top: 56px; 
             left: 0;
             right: 0;
             z-index: 40;
-            /* Glassmorphism effect */
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(241, 245, 249, 0.5);
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        /* 🆕 Special Card Styling */
+        .special-card {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            height: 220px; /* Fixed height for consistency */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+        .special-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .special-card:hover img {
+            transform: scale(1.1);
+        }
+        .special-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 20px;
         }
     </style>
 </head>
@@ -161,7 +186,7 @@
         </div>
     </header>
 
-    <!-- 🆕 TRANSPARENT SEARCH OVERLAY -->
+    <!-- TRANSPARENT SEARCH OVERLAY -->
     <div id="searchOverlay" class="hidden">
         <div class="max-w-3xl mx-auto px-5 py-3">
             <div class="flex items-center gap-3 bg-white/80 border border-gray-200 rounded-2xl px-4 py-3 shadow-sm transition-all focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/10">
@@ -193,6 +218,14 @@
                     <p class="text-xs text-muted leading-relaxed">We serve organic, fresh, and delicious meals made with love. Experience the taste of nature in every bite.</p>
                 </div>
             </div>
+        </section>
+
+        <!-- 🆕 TODAY'S SPECIAL SECTION -->
+        <section class="mb-12 fade-up">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xs font-semibold uppercase tracking-widest text-muted">Today’s Special ⭐</h2>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="specialsContainer"></div>
         </section>
 
         <!-- SLIDER -->
@@ -235,7 +268,7 @@
     <!-- JAVASCRIPT -->
     <script>
         // ==========================================
-        // 💾 DATA
+        // 💾 DATA (Added 'special' property)
         // ==========================================
         const categories = [
             { id: 1, name: "Salads", icon: "🥗" },
@@ -264,7 +297,8 @@
 
             // --- MAIN COURSE ---
             { id: 16, category_id: 2, name: "Quinoa Bowl", desc: "Veggies, hummus", price: "320", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400", top: true },
-            { id: 17, category_id: 2, name: "Grilled Salmon", desc: "Asparagus, lemon", price: "450", img: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=400", top: true },
+            // 🆕 Special Item 1
+            { id: 17, category_id: 2, name: "Grilled Salmon", desc: "Asparagus, lemon", price: "450", img: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=800", top: true, special: true },
             { id: 18, category_id: 2, name: "Veg Wrap", desc: "Paneer, greens", price: "180", img: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=400", top: false },
             { id: 19, category_id: 2, name: "Brown Rice Bowl", desc: "Tofu, veggies", price: "260", img: "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=400", top: false },
             { id: 20, category_id: 2, name: "Grilled Chicken", desc: "Herb chicken breast", price: "380", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400", top: false },
@@ -279,7 +313,8 @@
             // --- SMOOTHIES ---
             { id: 28, category_id: 3, name: "Green Detox", desc: "Spinach, apple", price: "130", img: "https://images.unsplash.com/photo-1610970881699-44a5587cabec?auto=format&fit=crop&w=400", top: true },
             { id: 29, category_id: 3, name: "Berry Blast", desc: "Mixed berries", price: "140", img: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=400", top: false },
-            { id: 30, category_id: 3, name: "Mango Magic", desc: "Mango, honey", price: "120", img: "https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=400", top: true },
+            // 🆕 Special Item 2
+            { id: 30, category_id: 3, name: "Mango Magic", desc: "Mango, honey", price: "120", img: "https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=800", top: true, special: true },
             { id: 31, category_id: 3, name: "Banana Shake", desc: "Banana, milk", price: "100", img: "https://images.unsplash.com/photo-1610970881699-44a5587cabec?auto=format&fit=crop&w=400", top: false },
             { id: 32, category_id: 3, name: "Strawberry Smoothie", desc: "Fresh strawberries", price: "130", img: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=400", top: false },
             { id: 33, category_id: 3, name: "Pineapple Punch", desc: "Pineapple, mint", price: "110", img: "https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=400", top: false },
@@ -307,6 +342,7 @@
         const categoryFilters = document.getElementById('categoryFilters');
         const menuList = document.getElementById('menuList');
         const paginationContainer = document.getElementById('paginationContainer');
+        const specialsContainer = document.getElementById('specialsContainer'); // 🆕
         const searchBtn = document.getElementById('searchBtn');
         const searchOverlay = document.getElementById('searchOverlay');
         const searchInput = document.getElementById('searchInput');
@@ -330,6 +366,7 @@
             
             renderTopPicks();
             renderCategories();
+            renderSpecials(); // 🆕
             applyFilter('all');
             
             initEvents();
@@ -373,6 +410,29 @@
         // 🔨 RENDER FUNCTIONS
         // ==========================================
         
+        // 🆕 Render Today's Special
+        function renderSpecials() {
+            const specials = menuItems.filter(i => i.special);
+            specialsContainer.innerHTML = '';
+            
+            specials.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "special-card";
+                card.innerHTML = `
+                    <img src="${item.img}" alt="${item.name}">
+                    <div class="special-overlay">
+                        <h3 class="text-white font-head font-bold text-lg">${item.name}</h3>
+                        <p class="text-white/80 text-xs mt-1">${item.desc}</p>
+                        <div class="mt-2 flex justify-between items-center">
+                            <span class="text-white font-bold text-sm">₹${item.price}</span>
+                            <span class="text-[10px] bg-white/20 text-white px-2 py-0.5 rounded-full backdrop-blur-sm">Special</span>
+                        </div>
+                    </div>
+                `;
+                specialsContainer.appendChild(card);
+            });
+        }
+
         function renderTopPicks() {
             const picks = menuItems.filter(i => i.top);
             topPicksContainer.innerHTML = '';
@@ -429,7 +489,6 @@
             window.scrollTo({ top: menuList.offsetTop - 140, behavior: 'smooth' });
         }
 
-        // Main Update Function
         function updateView() {
             let filteredItems = menuItems;
             if (currentFilter !== 'all') {
@@ -527,25 +586,13 @@
             };
             closeSearchBtn.addEventListener('click', closeSearch);
 
-            // 🆕 LIVE SEARCH FUNCTIONALITY
+            // Live Search
             searchInput.addEventListener('input', (e) => {
                 const term = e.target.value.toLowerCase();
-                
-                if(!term) {
-                    applyFilter(currentFilter); // Reset to current category filter if empty
-                    return;
-                }
-                
-                // Filter logic: Name match strictly as requested
-                const res = menuItems.filter(i => 
-                    i.name.toLowerCase().includes(term)
-                );
-                
+                if(!term) { applyFilter(currentFilter); return; }
+                const res = menuItems.filter(i => i.name.toLowerCase().includes(term));
                 currentPage = 1;
-                // Update list directly with search results
                 animateMenuRendering(res, 0); 
-                
-                // Hide pagination during search
                 paginationContainer.innerHTML = ''; 
             });
         }
