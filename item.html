@@ -265,7 +265,7 @@
                 availInfo.className = "text-sm font-semibold text-green-600";
             } else {
                 availBadge.className = "status-badge bg-red-50 text-red-700";
-                availBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-current"></span> Unavailable`;
+                availBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-current animate-pulse"></span> Unavailable`;
                 availInfo.textContent = "Out of Stock";
                 availInfo.className = "text-sm font-semibold text-red-600";
             }
@@ -285,29 +285,29 @@
         }
 
         // ==========================================
-        // 🎨 ANIMATIONS (Matching Landing Page Feel)
+        // 🎨 SLOW ANIMATIONS
         // ==========================================
         function runAnimations() {
-            // 1. Image Ken Burns Effect
+            // 1. Image Ken Burns Effect (Slowed down)
             gsap.fromTo("#itemImage", 
                 { scale: 1.1, opacity: 0 }, 
-                { scale: 1, opacity: 1, duration: 1.2, ease: "power2.out" }
+                { scale: 1, opacity: 1, duration: 1.8, ease: "power2.out" } // Increased duration
             );
 
-            // 2. Content Card Slide Up
+            // 2. Content Card Slide Up (Slowed down)
             gsap.to(".content-card", { 
-                y: 0, opacity: 1, duration: 0.8, ease: "power3.out", delay: 0.2 
+                y: 0, opacity: 1, duration: 1.2, ease: "power3.out", delay: 0.3 
             });
 
-            // 3. Fade Up Elements Stagger
+            // 3. Fade Up Elements Stagger (Slowed down)
             gsap.to(".fade-up", { 
-                opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: "power2.out", delay: 0.4 
+                opacity: 1, y: 0, duration: 1.0, stagger: 0.15, ease: "power2.out", delay: 0.5 
             });
             
-            // 4. Info Cards Stagger (Pop effect)
+            // 4. Info Cards Stagger (Slowed down)
             gsap.fromTo(".info-card", 
-                { opacity: 0, y: 20, scale: 0.95 }, 
-                { opacity: 1, y: 0, scale: 1, stagger: 0.1, duration: 0.5, ease: "back.out(1.2)", delay: 0.6 }
+                { opacity: 0, y: 30, scale: 0.95 }, 
+                { opacity: 1, y: 0, scale: 1, stagger: 0.15, duration: 0.8, ease: "back.out(1.2)", delay: 0.8 }
             );
         }
 
