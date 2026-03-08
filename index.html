@@ -228,8 +228,8 @@
             </div>
         </section>
 
-        <!-- 🆕 TODAY'S SPECIAL SECTION (Cinematic) -->
-        <section class="mb-10">
+        <!-- 🆕 TODAY'S SPECIAL SECTION -->
+        <section class="mb-10 anim-section" id="specialSection">
             <div class="flex justify-between items-center mb-4 fade-up">
                 <h2 class="text-xs font-semibold uppercase tracking-widest text-muted">Today’s Special ⭐</h2>
             </div>
@@ -237,8 +237,8 @@
         </section>
 
         <!-- SLIDER -->
-        <section class="mb-12">
-            <div class="flex justify-between items-center mb-4 fade-up">
+        <section class="mb-12 anim-section" id="sliderSection">
+            <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xs font-semibold uppercase tracking-widest text-muted">Recommended</h2>
             </div>
             <div class="slider-container" id="topPicksWrapper">
@@ -253,7 +253,7 @@
         </section>
 
         <!-- CATEGORIES -->
-        <section class="mb-6 fade-up">
+        <section class="mb-6 fade-up anim-section" id="categorySection">
             <div class="flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5" id="categoryFilters"></div>
         </section>
 
@@ -357,6 +357,11 @@
         const closeSearchBtn = document.getElementById('closeSearchBtn');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
+        
+        // Section Elements for Animation
+        const specialSection = document.getElementById('specialSection');
+        const sliderSection = document.getElementById('sliderSection');
+        const categorySection = document.getElementById('categorySection');
 
         // --- STATE ---
         let currentFilter = 'all';
@@ -370,16 +375,51 @@
         // ⚡ INIT
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
+            // 1. Basic Fade Up for Hero/Intro
             gsap.to(".fade-up", { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: "power2.out" });
             
+            // 2. Render Content
             renderTopPicks();
             renderCategories();
-            renderSpecials(); // Render Specials
+            renderSpecials(); 
             applyFilter('all');
             
+            // 3. Initialize Interactive Events
             initEvents();
             initSlider();
+
+            // 4. 🆕 Run Sequence Animation for Sections
+            initSectionAnimations();
         });
+
+        // ==========================================
+        // 🎬 SECTION ANIMATIONS (New Logic)
+        // ==========================================
+        function initSectionAnimations() {
+            // Create a timeline for sequenced animation
+            const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+            // Animate Special Section (Drop down effect)
+            tl.fromTo(specialSection, 
+                { opacity: 0, y: -50 }, 
+                { opacity: 1, y: 0, duration: 0.8 }, 
+                "+=0.2" // Delay after previous
+            );
+
+            // Animate Recommended Slider (Slide from right effect)
+            tl.fromTo(sliderSection, 
+                { opacity: 0, x: 100 }, 
+                { opacity: 1, x: 0, duration: 0.8 }, 
+                "-=0.4" // Overlap slightly
+            );
+
+            // Animate Category Filters (Pop up effect)
+            tl.fromTo(categorySection, 
+                { opacity: 0, scale: 0.9 }, 
+                { opacity: 1, scale: 1, duration: 0.5 }, 
+                "-=0.2"
+            );
+        }
 
         // ==========================================
         // 🎠 SLIDER LOGIC
@@ -418,7 +458,7 @@
         // 🔨 RENDER FUNCTIONS
         // ==========================================
         
-        // 🆕 Render Today's Special with Drop Animation
+        // Render Today's Special with Drop Animation
         function renderSpecials() {
             const specials = menuItems.filter(i => i.special);
             specialsContainer.innerHTML = '';
@@ -440,13 +480,11 @@
                 specialsContainer.appendChild(card);
             });
 
-            // ⭐ DROP ANIMATION (Falling from top)
+            // Elastic Drop Animation for cards inside the section
             gsap.to(".special-card", {
-                y: 0,            // End at normal position
-                opacity: 1,      // Fully visible
-                duration: 1.2,   // Animation duration
-                stagger: 0.15,   // Delay between each card
-                ease: "elastic.out(1, 0.5)" // Elastic bounce effect
+                y: 0, opacity: 1,
+                duration: 1.2, stagger: 0.15,
+                ease: "elastic.out(1, 0.5)"
             });
         }
 
@@ -544,7 +582,7 @@
                     renderMenuItems(items, startIndex);
                     gsap.fromTo("#menuList > div", 
                         { opacity: 0, y: 50, scale: 0.9 }, 
-                        { opacity: 1, y: 0, scale: 1, stagger: 0.2, duration: 1, ease: "power3.out" }
+                        { opacity: 1, y: 0, scale: 1, stagger: 0.05, duration: 0.5, ease: "back.out(1.2)" }
                     );
                 }
             });
