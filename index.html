@@ -58,7 +58,8 @@
             margin-bottom: 12px;
             border-radius: 16px;
             border: 1px solid #F1F5F9;
-            transition: box-shadow 0.3s ease, transform 0.2s ease;
+            /* 🐢 SLOWED DOWN: 0.3s -> 0.6s */
+            transition: box-shadow 0.6s ease, transform 0.5s ease;
         }
         
         .menu-item-card:hover {
@@ -67,7 +68,8 @@
         }
 
         .img-zoom-container { overflow: hidden; border-radius: 12px; }
-        .img-zoom-container img { transition: transform 0.6s ease; }
+        /* 🐢 SLOWED DOWN: 0.6s -> 1.2s */
+        .img-zoom-container img { transition: transform 1.2s ease; }
         .menu-item-card:hover .img-zoom-container img { transform: scale(1.05); }
 
         /* Category Button */
@@ -144,7 +146,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
 
-        /* 🆕 Cinematic Slim Banner Styling */
+        /* Cinematic Slim Banner Styling */
         .special-card {
             position: relative;
             border-radius: 20px;
@@ -156,11 +158,12 @@
             opacity: 0; 
             transform: translateY(-100px);
         }
+        /* 🐢 SLOWED DOWN: 1s -> 2s */
         .special-card img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 1s ease;
+            transition: transform 2s ease;
         }
         .special-card:hover img {
             transform: scale(1.1);
@@ -262,7 +265,7 @@
         <!-- PAGINATION BUTTONS -->
         <div id="paginationContainer" class="flex justify-center items-center gap-2 mt-8 mb-10"></div>
 
-        <!-- 🆕 THANK YOU SECTION (Slim & Modern) -->
+        <!-- THANK YOU SECTION -->
         <section class="mb-10 fade-up">
             <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-brand-light via-white to-brand-light p-6 border border-brand/10 text-center shadow-sm">
                 <!-- Decorative Blur -->
@@ -388,8 +391,8 @@
         // ⚡ INIT
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Basic Fade Up for Hero/Intro/ThankYou
-            gsap.to(".fade-up", { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: "power2.out" });
+            // 1. Basic Fade Up - 🐢 SLOWED (0.8 -> 1.6)
+            gsap.to(".fade-up", { opacity: 1, y: 0, duration: 1.6, stagger: 0.2, ease: "power2.out" });
             
             // 2. Render Content
             renderTopPicks();
@@ -406,27 +409,30 @@
         });
 
         // ==========================================
-        // 🎬 SECTION ANIMATIONS
+        // 🎬 SECTION ANIMATIONS (SLOWED)
         // ==========================================
         function initSectionAnimations() {
             const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
+            // 🐢 SLOWED (0.8 -> 1.5)
             tl.fromTo(specialSection, 
                 { opacity: 0, y: -50 }, 
-                { opacity: 1, y: 0, duration: 0.8 }, 
-                "+=0.2"
+                { opacity: 1, y: 0, duration: 1.5 }, 
+                "+=0.4"
             );
 
+            // 🐢 SLOWED (0.8 -> 1.5)
             tl.fromTo(sliderSection, 
                 { opacity: 0, x: 100 }, 
-                { opacity: 1, x: 0, duration: 0.8 }, 
-                "-=0.4"
+                { opacity: 1, x: 0, duration: 1.5 }, 
+                "-=0.8"
             );
 
+            // 🐢 SLOWED (0.5 -> 1.0)
             tl.fromTo(categorySection, 
                 { opacity: 0, scale: 0.9 }, 
-                { opacity: 1, scale: 1, duration: 0.5 }, 
-                "-=0.2"
+                { opacity: 1, scale: 1, duration: 1.0 }, 
+                "-=0.5"
             );
         }
 
@@ -443,14 +449,16 @@
             const maxScroll = (totalCards * cardWidth) - containerWidth;
             if (Math.abs(sliderPosition) < maxScroll) {
                 sliderPosition -= cardWidth * 1;
-                gsap.to(topPicksContainer, { x: sliderPosition, duration: 0.4, ease: "power2.out" });
+                // 🐢 SLOWED (0.4 -> 0.8)
+                gsap.to(topPicksContainer, { x: sliderPosition, duration: 0.8, ease: "power2.out" });
             }
             updateSliderButtons();
         }
         function slidePrev() {
             if (sliderPosition < 0) {
                 sliderPosition += cardWidth * 1;
-                gsap.to(topPicksContainer, { x: sliderPosition, duration: 0.4, ease: "power2.out" });
+                // 🐢 SLOWED (0.4 -> 0.8)
+                gsap.to(topPicksContainer, { x: sliderPosition, duration: 0.8, ease: "power2.out" });
             }
             updateSliderButtons();
         }
@@ -488,9 +496,10 @@
                 specialsContainer.appendChild(card);
             });
 
+            // 🐢 SLOWED (1.2 -> 2.5)
             gsap.to(".special-card", {
                 y: 0, opacity: 1,
-                duration: 1.2, stagger: 0.15,
+                duration: 2.5, stagger: 0.3,
                 ease: "elastic.out(1, 0.5)"
             });
         }
@@ -580,16 +589,18 @@
         }
 
         // ==========================================
-        // ⭐ ANIMATION LOGIC
+        // ⭐ ANIMATION LOGIC (SLOWED)
         // ==========================================
         function animateMenuRendering(items, startIndex) {
+            // 🐢 SLOWED OUT (0.3 -> 0.6)
             gsap.to("#menuList > div", {
-                opacity: 0, y: -10, stagger: 0.02, duration: 0.3, ease: "power2.in",
+                opacity: 0, y: -10, stagger: 0.04, duration: 0.6, ease: "power2.in",
                 onComplete: () => {
                     renderMenuItems(items, startIndex);
+                    // 🐢 SLOWED IN (0.5 -> 1.2)
                     gsap.fromTo("#menuList > div", 
                         { opacity: 0, y: 50, scale: 0.9 }, 
-                        { opacity: 1, y: 0, scale: 1, stagger: 0.05, duration: 0.5, ease: "back.out(1.2)" }
+                        { opacity: 1, y: 0, scale: 1, stagger: 0.08, duration: 1.2, ease: "back.out(1.2)" }
                     );
                 }
             });
@@ -634,12 +645,14 @@
 
             searchBtn.addEventListener('click', () => {
                 searchOverlay.classList.remove('hidden');
-                gsap.fromTo(searchOverlay, { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" });
+                // 🐢 SLOWED (0.3 -> 0.6)
+                gsap.fromTo(searchOverlay, { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" });
                 setTimeout(() => searchInput.focus(), 100);
             });
 
             const closeSearch = () => {
-                gsap.to(searchOverlay, { y: -20, opacity: 0, duration: 0.2, onComplete: () => searchOverlay.classList.add('hidden') });
+                // 🐢 SLOWED (0.2 -> 0.4)
+                gsap.to(searchOverlay, { y: -20, opacity: 0, duration: 0.4, onComplete: () => searchOverlay.classList.add('hidden') });
                 searchInput.value = '';
                 applyFilter(currentFilter);
             };
