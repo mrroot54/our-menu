@@ -70,11 +70,11 @@
         .img-zoom-container img { transition: transform 0.6s ease; }
         .menu-item-card:hover .img-zoom-container img { transform: scale(1.05); }
 
-        /* Category Button with Icon */
+        /* Category Button */
         .filter-btn {
             display: flex;
             align-items: center;
-            gap: 6px; /* Space between icon and text */
+            gap: 6px;
         }
         .filter-btn.active {
             background-color: #14B8A6;
@@ -114,6 +114,37 @@
         .slider-btn:active { transform: translateY(-50%) scale(0.95); background: #0D9488; }
         .slider-btn.left { left: 8px; }
         .slider-btn.right { right: 8px; }
+
+        /* Serial Number Badge */
+        .serial-badge {
+            width: 24px;
+            height: 24px;
+            background-color: #F0FDFA;
+            color: #0D9488;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* 🆕 Transparent Search Overlay Style */
+        #searchOverlay {
+            /* Fixed position so content scrolls behind it */
+            position: fixed;
+            top: 56px; /* Below header */
+            left: 0;
+            right: 0;
+            z-index: 40;
+            /* Glassmorphism effect */
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(241, 245, 249, 0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
     </style>
 </head>
 <body class="text-premium pb-20">
@@ -128,10 +159,20 @@
                 </svg>
             </button>
         </div>
-        <div id="searchOverlay" class="hidden absolute top-full left-0 right-0 bg-white border-b shadow-sm p-4">
-            <input type="text" id="searchInput" placeholder="Search healthy dishes..." class="w-full text-sm border-b-2 border-brand pb-2 outline-none bg-transparent placeholder-gray-300">
-        </div>
     </header>
+
+    <!-- 🆕 TRANSPARENT SEARCH OVERLAY -->
+    <div id="searchOverlay" class="hidden">
+        <div class="max-w-3xl mx-auto px-5 py-3">
+            <div class="flex items-center gap-3 bg-white/80 border border-gray-200 rounded-2xl px-4 py-3 shadow-sm transition-all focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/10">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input type="text" id="searchInput" placeholder="Type to filter food..." class="w-full bg-transparent outline-none text-sm text-premium placeholder-gray-400 font-medium">
+                <button id="closeSearchBtn" class="text-xs text-brand font-bold px-3 py-1 hover:bg-brand/10 rounded-full transition-colors">Close</button>
+            </div>
+        </div>
+    </div>
 
     <!-- MAIN CONTENT -->
     <main class="max-w-3xl mx-auto px-5 pt-20">
@@ -141,7 +182,7 @@
             <p class="text-muted text-xs tracking-wide">Nutritious & Delicious food for you.</p>
         </section>
 
-        <!-- 🆕 RESTAURANT INTRO SECTION -->
+        <!-- RESTAURANT INTRO SECTION -->
         <section class="mb-10 fade-up">
             <div class="bg-gradient-to-r from-brand-light to-white border border-brand/10 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
                 <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm text-2xl">
@@ -183,18 +224,18 @@
 
     </main>
 
-    <!-- 🆕 SLIM FOOTER -->
+    <!-- SLIM FOOTER -->
     <footer class="text-center py-4 text-xs text-muted border-t border-gray-100 bg-white">
         <div class="max-w-3xl mx-auto px-5 flex flex-col sm:flex-row justify-between items-center gap-1">
             <span>© 2024 Green Leaf Kitchen</span>
-            <span class="opacity-70">Made with ❤️ for healthy living</span>
+            <span class="opacity-70">Crafted with ❤️ by Atul Kumar</span>
         </div>
     </footer>
 
     <!-- JAVASCRIPT -->
     <script>
         // ==========================================
-        // 💾 DATA (Updated with Icons)
+        // 💾 DATA
         // ==========================================
         const categories = [
             { id: 1, name: "Salads", icon: "🥗" },
@@ -269,6 +310,7 @@
         const searchBtn = document.getElementById('searchBtn');
         const searchOverlay = document.getElementById('searchOverlay');
         const searchInput = document.getElementById('searchInput');
+        const closeSearchBtn = document.getElementById('closeSearchBtn');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
 
@@ -352,23 +394,17 @@
 
         function renderCategories() {
             categoryFilters.innerHTML = '';
-            // Updated "All" button with icon
             const allBtn = createFilterBtn('All', 'all', '🍽️');
             categoryFilters.appendChild(allBtn);
-            
             categories.forEach(cat => {
                 categoryFilters.appendChild(createFilterBtn(cat.name, cat.id, cat.icon));
             });
         }
 
-        // Updated Function to accept Icon
         function createFilterBtn(name, id, icon) {
             const btn = document.createElement('button');
             btn.className = `filter-btn px-4 py-2 text-xs font-medium border border-gray-200 rounded-full whitespace-nowrap transition-colors hover:border-brand text-premium ${id === currentFilter ? 'active' : ''}`;
-            
-            // Adding Icon HTML
             btn.innerHTML = `<span>${icon}</span> ${name}`;
-            
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
@@ -390,9 +426,10 @@
         function goToPage(pageNumber) {
             currentPage = pageNumber;
             updateView();
-            window.scrollTo({ top: menuList.offsetTop - 80, behavior: 'smooth' });
+            window.scrollTo({ top: menuList.offsetTop - 140, behavior: 'smooth' });
         }
 
+        // Main Update Function
         function updateView() {
             let filteredItems = menuItems;
             if (currentFilter !== 'all') {
@@ -405,14 +442,13 @@
             const endIndex = startIndex + itemsPerPage;
             const paginatedItems = filteredItems.slice(startIndex, endIndex);
 
-            animateMenuRendering(paginatedItems);
+            animateMenuRendering(paginatedItems, startIndex);
             renderPagination(totalPages);
         }
 
         function renderPagination(totalPages) {
             paginationContainer.innerHTML = '';
             if (totalPages <= 1) return;
-
             for (let i = 1; i <= totalPages; i++) {
                 const btn = document.createElement('button');
                 btn.className = `page-btn ${i === currentPage ? 'active' : 'bg-white text-premium hover:bg-gray-50'}`;
@@ -423,52 +459,35 @@
         }
 
         // ==========================================
-        // ⭐ VERY SLOW PREMIUM ANIMATION
+        // ⭐ ANIMATION LOGIC
         // ==========================================
-        function animateMenuRendering(items) {
-            // 1. Fade out existing items
+        function animateMenuRendering(items, startIndex) {
             gsap.to("#menuList > div", {
-                opacity: 0, 
-                y: -10, 
-                stagger: 0.02, 
-                duration: 0.3, 
-                ease: "power2.in",
+                opacity: 0, y: -10, stagger: 0.02, duration: 0.3, ease: "power2.in",
                 onComplete: () => {
-                    // 2. Render new items
-                    renderMenuItems(items);
-                    
-                    // 3. Very Slow Stagger In Animation
+                    renderMenuItems(items, startIndex);
                     gsap.fromTo("#menuList > div", 
-                        { 
-                            opacity: 0, 
-                            y: 50,      
-                            scale: 0.9  
-                        }, 
-                        { 
-                            opacity: 1, 
-                            y: 0, 
-                            scale: 1,
-                            stagger: 0.2,   // 200ms delay
-                            duration: 1,    // 1 second animation
-                            ease: "power3.out" 
-                        }
+                        { opacity: 0, y: 50, scale: 0.9 }, 
+                        { opacity: 1, y: 0, scale: 1, stagger: 0.2, duration: 1, ease: "power3.out" }
                     );
                 }
             });
         }
 
         // Render Items
-        function renderMenuItems(items) {
+        function renderMenuItems(items, startIndex) {
             menuList.innerHTML = '';
             if (items.length === 0) {
                 menuList.innerHTML = `<p class="text-center text-muted py-20 text-sm bg-gray-50 rounded-xl">No items found.</p>`;
                 return;
             }
-            items.forEach((item) => {
+            items.forEach((item, index) => {
+                const globalIndex = startIndex + index + 1;
                 const card = document.createElement('div');
                 card.className = "menu-item-card";
                 card.innerHTML = `
-                    <div class="flex gap-4">
+                    <div class="flex gap-4 items-start">
+                        <div class="serial-badge">${globalIndex}</div>
                         <div class="flex-1 flex flex-col justify-between min-h-[80px]">
                             <div>
                                 <h3 class="text-sm font-semibold text-premium mb-1">${item.name}</h3>
@@ -493,23 +512,41 @@
             nextBtn.addEventListener('click', slideNext);
             prevBtn.addEventListener('click', slidePrev);
 
+            // Search Open
             searchBtn.addEventListener('click', () => {
-                searchOverlay.classList.toggle('hidden');
-                if(!searchOverlay.classList.contains('hidden')) searchInput.focus();
+                searchOverlay.classList.remove('hidden');
+                gsap.fromTo(searchOverlay, { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" });
+                setTimeout(() => searchInput.focus(), 100);
             });
 
+            // Search Close
+            const closeSearch = () => {
+                gsap.to(searchOverlay, { y: -20, opacity: 0, duration: 0.2, onComplete: () => searchOverlay.classList.add('hidden') });
+                searchInput.value = '';
+                applyFilter(currentFilter);
+            };
+            closeSearchBtn.addEventListener('click', closeSearch);
+
+            // 🆕 LIVE SEARCH FUNCTIONALITY
             searchInput.addEventListener('input', (e) => {
                 const term = e.target.value.toLowerCase();
-                if(!term) { applyFilter(currentFilter); return; }
                 
+                if(!term) {
+                    applyFilter(currentFilter); // Reset to current category filter if empty
+                    return;
+                }
+                
+                // Filter logic: Name match strictly as requested
                 const res = menuItems.filter(i => 
-                    i.name.toLowerCase().includes(term) || 
-                    i.desc.toLowerCase().includes(term)
+                    i.name.toLowerCase().includes(term)
                 );
                 
                 currentPage = 1;
-                animateMenuRendering(res.slice(0, 10)); 
-                renderPagination(Math.ceil(res.length / itemsPerPage));
+                // Update list directly with search results
+                animateMenuRendering(res, 0); 
+                
+                // Hide pagination during search
+                paginationContainer.innerHTML = ''; 
             });
         }
     </script>
