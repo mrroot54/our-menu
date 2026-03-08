@@ -70,6 +70,12 @@
         .img-zoom-container img { transition: transform 0.6s ease; }
         .menu-item-card:hover .img-zoom-container img { transform: scale(1.05); }
 
+        /* Category Button with Icon */
+        .filter-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px; /* Space between icon and text */
+        }
         .filter-btn.active {
             background-color: #14B8A6;
             color: white;
@@ -130,9 +136,22 @@
     <!-- MAIN CONTENT -->
     <main class="max-w-3xl mx-auto px-5 pt-20">
         <!-- HERO -->
-        <section class="mb-10 fade-up">
+        <section class="mb-6 fade-up">
             <h1 class="font-head text-3xl font-bold leading-tight mb-1 text-premium">Eat Fresh, Stay Healthy</h1>
             <p class="text-muted text-xs tracking-wide">Nutritious & Delicious food for you.</p>
+        </section>
+
+        <!-- 🆕 RESTAURANT INTRO SECTION -->
+        <section class="mb-10 fade-up">
+            <div class="bg-gradient-to-r from-brand-light to-white border border-brand/10 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
+                <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm text-2xl">
+                    🌿
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-brand-dark mb-1">Welcome to Green Leaf</h3>
+                    <p class="text-xs text-muted leading-relaxed">We serve organic, fresh, and delicious meals made with love. Experience the taste of nature in every bite.</p>
+                </div>
+            </div>
         </section>
 
         <!-- SLIDER -->
@@ -164,19 +183,24 @@
 
     </main>
 
-    <!-- FOOTER -->
-    <footer class="text-center py-8 text-xs text-muted mt-10 border-t border-gray-50">© 2024 Green Leaf Kitchen</footer>
+    <!-- 🆕 SLIM FOOTER -->
+    <footer class="text-center py-4 text-xs text-muted border-t border-gray-100 bg-white">
+        <div class="max-w-3xl mx-auto px-5 flex flex-col sm:flex-row justify-between items-center gap-1">
+            <span>© 2024 Green Leaf Kitchen</span>
+            <span class="opacity-70">Made with ❤️ for healthy living</span>
+        </div>
+    </footer>
 
     <!-- JAVASCRIPT -->
     <script>
         // ==========================================
-        // 💾 DATA
+        // 💾 DATA (Updated with Icons)
         // ==========================================
         const categories = [
-            { id: 1, name: "Salads" },
-            { id: 2, name: "Main Course" },
-            { id: 3, name: "Smoothies" },
-            { id: 4, name: "Desserts" }
+            { id: 1, name: "Salads", icon: "🥗" },
+            { id: 2, name: "Main Course", icon: "🍝" },
+            { id: 3, name: "Smoothies", icon: "🥤" },
+            { id: 4, name: "Desserts", icon: "🍰" }
         ];
 
         const menuItems = [
@@ -328,17 +352,23 @@
 
         function renderCategories() {
             categoryFilters.innerHTML = '';
-            const allBtn = createFilterBtn('All', 'all');
+            // Updated "All" button with icon
+            const allBtn = createFilterBtn('All', 'all', '🍽️');
             categoryFilters.appendChild(allBtn);
+            
             categories.forEach(cat => {
-                categoryFilters.appendChild(createFilterBtn(cat.name, cat.id));
+                categoryFilters.appendChild(createFilterBtn(cat.name, cat.id, cat.icon));
             });
         }
 
-        function createFilterBtn(name, id) {
+        // Updated Function to accept Icon
+        function createFilterBtn(name, id, icon) {
             const btn = document.createElement('button');
             btn.className = `filter-btn px-4 py-2 text-xs font-medium border border-gray-200 rounded-full whitespace-nowrap transition-colors hover:border-brand text-premium ${id === currentFilter ? 'active' : ''}`;
-            btn.textContent = name;
+            
+            // Adding Icon HTML
+            btn.innerHTML = `<span>${icon}</span> ${name}`;
+            
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
@@ -411,15 +441,15 @@
                     gsap.fromTo("#menuList > div", 
                         { 
                             opacity: 0, 
-                            y: 50,      // Start further down
-                            scale: 0.9  // Start smaller
+                            y: 50,      
+                            scale: 0.9  
                         }, 
                         { 
                             opacity: 1, 
                             y: 0, 
                             scale: 1,
-                            stagger: 0.2,   // 200ms delay between items (Slow)
-                            duration: 1,    // 1 second to animate (Slow & Smooth)
+                            stagger: 0.2,   // 200ms delay
+                            duration: 1,    // 1 second animation
                             ease: "power3.out" 
                         }
                     );
