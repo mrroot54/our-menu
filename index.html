@@ -52,24 +52,18 @@
         .slider-container { position: relative; overflow: hidden; }
         .slider-track { display: flex; }
 
-        /* === UPDATED MENU CARD STYLE FOR 3D === */
         .menu-item-card {
             background-color: #FFFFFF;
             padding: 16px;
             margin-bottom: 12px;
             border-radius: 16px;
             border: 1px solid #F1F5F9;
-            transition: transform 0.1s ease-out, box-shadow 0.3s ease; /* Smooth transition */
-            
-            /* 3D Properties */
-            transform-style: preserve-3d;
-            perspective: 1000px;
-            will-change: transform;
+            transition: box-shadow 0.3s ease, transform 0.2s ease;
         }
-
-        /* Dynamic Shadow will be added via JS, but hover gives a base glow */
+        
         .menu-item-card:hover {
-            box-shadow: 0 10px 30px rgba(20, 184, 166, 0.15);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+            transform: translateY(-2px);
         }
 
         .img-zoom-container { overflow: hidden; border-radius: 12px; }
@@ -83,7 +77,6 @@
             box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
         }
 
-        /* Pagination Buttons Styling */
         .page-btn {
             width: 32px;
             height: 32px;
@@ -187,7 +180,7 @@
         ];
 
         const menuItems = [
-            // --- SALADS (15 Items) ---
+            // --- SALADS ---
             { id: 1, category_id: 1, name: "Greek Salad", desc: "Cucumber, tomatoes, olives, feta", price: "220", img: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=400", top: true },
             { id: 2, category_id: 1, name: "Caesar Salad", desc: "Lettuce, croutons, parmesan", price: "200", img: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?auto=format&fit=crop&w=400", top: false },
             { id: 3, category_id: 1, name: "Sprouts Salad", desc: "Lentils, onions, tomatoes", price: "150", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400", top: false },
@@ -204,7 +197,7 @@
             { id: 14, category_id: 1, name: "Asian Slaw", desc: "Cabbage, carrot, sesame", price: "150", img: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?auto=format&fit=crop&w=400", top: false },
             { id: 15, category_id: 1, name: "Avocado Salad", desc: "Fresh avocado, lime", price: "250", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400", top: false },
 
-            // --- MAIN COURSE (12 Items) ---
+            // --- MAIN COURSE ---
             { id: 16, category_id: 2, name: "Quinoa Bowl", desc: "Veggies, hummus", price: "320", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400", top: true },
             { id: 17, category_id: 2, name: "Grilled Salmon", desc: "Asparagus, lemon", price: "450", img: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=400", top: true },
             { id: 18, category_id: 2, name: "Veg Wrap", desc: "Paneer, greens", price: "180", img: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=400", top: false },
@@ -218,7 +211,7 @@
             { id: 26, category_id: 2, name: "Veg Burger", desc: "Aloo patty, whole wheat", price: "190", img: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=400", top: false },
             { id: 27, category_id: 2, name: "Falafel Wrap", desc: "Chickpeas, hummus", price: "210", img: "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=400", top: false },
 
-            // --- SMOOTHIES (8 Items) ---
+            // --- SMOOTHIES ---
             { id: 28, category_id: 3, name: "Green Detox", desc: "Spinach, apple", price: "130", img: "https://images.unsplash.com/photo-1610970881699-44a5587cabec?auto=format&fit=crop&w=400", top: true },
             { id: 29, category_id: 3, name: "Berry Blast", desc: "Mixed berries", price: "140", img: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=400", top: false },
             { id: 30, category_id: 3, name: "Mango Magic", desc: "Mango, honey", price: "120", img: "https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=400", top: true },
@@ -228,7 +221,7 @@
             { id: 34, category_id: 3, name: "Oreo Shake", desc: "Oreo, vanilla ice cream", price: "150", img: "https://images.unsplash.com/photo-1610970881699-44a5587cabec?auto=format&fit=crop&w=400", top: false },
             { id: 35, category_id: 3, name: "Chikoo Shake", desc: "Sapota, milk", price: "90", img: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=400", top: false },
 
-            // --- DESSERTS (10 Items) ---
+            // --- DESSERTS ---
             { id: 36, category_id: 4, name: "Chia Pudding", desc: "Almond milk, fruits", price: "160", img: "https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=400", top: true },
             { id: 37, category_id: 4, name: "Fruit Yogurt", desc: "Low fat yogurt", price: "110", img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=400", top: false },
             { id: 38, category_id: 4, name: "Dark Choco Mousse", desc: "Avocado base", price: "190", img: "https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?auto=format&fit=crop&w=400", top: false },
@@ -271,7 +264,7 @@
             
             renderTopPicks();
             renderCategories();
-            applyFilter('all'); // Initial Load
+            applyFilter('all');
             
             initEvents();
             initSlider();
@@ -314,7 +307,6 @@
         // 🔨 RENDER FUNCTIONS
         // ==========================================
         
-        // 1. Top Picks
         function renderTopPicks() {
             const picks = menuItems.filter(i => i.top);
             topPicksContainer.innerHTML = '';
@@ -334,7 +326,6 @@
             });
         }
 
-        // 2. Categories
         function renderCategories() {
             categoryFilters.innerHTML = '';
             const allBtn = createFilterBtn('All', 'all');
@@ -362,41 +353,35 @@
         
         function applyFilter(filterId) {
             currentFilter = filterId;
-            currentPage = 1; // Reset to page 1 on filter change
+            currentPage = 1; 
             updateView();
         }
 
         function goToPage(pageNumber) {
             currentPage = pageNumber;
             updateView();
-            // Scroll to top of list smoothly
             window.scrollTo({ top: menuList.offsetTop - 80, behavior: 'smooth' });
         }
 
         function updateView() {
-            // 1. Filter Data
             let filteredItems = menuItems;
             if (currentFilter !== 'all') {
                 filteredItems = menuItems.filter(i => i.category_id == currentFilter);
             }
 
-            // 2. Calculate Pagination
             const totalItems = filteredItems.length;
             const totalPages = Math.ceil(totalItems / itemsPerPage);
             const startIndex = (currentPage - 1) * itemsPerPage;
             const endIndex = startIndex + itemsPerPage;
             const paginatedItems = filteredItems.slice(startIndex, endIndex);
 
-            // 3. Render Items with Animation
             animateMenuRendering(paginatedItems);
-
-            // 4. Render Pagination Buttons
             renderPagination(totalPages);
         }
 
         function renderPagination(totalPages) {
             paginationContainer.innerHTML = '';
-            if (totalPages <= 1) return; // Hide if only 1 page
+            if (totalPages <= 1) return;
 
             for (let i = 1; i <= totalPages; i++) {
                 const btn = document.createElement('button');
@@ -407,46 +392,42 @@
             }
         }
 
-        // Animate Menu
+        // ==========================================
+        // ⭐ SLOW MOTION PREMIUM ANIMATION
+        // ==========================================
         function animateMenuRendering(items) {
-            // Fade out existing
+            // 1. Fade out existing items
             gsap.to("#menuList > div", {
-                opacity: 0, y: -10, stagger: 0.02, duration: 0.2, ease: "power2.in",
+                opacity: 0, 
+                y: -10, 
+                stagger: 0.02, 
+                duration: 0.3, 
+                ease: "power2.in",
                 onComplete: () => {
+                    // 2. Render new items
                     renderMenuItems(items);
+                    
+                    // 3. Slow Stagger In Animation
                     gsap.fromTo("#menuList > div", 
-                        { opacity: 0, y: 20 }, 
-                        { opacity: 1, y: 0, stagger: 0.03, duration: 0.3, ease: "power2.out" }
+                        { 
+                            opacity: 0, 
+                            y: 40, 
+                            scale: 0.95
+                        }, 
+                        { 
+                            opacity: 1, 
+                            y: 0, 
+                            scale: 1,
+                            stagger: 0.12, // Delay between items
+                            duration: 0.8, // Slower duration (was 0.6)
+                            ease: "power3.out" 
+                        }
                     );
                 }
             });
         }
 
-        // ==========================================
-        // 🆕 3D TILT EFFECT LOGIC
-        // ==========================================
-        function add3DTiltEffect(card) {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                
-                // Calculate rotation (max 10 degrees)
-                const rotateX = ((y - centerY) / centerY) * -5; 
-                const rotateY = ((x - centerX) / centerX) * 5;
-                
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-            });
-
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-            });
-        }
-
-        // Render Items (Updated to add tilt)
+        // Render Items
         function renderMenuItems(items) {
             menuList.innerHTML = '';
             if (items.length === 0) {
@@ -471,10 +452,6 @@
                             <img src="${item.img}" class="w-full h-full object-cover">
                         </div>
                     </div>`;
-                
-                // 🎯 Apply 3D Tilt to this card
-                add3DTiltEffect(card);
-                
                 menuList.appendChild(card);
             });
         }
