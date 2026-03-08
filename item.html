@@ -1,1 +1,311 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Item Details | Green Leaf Kitchen</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'premium': '#333333',
+                        'muted': '#64748b',
+                        'brand': '#14B8A6',
+                        'brand-light': '#CCFBF1',
+                        'brand-dark': '#0D9488',
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                        'head': ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FFFFFF;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            /* Allows scrolling if content is long */
+            overflow-x: hidden; 
+        }
+
+        /* Hero Image Styling - Mobile Optimized */
+        .hero-image-container {
+            width: 100%;
+            height: 280px; /* Fixed height for mobile */
+            position: relative;
+            overflow: hidden;
+            background-color: #F1F5F9;
+        }
+
+        /* Content Card Styling */
+        .content-card {
+            background: white;
+            border-radius: 24px 24px 0 0;
+            margin-top: -30px; /* Overlap effect */
+            position: relative;
+            z-index: 10;
+            padding-bottom: 60px; /* Space for footer */
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        /* Back Button */
+        .back-btn {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            z-index: 20;
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(5px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: transform 0.2s;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        .back-btn:active { transform: scale(0.9); }
+
+        /* Info Block */
+        .info-block {
+            background: #F8FAFC;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- TOP IMAGE SECTION -->
+    <header class="hero-image-container">
+        <!-- Back Button -->
+        <div class="back-btn" onclick="window.history.back()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-premium" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </div>
+
+        <!-- Top Selling Badge on Image (Conditional) -->
+        <div id="imgTopBadge" class="absolute top-4 right-4 z-20 bg-white/90 backdrop-blur text-[10px] font-bold text-brand-dark px-3 py-1 rounded-full shadow hidden">
+            ⭐ Top Selling
+        </div>
+
+        <!-- Main Image -->
+        <img id="itemImage" src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800" alt="Item Image" class="w-full h-full object-cover">
+    </header>
+
+    <!-- MAIN CONTENT SECTION -->
+    <main class="content-card max-w-3xl mx-auto px-5 pt-6">
+        
+        <!-- Row 1: Category & Availability -->
+        <div class="flex items-center justify-between mb-3">
+            <span id="itemCategory" class="text-[10px] font-bold uppercase tracking-widest text-brand bg-brand-light px-3 py-1 rounded-full">
+                Main Course
+            </span>
+            
+            <span id="availBadge" class="status-badge bg-green-50 text-green-700">
+                <span class="w-1.5 h-1.5 rounded-full bg-current animate-pulse"></span>
+                Available
+            </span>
+        </div>
+
+        <!-- Row 2: Title & Price -->
+        <div class="flex justify-between items-start mb-5">
+            <h1 id="itemName" class="font-head text-xl font-bold text-premium leading-tight pr-4">
+                Quinoa Buddha Bowl
+            </h1>
+            <div class="text-right flex-shrink-0">
+                <span class="text-xs text-muted line-through block opacity-70">₹450</span>
+                <span id="itemPrice" class="text-xl font-bold text-brand">₹320</span>
+            </div>
+        </div>
+
+        <!-- Row 3: Description -->
+        <div class="mb-6">
+            <h3 class="text-xs font-semibold text-premium mb-2 uppercase tracking-wider">Description</h3>
+            <p id="itemDesc" class="text-sm text-muted leading-relaxed">
+                A healthy and delicious bowl filled with protein-rich quinoa, fresh seasonal veggies, creamy hummus, and a drizzle of tahini dressing. Perfect for a nutritious lunch or dinner.
+            </p>
+        </div>
+
+        <!-- Row 4: Additional Info (Database Fields) -->
+        <div class="mb-6">
+            <h3 class="text-xs font-semibold text-premium mb-3 uppercase tracking-wider">Item Details</h3>
+            
+            <div class="info-block flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="text-lg">🍽️</span>
+                    <span class="text-xs text-muted">Category</span>
+                </div>
+                <span id="itemCatInfo" class="text-sm font-semibold text-premium">Main Course</span>
+            </div>
+
+            <div class="info-block flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="text-lg">🥗</span>
+                    <span class="text-xs text-muted">Availability</span>
+                </div>
+                <span id="itemAvailInfo" class="text-sm font-semibold text-green-600">In Stock</span>
+            </div>
+
+             <div class="info-block flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="text-lg">⭐</span>
+                    <span class="text-xs text-muted">Top Selling</span>
+                </div>
+                <span id="itemTopInfo" class="text-sm font-semibold text-brand">Yes</span>
+            </div>
+
+            <div class="info-block flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="text-lg">#️⃣</span>
+                    <span class="text-xs text-muted">Item ID</span>
+                </div>
+                <span id="itemId" class="text-sm font-semibold text-premium">16</span>
+            </div>
+        </div>
+
+        <!-- Row 5: Thank You Note (Optional) -->
+        <div class="bg-brand-light/50 border border-brand/10 rounded-xl p-4 text-center">
+            <p class="text-xs text-brand-dark font-medium">Made with fresh ingredients 🌿</p>
+        </div>
+
+    </main>
+
+    <!-- SLIM FOOTER (Same as Parent Page) -->
+    <footer class="text-center py-4 text-xs text-muted border-t border-gray-100 bg-white fixed bottom-0 left-0 right-0">
+        <div class="max-w-3xl mx-auto px-5 flex flex-col sm:flex-row justify-between items-center gap-1">
+            <span>© 2024 Green Leaf Kitchen</span>
+            <span class="opacity-70">Crafted with ❤️ by Atul Kumar</span>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // ==========================================
+        // 💾 DUMMY DATA (Simulating Database Fetch)
+        // ==========================================
+        const itemData = {
+            id: 16,
+            category_id: 2,
+            name: "Quinoa Buddha Bowl",
+            description: "A healthy and delicious bowl filled with protein-rich quinoa, fresh seasonal veggies, creamy hummus, and a drizzle of tahini dressing. Perfect for a nutritious lunch or dinner. Served with a side of lemon vinaigrette.",
+            price: 320.00,
+            image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800",
+            is_top_selling: true, // Try changing to false
+            is_available: true    // Try changing to false
+        };
+
+        const categories = [
+            { id: 1, name: "Salads" },
+            { id: 2, name: "Main Course" },
+            { id: 3, name: "Smoothies" },
+            { id: 4, name: "Desserts" }
+        ];
+
+        // ==========================================
+        // 🔨 POPULATE FUNCTION
+        // ==========================================
+        function populatePage(item) {
+            // Set Image
+            const imgEl = document.getElementById('itemImage');
+            imgEl.src = item.image;
+            imgEl.alt = item.name;
+
+            // Set Text
+            document.getElementById('itemName').textContent = item.name;
+            document.getElementById('itemPrice').textContent = `₹${item.price}`;
+            document.getElementById('itemDesc').textContent = item.description;
+            document.getElementById('itemId').textContent = item.id;
+
+            // Category
+            const cat = categories.find(c => c.id === item.category_id);
+            const catName = cat ? cat.name : 'Food';
+            document.getElementById('itemCategory').textContent = catName;
+            document.getElementById('itemCatInfo').textContent = catName;
+
+            // Availability Logic
+            const availBadge = document.getElementById('availBadge');
+            const availInfo = document.getElementById('itemAvailInfo');
+            
+            if (item.is_available) {
+                availBadge.className = "status-badge bg-green-50 text-green-700";
+                availBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-current animate-pulse"></span> Available`;
+                availInfo.textContent = "In Stock";
+                availInfo.className = "text-sm font-semibold text-green-600";
+            } else {
+                availBadge.className = "status-badge bg-red-50 text-red-700";
+                availBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-current"></span> Unavailable`;
+                availInfo.textContent = "Out of Stock";
+                availInfo.className = "text-sm font-semibold text-red-600";
+            }
+
+            // Top Selling Logic
+            if (item.is_top_selling) {
+                document.getElementById('imgTopBadge').classList.remove('hidden');
+                document.getElementById('itemTopInfo').textContent = "Yes";
+                document.getElementById('itemTopInfo').className = "text-sm font-semibold text-brand";
+            } else {
+                document.getElementById('itemTopInfo').textContent = "No";
+                document.getElementById('itemTopInfo').className = "text-sm font-semibold text-muted";
+            }
+
+            // Animations
+            runAnimations();
+        }
+
+        // ==========================================
+        // 🎨 ANIMATIONS
+        // ==========================================
+        function runAnimations() {
+            // Image Fade
+            gsap.fromTo("#itemImage", 
+                { scale: 1.1, opacity: 0 }, 
+                { scale: 1, opacity: 1, duration: 1, ease: "power2.out" }
+            );
+            // Content Slide
+            gsap.fromTo(".content-card", 
+                { y: 50, opacity: 0 }, 
+                { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }
+            );
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            populatePage(itemData);
+        });
+    </script>
+</body>
+</html>
