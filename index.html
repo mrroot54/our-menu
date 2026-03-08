@@ -393,7 +393,7 @@
         }
 
         // ==========================================
-        // ⭐ SLOW MOTION PREMIUM ANIMATION
+        // ⭐ VERY SLOW PREMIUM ANIMATION
         // ==========================================
         function animateMenuRendering(items) {
             // 1. Fade out existing items
@@ -407,19 +407,19 @@
                     // 2. Render new items
                     renderMenuItems(items);
                     
-                    // 3. Slow Stagger In Animation
+                    // 3. Very Slow Stagger In Animation
                     gsap.fromTo("#menuList > div", 
                         { 
                             opacity: 0, 
-                            y: 40, 
-                            scale: 0.95
+                            y: 50,      // Start further down
+                            scale: 0.9  // Start smaller
                         }, 
                         { 
                             opacity: 1, 
                             y: 0, 
                             scale: 1,
-                            stagger: 0.12, // Delay between items
-                            duration: 0.8, // Slower duration (was 0.6)
+                            stagger: 0.2,   // 200ms delay between items (Slow)
+                            duration: 1,    // 1 second to animate (Slow & Smooth)
                             ease: "power3.out" 
                         }
                     );
