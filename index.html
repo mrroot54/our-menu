@@ -149,13 +149,12 @@
             position: relative;
             border-radius: 20px;
             overflow: hidden;
-            height: 160px; /* Slim Height */
+            height: 160px; 
             width: 100%;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.08); /* Soft Cinematic Shadow */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
             cursor: pointer;
-            /* Initial state for animation */
             opacity: 0; 
-            transform: translateY(-100px); /* Start from top */
+            transform: translateY(-100px);
         }
         .special-card img {
             width: 100%;
@@ -228,7 +227,7 @@
             </div>
         </section>
 
-        <!-- 🆕 TODAY'S SPECIAL SECTION -->
+        <!-- TODAY'S SPECIAL SECTION -->
         <section class="mb-10 anim-section" id="specialSection">
             <div class="flex justify-between items-center mb-4 fade-up">
                 <h2 class="text-xs font-semibold uppercase tracking-widest text-muted">Today’s Special ⭐</h2>
@@ -262,6 +261,22 @@
 
         <!-- PAGINATION BUTTONS -->
         <div id="paginationContainer" class="flex justify-center items-center gap-2 mt-8 mb-10"></div>
+
+        <!-- 🆕 THANK YOU SECTION (Slim & Modern) -->
+        <section class="mb-10 fade-up">
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-brand-light via-white to-brand-light p-6 border border-brand/10 text-center shadow-sm">
+                <!-- Decorative Blur -->
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-20 bg-brand/10 blur-3xl rounded-full"></div>
+                
+                <div class="relative z-10">
+                    <div class="inline-block bg-white p-2 rounded-xl shadow-sm mb-3">
+                        <span class="text-2xl">🌿</span>
+                    </div>
+                    <h3 class="font-head text-lg font-bold text-premium tracking-tight">Thank you for visiting Green Leaf Kitchen</h3>
+                    <p class="text-xs text-muted mt-1">We hope to see you again soon!</p>
+                </div>
+            </div>
+        </section>
 
     </main>
 
@@ -305,7 +320,6 @@
 
             // --- MAIN COURSE ---
             { id: 16, category_id: 2, name: "Quinoa Bowl", desc: "Veggies, hummus", price: "320", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400", top: true },
-            // Special Item 1
             { id: 17, category_id: 2, name: "Grilled Salmon", desc: "Asparagus, lemon", price: "450", img: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=800", top: true, special: true },
             { id: 18, category_id: 2, name: "Veg Wrap", desc: "Paneer, greens", price: "180", img: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=400", top: false },
             { id: 19, category_id: 2, name: "Brown Rice Bowl", desc: "Tofu, veggies", price: "260", img: "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=400", top: false },
@@ -321,7 +335,6 @@
             // --- SMOOTHIES ---
             { id: 28, category_id: 3, name: "Green Detox", desc: "Spinach, apple", price: "130", img: "https://images.unsplash.com/photo-1610970881699-44a5587cabec?auto=format&fit=crop&w=400", top: true },
             { id: 29, category_id: 3, name: "Berry Blast", desc: "Mixed berries", price: "140", img: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=400", top: false },
-            // Special Item 2
             { id: 30, category_id: 3, name: "Mango Magic", desc: "Mango, honey", price: "120", img: "https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=800", top: true, special: true },
             { id: 31, category_id: 3, name: "Banana Shake", desc: "Banana, milk", price: "100", img: "https://images.unsplash.com/photo-1610970881699-44a5587cabec?auto=format&fit=crop&w=400", top: false },
             { id: 32, category_id: 3, name: "Strawberry Smoothie", desc: "Fresh strawberries", price: "130", img: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=400", top: false },
@@ -358,7 +371,7 @@
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
         
-        // Section Elements for Animation
+        // Section Elements
         const specialSection = document.getElementById('specialSection');
         const sliderSection = document.getElementById('sliderSection');
         const categorySection = document.getElementById('categorySection');
@@ -375,7 +388,7 @@
         // ⚡ INIT
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Basic Fade Up for Hero/Intro
+            // 1. Basic Fade Up for Hero/Intro/ThankYou
             gsap.to(".fade-up", { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: "power2.out" });
             
             // 2. Render Content
@@ -384,36 +397,32 @@
             renderSpecials(); 
             applyFilter('all');
             
-            // 3. Initialize Interactive Events
+            // 3. Initialize Events
             initEvents();
             initSlider();
 
-            // 4. 🆕 Run Sequence Animation for Sections
+            // 4. Sequence Animation for Sections
             initSectionAnimations();
         });
 
         // ==========================================
-        // 🎬 SECTION ANIMATIONS (New Logic)
+        // 🎬 SECTION ANIMATIONS
         // ==========================================
         function initSectionAnimations() {
-            // Create a timeline for sequenced animation
             const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-            // Animate Special Section (Drop down effect)
             tl.fromTo(specialSection, 
                 { opacity: 0, y: -50 }, 
                 { opacity: 1, y: 0, duration: 0.8 }, 
-                "+=0.2" // Delay after previous
+                "+=0.2"
             );
 
-            // Animate Recommended Slider (Slide from right effect)
             tl.fromTo(sliderSection, 
                 { opacity: 0, x: 100 }, 
                 { opacity: 1, x: 0, duration: 0.8 }, 
-                "-=0.4" // Overlap slightly
+                "-=0.4"
             );
 
-            // Animate Category Filters (Pop up effect)
             tl.fromTo(categorySection, 
                 { opacity: 0, scale: 0.9 }, 
                 { opacity: 1, scale: 1, duration: 0.5 }, 
@@ -458,7 +467,6 @@
         // 🔨 RENDER FUNCTIONS
         // ==========================================
         
-        // Render Today's Special with Drop Animation
         function renderSpecials() {
             const specials = menuItems.filter(i => i.special);
             specialsContainer.innerHTML = '';
@@ -480,7 +488,6 @@
                 specialsContainer.appendChild(card);
             });
 
-            // Elastic Drop Animation for cards inside the section
             gsap.to(".special-card", {
                 y: 0, opacity: 1,
                 duration: 1.2, stagger: 0.15,
@@ -588,7 +595,6 @@
             });
         }
 
-        // Render Items
         function renderMenuItems(items, startIndex) {
             menuList.innerHTML = '';
             if (items.length === 0) {
@@ -626,14 +632,12 @@
             nextBtn.addEventListener('click', slideNext);
             prevBtn.addEventListener('click', slidePrev);
 
-            // Search Open
             searchBtn.addEventListener('click', () => {
                 searchOverlay.classList.remove('hidden');
                 gsap.fromTo(searchOverlay, { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" });
                 setTimeout(() => searchInput.focus(), 100);
             });
 
-            // Search Close
             const closeSearch = () => {
                 gsap.to(searchOverlay, { y: -20, opacity: 0, duration: 0.2, onComplete: () => searchOverlay.classList.add('hidden') });
                 searchInput.value = '';
@@ -641,7 +645,6 @@
             };
             closeSearchBtn.addEventListener('click', closeSearch);
 
-            // Live Search
             searchInput.addEventListener('input', (e) => {
                 const term = e.target.value.toLowerCase();
                 if(!term) { applyFilter(currentFilter); return; }
