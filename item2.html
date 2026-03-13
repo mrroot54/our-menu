@@ -29,6 +29,7 @@
                         'muted': '#6B7280',
                         'success': '#059669',
                         'warning': '#D97706',
+                        'danger': '#DC2626',
                         'card': '#FFFFFF',
                         'border': '#E5E7EB',
                     },
@@ -242,7 +243,7 @@
         }
 
         /* ========================================== */
-        /* RESPONSIVE BOTTOM BAR - MOBILE FIRST */
+        /* RESPONSIVE BOTTOM BAR */
         /* ========================================== */
         .bottom-bar {
             position: fixed;
@@ -383,91 +384,41 @@
             font-weight: 700;
         }
 
-        /* Extra Small Screens (320px - 350px) */
+        /* Extra Small Screens */
         @media (max-width: 350px) {
             .bottom-bar {
                 padding: 10px 10px;
             }
-            
             .bottom-bar-inner {
                 gap: 8px;
             }
-            
             .share-btn {
                 width: 42px;
                 height: 42px;
                 min-width: 42px;
             }
-            
             .qty-control {
                 gap: 8px;
                 padding: 5px 6px;
             }
-            
             .qty-btn {
                 width: 30px;
                 height: 30px;
                 min-width: 30px;
                 font-size: 16px;
             }
-            
             .qty-display {
                 font-size: 14px;
                 min-width: 20px;
             }
-            
             .add-cart-btn {
                 padding: 12px 12px;
                 font-size: 13px;
                 border-radius: 12px;
                 gap: 6px;
             }
-            
             .cart-btn-price {
                 font-size: 14px;
-            }
-        }
-
-        /* Medium Mobile Screens (351px - 390px) */
-        @media (min-width: 351px) and (max-width: 390px) {
-            .bottom-bar {
-                padding: 12px 12px;
-            }
-            
-            .add-cart-btn {
-                padding: 13px 14px;
-            }
-        }
-
-        /* Larger Mobile Screens (391px+) */
-        @media (min-width: 391px) {
-            .bottom-bar {
-                padding: 14px 16px;
-            }
-            
-            .share-btn {
-                width: 48px;
-                height: 48px;
-                min-width: 48px;
-            }
-            
-            .qty-btn {
-                width: 36px;
-                height: 36px;
-                min-width: 36px;
-            }
-            
-            .qty-display {
-                font-size: 17px;
-            }
-            
-            .add-cart-btn {
-                padding: 15px 18px;
-                font-size: 15px;
-            }
-            
-            .cart-btn-price {
-                font-size: 16px;
             }
         }
 
@@ -476,25 +427,170 @@
             .hero-image {
                 height: 380px;
             }
-            
             .content-wrapper {
                 max-width: 560px;
                 margin: -40px auto 0;
                 border-radius: 32px 32px 0 0;
                 padding: 28px 24px;
             }
-            
             .bottom-bar {
                 max-width: 560px;
                 left: 50%;
                 transform: translateX(-50%);
                 border-radius: 20px 20px 0 0;
             }
-            
             .add-cart-btn {
                 padding: 16px 24px;
                 font-size: 16px;
             }
+        }
+
+        /* ========================================== */
+        /* AVAILABILITY STATUS CARDS */
+        /* ========================================== */
+        .status-card {
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid;
+            transition: all 0.3s ease;
+        }
+
+        .status-available {
+            background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+            border-color: #A7F3D0;
+        }
+
+        .status-few-left {
+            background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+            border-color: #FCD34D;
+        }
+
+        .status-out-of-stock {
+            background: linear-gradient(135deg, #FEF2F2 0%, #FECACA 100%);
+            border-color: #FCA5A5;
+        }
+
+        .status-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .status-available .status-icon {
+            background: #059669;
+        }
+
+        .status-few-left .status-icon {
+            background: #D97706;
+        }
+
+        .status-out-of-stock .status-icon {
+            background: #DC2626;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        /* ========================================== */
+        /* FEEDBACK FORM STYLES */
+        /* ========================================== */
+        .feedback-section {
+            background: linear-gradient(135deg, #F8F4F0 0%, #FFFFFF 100%);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #E5E7EB;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 8px;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            cursor: pointer;
+            font-size: 28px;
+            color: #D1D5DB;
+            transition: all 0.2s ease;
+        }
+
+        .star-rating label:hover,
+        .star-rating label:hover ~ label,
+        .star-rating input:checked ~ label {
+            color: #FBBF24;
+            transform: scale(1.1);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #E94560;
+            box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #9CA3AF;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #E94560 0%, #C73E54 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(233, 69, 96, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(233, 69, 96, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
         }
 
         /* Toast */
@@ -594,22 +690,13 @@
             </p>
         </section>
 
-        <!-- Section 4: Availability & Prep Time -->
-        <section class="grid grid-cols-2 gap-3 mb-5 fade-up">
-            <div class="info-pill">
-                <div class="flex items-center gap-2 mb-1">
-                    <svg class="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    <span class="text-[10px] text-muted font-medium">Availability</span>
-                </div>
-                <div id="availabilityStatus" class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
-                    <span class="text-sm font-semibold text-success">Available</span>
-                </div>
-                <div id="quantityInfo" class="text-[10px] text-muted mt-1">25 items left</div>
-            </div>
+        <!-- Section 4: Availability Status Card -->
+        <section id="availabilitySection" class="mb-5 fade-up">
+            <!-- Will be populated by JavaScript -->
+        </section>
 
+        <!-- Section 5: Prep Time -->
+        <section class="grid grid-cols-2 gap-3 mb-5 fade-up">
             <div class="info-pill">
                 <div class="flex items-center gap-2 mb-1">
                     <svg class="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -619,9 +706,19 @@
                 </div>
                 <span id="prepTime" class="text-sm font-semibold text-primary">10-15 min</span>
             </div>
+
+            <div class="info-pill">
+                <div class="flex items-center gap-2 mb-1">
+                    <svg class="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                    <span class="text-[10px] text-muted font-medium">Serves</span>
+                </div>
+                <span class="text-sm font-semibold text-primary">1 Person</span>
+            </div>
         </section>
 
-        <!-- Section 5: Ingredients -->
+        <!-- Section 6: Ingredients -->
         <section class="mb-5 fade-up">
             <h3 class="text-xs font-semibold text-primary mb-3 uppercase tracking-wider">Ingredients</h3>
             <div id="ingredientsList" class="bg-gray-50 rounded-2xl p-4">
@@ -648,7 +745,7 @@
             </div>
         </section>
 
-        <!-- Section 6: Customer Reviews -->
+        <!-- Section 7: Customer Reviews -->
         <section class="mb-6 fade-up">
             <div class="flex items-center justify-between mb-3">
                 <h3 class="text-xs font-semibold text-primary uppercase tracking-wider">Customer Reviews</h3>
@@ -689,28 +786,64 @@
                     </div>
                     <p class="text-xs text-muted">Loved the fresh ingredients and the tahini dressing was divine!</p>
                 </div>
+            </div>
+        </section>
 
-                <div class="review-card">
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">AK</div>
-                        <div class="flex-1 min-w-0">
-                            <h4 class="text-sm font-semibold text-primary">Amit Kumar</h4>
-                            <div class="flex items-center gap-1">
-                                <span class="text-yellow-500 text-[10px]">★★★★★</span>
-                                <span class="text-[10px] text-muted">2 weeks ago</span>
-                            </div>
+        <!-- Section 8: Feedback Form -->
+        <section class="mb-6 fade-up">
+            <div class="feedback-section">
+                <div class="text-center mb-4">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-accent/10 mb-2">
+                        <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-base font-bold text-primary">Share Your Feedback</h3>
+                    <p class="text-xs text-muted">Help us improve your experience</p>
+                </div>
+
+                <form id="feedbackForm" onsubmit="submitFeedback(event)">
+                    <!-- Star Rating -->
+                    <div class="mb-4">
+                        <label class="text-xs font-medium text-primary mb-2 block">Your Rating</label>
+                        <div class="star-rating">
+                            <input type="radio" id="star5" name="rating" value="5">
+                            <label for="star5" title="5 stars">★</label>
+                            <input type="radio" id="star4" name="rating" value="4">
+                            <label for="star4" title="4 stars">★</label>
+                            <input type="radio" id="star3" name="rating" value="3">
+                            <label for="star3" title="3 stars">★</label>
+                            <input type="radio" id="star2" name="rating" value="2">
+                            <label for="star2" title="2 stars">★</label>
+                            <input type="radio" id="star1" name="rating" value="1">
+                            <label for="star1" title="1 star">★</label>
                         </div>
                     </div>
-                    <p class="text-xs text-muted">Best healthy bowl in town! Perfect for my diet plan.</p>
-                </div>
+
+                    <!-- Name Input -->
+                    <div class="mb-3">
+                        <input type="text" id="feedbackName" class="form-input" placeholder="Your Name" required>
+                    </div>
+
+                    <!-- Comment Textarea -->
+                    <div class="mb-4">
+                        <textarea id="feedbackComment" class="form-input form-textarea" placeholder="Share your experience with this dish..." required></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="submit-btn">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                        </svg>
+                        Submit Feedback
+                    </button>
+                </form>
             </div>
         </section>
 
     </main>
 
-    <!-- ========================================== -->
-    <!-- RESPONSIVE BOTTOM BAR -->
-    <!-- ========================================== -->
+    <!-- Bottom Bar -->
     <div class="bottom-bar">
         <div class="bottom-bar-inner">
             <!-- Share Button -->
@@ -721,7 +854,7 @@
             </button>
             
             <!-- Quantity Controls -->
-            <div class="qty-control">
+            <div id="qtyControl" class="qty-control">
                 <button class="qty-btn" onclick="decreaseQty()" aria-label="Decrease quantity">−</button>
                 <span id="qtyDisplay" class="qty-display">1</span>
                 <button class="qty-btn" onclick="increaseQty()" aria-label="Increase quantity">+</button>
@@ -800,7 +933,7 @@
 
     <script>
         // ==========================================
-        // DUMMY DATA
+        // DUMMY DATA - Change availability to test different states
         // ==========================================
         const itemData = {
             id: 16,
@@ -815,9 +948,11 @@
             is_recommended: true,
             rating: 4.5,
             total_reviews: 128,
-            availability: "available",
-            quantity_left: 25,
+            // OPTIONS: "available", "few_left", "out_of_stock"
+            availability: "available",  // <-- Change this to test different states
+            quantity_left: 5,
             prep_time: "10-15 min",
+            restock_time: "Tomorrow 11:00 AM",  // Shown when out_of_stock
             ingredients: [
                 { name: "Fresh Quinoa", icon: "🥗" },
                 { name: "Avocado Slices", icon: "🥑" },
@@ -865,45 +1000,118 @@
             document.getElementById('prepTime').textContent = item.prep_time;
             document.getElementById('avgRating').textContent = item.rating;
 
-            updateAvailability(item);
+            // Render availability status card
+            renderAvailabilityCard(item);
+
             updateCartButtonPrice();
             runAnimations();
         }
 
         // ==========================================
-        // UPDATE AVAILABILITY
+        // RENDER AVAILABILITY STATUS CARD
         // ==========================================
-        function updateAvailability(item) {
-            const statusContainer = document.getElementById('availabilityStatus');
-            const quantityInfo = document.getElementById('quantityInfo');
+        function renderAvailabilityCard(item) {
+            const section = document.getElementById('availabilitySection');
             const addToCartBtn = document.getElementById('addToCartBtn');
+            const qtyControl = document.getElementById('qtyControl');
+
+            let html = '';
 
             switch (item.availability) {
                 case 'available':
-                    statusContainer.innerHTML = `
-                        <span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
-                        <span class="text-sm font-semibold text-success">Available</span>`;
-                    quantityInfo.textContent = 'In stock';
+                    html = `
+                        <div class="status-card status-available">
+                            <div class="flex items-center gap-4">
+                                <div class="status-icon">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="pulse-dot bg-success"></span>
+                                        <span class="text-base font-bold text-success">Available</span>
+                                    </div>
+                                    <p class="text-xs text-success/80">Ready to order now</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs text-muted">Prep Time</span>
+                                    <p class="text-sm font-semibold text-primary">${item.prep_time}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
                     addToCartBtn.disabled = false;
+                    document.getElementById('cartBtnText').textContent = 'Add';
+                    qtyControl.style.display = 'flex';
                     break;
 
                 case 'few_left':
-                    statusContainer.innerHTML = `
-                        <span class="w-2 h-2 rounded-full bg-warning animate-pulse"></span>
-                        <span class="text-sm font-semibold text-warning">Few Left</span>`;
-                    quantityInfo.textContent = `${item.quantity_left} items left`;
+                    html = `
+                        <div class="status-card status-few-left">
+                            <div class="flex items-center gap-4">
+                                <div class="status-icon">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="pulse-dot bg-warning"></span>
+                                        <span class="text-base font-bold text-warning">Few Left - Hurry Up!</span>
+                                    </div>
+                                    <p class="text-xs text-warning/80">Only <strong>${item.quantity_left}</strong> items remaining</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs text-muted">Prep Time</span>
+                                    <p class="text-sm font-semibold text-primary">${item.prep_time}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
                     addToCartBtn.disabled = false;
+                    document.getElementById('cartBtnText').textContent = 'Add';
+                    qtyControl.style.display = 'flex';
                     break;
 
                 case 'out_of_stock':
-                    statusContainer.innerHTML = `
-                        <span class="w-2 h-2 rounded-full bg-red-500"></span>
-                        <span class="text-sm font-semibold text-red-500">Out of Stock</span>`;
-                    quantityInfo.textContent = 'Currently unavailable';
+                    html = `
+                        <div class="status-card status-out-of-stock">
+                            <div class="flex items-center gap-4">
+                                <div class="status-icon">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="w-2 h-2 rounded-full bg-danger"></span>
+                                        <span class="text-base font-bold text-danger">Out of Stock</span>
+                                    </div>
+                                    <p class="text-xs text-danger/80">Currently unavailable</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs text-muted">Available</span>
+                                    <p class="text-sm font-semibold text-primary">${item.restock_time || 'Soon'}</p>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-red-200">
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    <span class="text-xs text-danger">Expected restock: <strong>${item.restock_time || 'Coming Soon'}</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
                     addToCartBtn.disabled = true;
                     document.getElementById('cartBtnText').textContent = 'Sold Out';
+                    qtyControl.style.display = 'none';
                     break;
             }
+
+            section.innerHTML = html;
         }
 
         // ==========================================
@@ -938,6 +1146,8 @@
         // ADD TO CART
         // ==========================================
         function addToCart() {
+            if (itemData.availability === 'out_of_stock') return;
+            
             const btn = document.getElementById('addToCartBtn');
             
             gsap.timeline()
@@ -946,6 +1156,39 @@
                 .call(() => {
                     showToast(`${quantity}x ${itemData.name} added to cart!`);
                 });
+        }
+
+        // ==========================================
+        // FEEDBACK FORM
+        // ==========================================
+        function submitFeedback(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('feedbackName').value;
+            const comment = document.getElementById('feedbackComment').value;
+            const ratingInput = document.querySelector('input[name="rating"]:checked');
+            
+            if (!ratingInput) {
+                showToast('Please select a rating!');
+                return;
+            }
+            
+            const rating = ratingInput.value;
+            
+            // Here you would send data to your backend
+            console.log('Feedback submitted:', { name, comment, rating });
+            
+            // Show success toast
+            showToast('Thank you for your feedback!');
+            
+            // Reset form
+            document.getElementById('feedbackForm').reset();
+            
+            // Animate submit button
+            gsap.fromTo('.submit-btn', 
+                { scale: 0.95 }, 
+                { scale: 1, duration: 0.3, ease: 'elastic.out(1, 0.5)' }
+            );
         }
 
         // ==========================================
