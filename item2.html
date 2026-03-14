@@ -297,7 +297,7 @@
         .status-card {
             border-radius: 16px; padding: 16px; margin-bottom: 12px;
             border: 1px solid; transition: all 0.3s ease;
-            background: #F9FAFB; /* Default bg */
+            background: #F9FAFB;
         }
 
         .status-available { background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%); border-color: #A7F3D0; }
@@ -308,7 +308,6 @@
             animation: shakeAndPulse 2s infinite;
         }
         
-        /* Generic Info Card Style (Neutral) */
         .info-card-neutral {
             background: #FFFFFF;
             border-color: #E5E7EB;
@@ -528,7 +527,7 @@
             </div>
         </section>
 
-        <!-- Section 7: Customer Reviews -->
+        <!-- Section 7: Customer Reviews (UPDATED) -->
         <section class="mb-6 fade-up">
             <div class="flex items-center justify-between mb-3">
                 <h3 class="text-xs font-semibold text-primary uppercase tracking-wider">Customer Reviews</h3>
@@ -542,6 +541,7 @@
             </div>
 
             <div id="reviewsList">
+                <!-- Review 1 -->
                 <div class="review-card">
                     <div class="flex items-center gap-3 mb-2">
                         <div class="w-9 h-9 rounded-full bg-gradient-to-br from-accent to-pink-400 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">RS</div>
@@ -554,6 +554,51 @@
                         </div>
                     </div>
                     <p class="text-xs text-muted">Amazing taste and very healthy! The portion size is perfect for one person.</p>
+                </div>
+
+                <!-- Review 2 (New) -->
+                <div class="review-card">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">PS</div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-semibold text-primary">Priya Singh</h4>
+                            <div class="flex items-center gap-1">
+                                <span class="text-yellow-500 text-[10px]">★★★★</span>
+                                <span class="text-[10px] text-muted">5 days ago</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-xs text-muted">The quinoa was cooked perfectly. Would definitely order again!</p>
+                </div>
+
+                <!-- Review 3 (New) -->
+                <div class="review-card">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">AV</div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-semibold text-primary">Amit Verma</h4>
+                            <div class="flex items-center gap-1">
+                                <span class="text-yellow-500 text-[10px]">★★★★★</span>
+                                <span class="text-[10px] text-muted">1 week ago</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-xs text-muted">My go-to place for healthy lunch. Delivery was fast and food was fresh.</p>
+                </div>
+
+                <!-- Review 4 (New) -->
+                <div class="review-card">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-orange-400 to-yellow-500 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">NK</div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-semibold text-primary">Neha Kapoor</h4>
+                            <div class="flex items-center gap-1">
+                                <span class="text-yellow-500 text-[10px]">★★★★★</span>
+                                <span class="text-[10px] text-muted">Yesterday</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-xs text-muted">Delicious and filling. The tahini dressing is the highlight for me!</p>
                 </div>
             </div>
         </section>
@@ -676,10 +721,9 @@
             is_recommended: true,
             rating: 4.5,
             total_reviews: 128,
-            // OPTIONS: "available", "few_left", "out_of_stock"
             availability: "available",  
             quantity_left: 5, 
-            prep_time: 10, // Minutes
+            prep_time: 10,
             ingredients: [
                 { name: "Fresh Quinoa", icon: "🥗" },
                 { name: "Avocado Slices", icon: "🥑" },
@@ -724,7 +768,7 @@
         }
 
         // ==========================================
-        // RENDER AVAILABILITY (WITH HEADING)
+        // RENDER AVAILABILITY
         // ==========================================
         function renderAvailabilityCard(item) {
             const section = document.getElementById('availabilitySection');
