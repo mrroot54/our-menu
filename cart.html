@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>My Cart | Green Leaf Kitchen</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1A1A2E',
+                        'secondary': '#16213E',
+                        'accent': '#E94560',
+                        'accent-light': '#FFE8EC',
+                        'warm': '#F8F4F0',
+                        'muted': '#6B7280',
+                        'success': '#059669',
+                        'warning': '#D97706',
+                        'danger': '#DC2626',
+                        'card': '#FFFFFF',
+                        'border': '#E5E7EB',
+                    },
+                    fontFamily: {
+                        'sans': ['DM Sans', 'sans-serif'],
+                        'display': ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #F8F4F0;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 180px; /* Space for bottom total bar */
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.03);
+        }
+        .back-btn {
+            width: 40px; height: 40px;
+            background: #F3F4F6; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s; border: none;
+        }
+        .back-btn:hover { background: #E5E7EB; }
+
+        /* Cart Item Card */
+        .cart-item-card {
+            background: white;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 14px;
+            display: flex;
+            gap: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+        .cart-item-img {
+            width: 80px; height: 80px;
+            border-radius: 14px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .qty-control-small {
+            display: flex; align-items: center; gap: 8px;
+            background: #F3F4F6; border-radius: 8px; padding: 4px 6px;
+        }
+        .qty-s-btn {
+            width: 26px; height: 26px;
+            border-radius: 6px; background: white;
+            border: 1px solid #E5E7EB;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-weight: 600; color: #1A1A2E;
+            transition: all 0.2s;
+        }
+        .qty-s-btn:hover { background: #E94560; color: white; border-color: #E94560; }
+        
+        .remove-btn {
+            position: absolute;
+            top: 12px; right: 12px;
+            width: 28px; height: 28px;
+            background: #FEF2F2;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+        .remove-btn:hover { background: #DC2626; }
+        .remove-btn:hover svg { stroke: white; }
+
+        /* Bottom Total Bar */
+        .bottom-checkout-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: white;
+            padding: 16px 20px;
+            padding-bottom: max(16px, env(safe-area-inset-bottom));
+            box-shadow: 0 -4px 30px rgba(0,0,0,0.08);
+            z-index: 50;
+        }
+        .checkout-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #E94560 0%, #C73E54 100%);
+            color: white; border: none;
+            padding: 16px;
+            border-radius: 16px;
+            font-size: 16px; font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(233, 69, 96, 0.35);
+            display: flex; justify-content: space-between; align-items: center;
+            transition: all 0.3s;
+        }
+        .checkout-btn:active { transform: scale(0.98); }
+
+        /* Empty State */
+        .empty-state {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .empty-icon {
+            width: 100px; height: 100px;
+            background: #FFE8EC;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 200px; left: 50%; transform: translateX(-50%);
+            background: #1A1A2E; color: white; padding: 12px 24px; border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2); opacity: 0; pointer-events: none;
+            z-index: 200; font-size: 14px; font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="max-w-lg mx-auto flex items-center gap-4">
+            <button class="back-btn" onclick="goBack()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+            <div>
+                <h1 class="text-lg font-bold text-primary">My Cart</h1>
+                <p id="itemCountText" class="text-xs text-muted">0 items</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="px-4 pt-4 max-w-lg mx-auto">
+        
+        <!-- Empty State (Hidden by default) -->
+        <div id="emptyState" class="empty-state hidden">
+            <div class="empty-icon">
+                <svg class="w-12 h-12 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+            </div>
+            <h2 class="text-xl font-bold text-primary mb-2">Your Cart is Empty</h2>
+            <p class="text-sm text-muted mb-6">Looks like you haven't added anything to your cart yet.</p>
+            <button onclick="goBack()" class="px-6 py-3 bg-accent text-white font-semibold rounded-xl">
+                Start Ordering
+            </button>
+        </div>
+
+        <!-- Items List -->
+        <div id="cartItemsList">
+            <!-- Items injected here via JS -->
+        </div>
+
+    </main>
+
+    <!-- Bottom Checkout Bar -->
+    <div id="checkoutBar" class="bottom-checkout-bar">
+        <div class="max-w-lg mx-auto">
+            <!-- Price Breakdown -->
+            <div class="mb-3 px-1">
+                <div class="flex justify-between text-sm mb-1">
+                    <span class="text-muted">Subtotal</span>
+                    <span id="subtotal" class="font-medium text-primary">₹0</span>
+                </div>
+                <div class="flex justify-between text-sm mb-1">
+                    <span class="text-muted">Delivery Fee</span>
+                    <span class="font-medium text-success">FREE</span>
+                </div>
+                <div class="border-t border-dashed my-2"></div>
+                <div class="flex justify-between">
+                    <span class="font-bold text-primary">Total</span>
+                    <span id="grandTotal" class="font-bold text-accent text-lg">₹0</span>
+                </div>
+            </div>
+
+            <!-- Checkout Button -->
+            <button id="checkoutBtn" class="checkout-btn">
+                <span>Proceed to Checkout</span>
+                <span id="totalItemsBtn">0 items</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"><span id="toastMsg">Item removed</span></div>
+
+    <script>
+        // ==========================================
+        // LOGIC
+        // ==========================================
+        
+        // 1. Get Cart from Storage
+        function getCart() {
+            const cart = localStorage.getItem('greenLeafCart');
+            return cart ? JSON.parse(cart) : [];
+        }
+
+        // 2. Save Cart
+        function saveCart(cart) {
+            localStorage.setItem('greenLeafCart', JSON.stringify(cart));
+            renderAll(); // Re-render UI
+        }
+
+        // 3. Render Everything
+        function renderAll() {
+            const cart = getCart();
+            const listContainer = document.getElementById('cartItemsList');
+            const emptyState = document.getElementById('emptyState');
+            const checkoutBar = document.getElementById('checkoutBar');
+            
+            if (cart.length === 0) {
+                listContainer.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                checkoutBar.classList.add('hidden');
+                document.getElementById('itemCountText').textContent = '0 items';
+            } else {
+                emptyState.classList.add('hidden');
+                checkoutBar.classList.remove('hidden');
+                
+                // Render Items
+                listContainer.innerHTML = '';
+                let subtotal = 0;
+                let totalQty = 0;
+
+                cart.forEach((item, index) => {
+                    const itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
+                    totalQty += item.quantity;
+
+                    const card = document.createElement('div');
+                    card.className = 'cart-item-card fade-in';
+                    card.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}" class="cart-item-img">
+                        <div class="flex-1 flex flex-col justify-between py-1">
+                            <div>
+                                <h3 class="font-semibold text-primary text-sm leading-tight">${item.name}</h3>
+                                <p class="text-xs text-muted mt-1">₹${item.price} each</p>
+                            </div>
+                            <div class="flex justify-between items-center mt-2">
+                                <div class="qty-control-small">
+                                    <button class="qty-s-btn" onclick="updateQty(${item.id}, -1)">−</button>
+                                    <span class="text-sm font-bold w-6 text-center">${item.quantity}</span>
+                                    <button class="qty-s-btn" onclick="updateQty(${item.id}, 1)">+</button>
+                                </div>
+                                <span class="font-bold text-primary">₹${itemTotal}</span>
+                            </div>
+                        </div>
+                        <button class="remove-btn" onclick="removeItem(${item.id})">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-danger" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    `;
+                    listContainer.appendChild(card);
+                    
+                    // Simple entrance animation
+                    gsap.fromTo(card, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, delay: index * 0.05 });
+                });
+
+                // Update Summary
+                document.getElementById('itemCountText').textContent = `${totalQty} items`;
+                document.getElementById('subtotal').textContent = `₹${subtotal}`;
+                document.getElementById('grandTotal').textContent = `₹${subtotal}`;
+                document.getElementById('totalItemsBtn').textContent = `${totalQty} items`;
+            }
+        }
+
+        // 4. Update Quantity
+        function updateQty(id, change) {
+            let cart = getCart();
+            const itemIndex = cart.findIndex(item => item.id === id);
+            
+            if (itemIndex > -1) {
+                cart[itemIndex].quantity += change;
+                
+                // If quantity becomes 0, remove item
+                if (cart[itemIndex].quantity <= 0) {
+                    removeItem(id);
+                    return;
+                }
+            }
+            saveCart(cart);
+        }
+
+        // 5. Remove Item
+        function removeItem(id) {
+            let cart = getCart();
+            cart = cart.filter(item => item.id !== id);
+            saveCart(cart);
+            showToast('Item removed from cart');
+        }
+
+        // 6. Toast
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            gsap.timeline()
+                .to(toast, { opacity: 1, y: -10, duration: 0.3 })
+                .to(toast, { opacity: 0, y: 0, duration: 0.3, delay: 1.5 });
+        }
+
+        function goBack() {
+            // Go back to detail page or menu
+            window.history.back(); 
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', renderAll);
+    </script>
+</body>
+</html>
