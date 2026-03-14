@@ -114,19 +114,6 @@
         }
         .tag:hover { transform: translateY(-2px); }
 
-        /* Info Pills - Generic for Grid */
-        .info-pill {
-            background: #F9FAFB;
-            border: 1px solid #E5E7EB;
-            border-radius: 14px;
-            padding: 14px;
-            transition: all 0.3s ease;
-        }
-        .info-pill:hover {
-            border-color: #E94560;
-            box-shadow: 0 4px 20px rgba(233, 69, 96, 0.1);
-        }
-
         /* Ingredient Item */
         .ingredient-item {
             display: flex;
@@ -305,20 +292,26 @@
         }
 
         /* ========================================== */
-        /* AVAILABILITY STATUS CARDS */
+        /* UNIFIED STATUS/INFO CARD STYLE */
         /* ========================================== */
         .status-card {
-            border-radius: 16px; padding: 16px; margin-bottom: 16px;
+            border-radius: 16px; padding: 16px; margin-bottom: 12px;
             border: 1px solid; transition: all 0.3s ease;
+            background: #F9FAFB; /* Default bg */
         }
 
         .status-available { background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%); border-color: #A7F3D0; }
         .status-few-left { background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%); border-color: #FCD34D; }
-        
         .status-out-of-stock {
             background: linear-gradient(135deg, #FEF2F2 0%, #FECACA 100%);
             border-color: #FCA5A5;
             animation: shakeAndPulse 2s infinite;
+        }
+        
+        /* Generic Info Card Style (Neutral) */
+        .info-card-neutral {
+            background: #FFFFFF;
+            border-color: #E5E7EB;
         }
 
         @keyframes shakeAndPulse {
@@ -347,48 +340,19 @@
             50% { opacity: 0.5; transform: scale(1.2); }
         }
 
-        /* ========================================== */
-        /* PREP TIME & CARRY OUT STYLES (Same Size) */
-        /* ========================================== */
-        .info-box {
-            background: #F9FAFB;
-            border: 1px solid #E5E7EB;
-            border-radius: 14px;
-            padding: 14px;
-            transition: all 0.3s ease;
-        }
-        .info-box:hover {
-            border-color: #E94560;
-            box-shadow: 0 4px 20px rgba(233, 69, 96, 0.1);
-        }
-
-        .info-box-heading {
-            font-size: 12px;
-            font-weight: 700;
-            color: #1A1A2E;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .info-box-text {
-            font-size: 14px;
-            color: #6B7280;
-            line-height: 1.5;
-        }
-
         .countdown-timer {
             font-weight: 700;
             color: #E94560;
         }
         
-        .highlight-number {
-            font-weight: 700;
-            color: #1A1A2E;
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 110px; left: 50%; transform: translateX(-50%);
+            background: #1A1A2E; color: white; padding: 12px 20px; border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2); opacity: 0; pointer-events: none;
+            z-index: 200; font-size: 13px; font-weight: 500; max-width: 90%; text-align: center;
         }
+        @media (min-width: 391px) { .toast { bottom: 120px; font-size: 14px; } }
 
         /* ========================================== */
         /* FEEDBACK FORM STYLES */
@@ -422,15 +386,6 @@
         }
         .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(5, 150, 105, 0.4); }
         .submit-btn:active { transform: scale(0.98); }
-
-        /* Toast */
-        .toast {
-            position: fixed; bottom: 110px; left: 50%; transform: translateX(-50%);
-            background: #1A1A2E; color: white; padding: 12px 20px; border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2); opacity: 0; pointer-events: none;
-            z-index: 200; font-size: 13px; font-weight: 500; max-width: 90%; text-align: center;
-        }
-        @media (min-width: 391px) { .toast { bottom: 120px; font-size: 14px; } }
 
         @supports (padding-bottom: env(safe-area-inset-bottom)) {
             body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
@@ -500,38 +455,49 @@
         </section>
 
         <!-- Section 4: Availability Status Card -->
-        <section id="availabilitySection" class="mb-5 fade-up">
+        <section id="availabilitySection" class="mb-3 fade-up">
             <!-- Populated by JS -->
         </section>
 
-        <!-- Section 5: Preparation Time & Carry Out (Grid) -->
-        <section class="grid grid-cols-2 gap-3 mb-5 fade-up">
-            <!-- Prep Time Box -->
-            <div class="info-box">
-                <div class="info-box-heading">
-                    <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    Preparation Time
+        <!-- Section 5: Preparation Time & Carry Out (Vertical Stack) -->
+        <section class="flex flex-col gap-3 mb-5 fade-up">
+            
+            <!-- Prep Time Card -->
+            <div class="status-card info-card-neutral">
+                <div class="flex items-center gap-4">
+                    <div class="status-icon bg-accent/10">
+                        <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-base font-bold text-primary">Preparation Time</span>
+                        </div>
+                        <p class="text-xs text-muted">
+                            Ready in <span id="prepTime" class="countdown-timer">10:00</span> mins.
+                        </p>
+                    </div>
                 </div>
-                <p class="info-box-text">
-                    Ready in 
-                    <span id="prepTime" class="countdown-timer">10:00</span> 
-                    mins.
-                </p>
             </div>
 
-            <!-- Carry Out Box (FIXED TEXT) -->
-            <div class="info-box">
-                <div class="info-box-heading">
-                    <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
-                    </svg>
-                    Hurry up!
+            <!-- Carry Out Card -->
+            <div class="status-card info-card-neutral">
+                <div class="flex items-center gap-4">
+                    <div class="status-icon bg-success/10">
+                        <svg class="w-6 h-6 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-base font-bold text-primary">Hurry up!</span>
+                        </div>
+                        <p class="text-xs text-muted">
+                            Only a few left.
+                        </p>
+                    </div>
                 </div>
-                <p class="info-box-text">
-                    Only a few left.
-                </p>
             </div>
         </section>
 
