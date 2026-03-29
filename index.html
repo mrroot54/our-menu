@@ -58,7 +58,7 @@
             margin-bottom: 12px;
             border-radius: 16px;
             border: 1px solid #F1F5F9;
-            /* 🐢 SLOWED DOWN: 0.3s -> 0.6s */
+            cursor: pointer;
             transition: box-shadow 0.6s ease, transform 0.5s ease;
         }
         
@@ -66,9 +66,11 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.06);
             transform: translateY(-2px);
         }
+        .menu-item-card:active {
+            transform: scale(0.98);
+        }
 
         .img-zoom-container { overflow: hidden; border-radius: 12px; }
-        /* 🐢 SLOWED DOWN: 0.6s -> 1.2s */
         .img-zoom-container img { transition: transform 1.2s ease; }
         .menu-item-card:hover .img-zoom-container img { transform: scale(1.05); }
 
@@ -158,7 +160,7 @@
             opacity: 0; 
             transform: translateY(-100px);
         }
-        /* 🐢 SLOWED DOWN: 1s -> 2s */
+        .special-card:active { transform: scale(0.98); }
         .special-card img {
             width: 100%;
             height: 100%;
@@ -179,6 +181,15 @@
             flex-direction: column;
             justify-content: center;
             padding: 20px;
+        }
+
+        /* Pick card clickable */
+        .pick-card {
+            cursor: pointer;
+            transition: transform 0.4s ease;
+        }
+        .pick-card:active {
+            transform: scale(0.96);
         }
     </style>
 </head>
@@ -233,7 +244,7 @@
         <!-- TODAY'S SPECIAL SECTION -->
         <section class="mb-10 anim-section" id="specialSection">
             <div class="flex justify-between items-center mb-4 fade-up">
-                <h2 class="text-xs font-semibold uppercase tracking-widest text-muted">Today’s Special ⭐</h2>
+                <h2 class="text-xs font-semibold uppercase tracking-widest text-muted">Today's Special ⭐</h2>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="specialsContainer"></div>
         </section>
@@ -268,9 +279,7 @@
         <!-- THANK YOU SECTION -->
         <section class="mb-10 fade-up">
             <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-brand-light via-white to-brand-light p-6 border border-brand/10 text-center shadow-sm">
-                <!-- Decorative Blur -->
                 <div class="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-20 bg-brand/10 blur-3xl rounded-full"></div>
-                
                 <div class="relative z-10">
                     <div class="inline-block bg-white p-2 rounded-xl shadow-sm mb-3">
                         <span class="text-2xl">🌿</span>
@@ -304,7 +313,6 @@
         ];
 
         const menuItems = [
-            // --- SALADS ---
             { id: 1, category_id: 1, name: "Greek Salad", desc: "Cucumber, tomatoes, olives, feta", price: "220", img: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=400", top: true },
             { id: 2, category_id: 1, name: "Caesar Salad", desc: "Lettuce, croutons, parmesan", price: "200", img: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?auto=format&fit=crop&w=400", top: false },
             { id: 3, category_id: 1, name: "Sprouts Salad", desc: "Lentils, onions, tomatoes", price: "150", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400", top: false },
@@ -321,7 +329,6 @@
             { id: 14, category_id: 1, name: "Asian Slaw", desc: "Cabbage, carrot, sesame", price: "150", img: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?auto=format&fit=crop&w=400", top: false },
             { id: 15, category_id: 1, name: "Avocado Salad", desc: "Fresh avocado, lime", price: "250", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400", top: false },
 
-            // --- MAIN COURSE ---
             { id: 16, category_id: 2, name: "Quinoa Bowl", desc: "Veggies, hummus", price: "320", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400", top: true },
             { id: 17, category_id: 2, name: "Grilled Salmon", desc: "Asparagus, lemon", price: "450", img: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=800", top: true, special: true },
             { id: 18, category_id: 2, name: "Veg Wrap", desc: "Paneer, greens", price: "180", img: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=400", top: false },
@@ -335,7 +342,6 @@
             { id: 26, category_id: 2, name: "Veg Burger", desc: "Aloo patty, whole wheat", price: "190", img: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=400", top: false },
             { id: 27, category_id: 2, name: "Falafel Wrap", desc: "Chickpeas, hummus", price: "210", img: "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=400", top: false },
 
-            // --- SMOOTHIES ---
             { id: 28, category_id: 3, name: "Green Detox", desc: "Spinach, apple", price: "130", img: "https://images.unsplash.com/photo-1610970881699-44a5587cabec?auto=format&fit=crop&w=400", top: true },
             { id: 29, category_id: 3, name: "Berry Blast", desc: "Mixed berries", price: "140", img: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=400", top: false },
             { id: 30, category_id: 3, name: "Mango Magic", desc: "Mango, honey", price: "120", img: "https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=800", top: true, special: true },
@@ -345,7 +351,6 @@
             { id: 34, category_id: 3, name: "Oreo Shake", desc: "Oreo, vanilla ice cream", price: "150", img: "https://images.unsplash.com/photo-1610970881699-44a5587cabec?auto=format&fit=crop&w=400", top: false },
             { id: 35, category_id: 3, name: "Chikoo Shake", desc: "Sapota, milk", price: "90", img: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=400", top: false },
 
-            // --- DESSERTS ---
             { id: 36, category_id: 4, name: "Chia Pudding", desc: "Almond milk, fruits", price: "160", img: "https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=400", top: true },
             { id: 37, category_id: 4, name: "Fruit Yogurt", desc: "Low fat yogurt", price: "110", img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=400", top: false },
             { id: 38, category_id: 4, name: "Dark Choco Mousse", desc: "Avocado base", price: "190", img: "https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?auto=format&fit=crop&w=400", top: false },
@@ -357,6 +362,21 @@
             { id: 44, category_id: 4, name: "Apple Pie", desc: "Warm, cinnamon", price: "170", img: "https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?auto=format&fit=crop&w=400", top: false },
             { id: 45, category_id: 4, name: "Tiramisu", desc: "Coffee flavored", price: "210", img: "https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=400", top: false },
         ];
+
+        // ==========================================
+        // 🔨 REDIRECT HELPER
+        // ==========================================
+        function goToItemPage(item) {
+            const params = new URLSearchParams({
+                id: item.id,
+                name: item.name,
+                desc: item.desc,
+                price: item.price,
+                img: item.img,
+                category_id: item.category_id
+            });
+            window.location.href = `item3.html?${params.toString()}`;
+        }
 
         // ==========================================
         // 🔨 DOM ELEMENTS
@@ -374,7 +394,6 @@
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
         
-        // Section Elements
         const specialSection = document.getElementById('specialSection');
         const sliderSection = document.getElementById('sliderSection');
         const categorySection = document.getElementById('categorySection');
@@ -391,44 +410,36 @@
         // ⚡ INIT
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Basic Fade Up - 🐢 SLOWED (0.8 -> 1.6)
             gsap.to(".fade-up", { opacity: 1, y: 0, duration: 1.6, stagger: 0.2, ease: "power2.out" });
             
-            // 2. Render Content
             renderTopPicks();
             renderCategories();
             renderSpecials(); 
             applyFilter('all');
             
-            // 3. Initialize Events
             initEvents();
             initSlider();
-
-            // 4. Sequence Animation for Sections
             initSectionAnimations();
         });
 
         // ==========================================
-        // 🎬 SECTION ANIMATIONS (SLOWED)
+        // 🎬 SECTION ANIMATIONS
         // ==========================================
         function initSectionAnimations() {
             const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-            // 🐢 SLOWED (0.8 -> 1.5)
             tl.fromTo(specialSection, 
                 { opacity: 0, y: -50 }, 
                 { opacity: 1, y: 0, duration: 1.5 }, 
                 "+=0.4"
             );
 
-            // 🐢 SLOWED (0.8 -> 1.5)
             tl.fromTo(sliderSection, 
                 { opacity: 0, x: 100 }, 
                 { opacity: 1, x: 0, duration: 1.5 }, 
                 "-=0.8"
             );
 
-            // 🐢 SLOWED (0.5 -> 1.0)
             tl.fromTo(categorySection, 
                 { opacity: 0, scale: 0.9 }, 
                 { opacity: 1, scale: 1, duration: 1.0 }, 
@@ -449,7 +460,6 @@
             const maxScroll = (totalCards * cardWidth) - containerWidth;
             if (Math.abs(sliderPosition) < maxScroll) {
                 sliderPosition -= cardWidth * 1;
-                // 🐢 SLOWED (0.4 -> 0.8)
                 gsap.to(topPicksContainer, { x: sliderPosition, duration: 0.8, ease: "power2.out" });
             }
             updateSliderButtons();
@@ -457,7 +467,6 @@
         function slidePrev() {
             if (sliderPosition < 0) {
                 sliderPosition += cardWidth * 1;
-                // 🐢 SLOWED (0.4 -> 0.8)
                 gsap.to(topPicksContainer, { x: sliderPosition, duration: 0.8, ease: "power2.out" });
             }
             updateSliderButtons();
@@ -493,10 +502,11 @@
                         </div>
                     </div>
                 `;
+                // ✅ CLICK → REDIRECT
+                card.addEventListener('click', () => goToItemPage(item));
                 specialsContainer.appendChild(card);
             });
 
-            // 🐢 SLOWED (1.2 -> 2.5)
             gsap.to(".special-card", {
                 y: 0, opacity: 1,
                 duration: 2.5, stagger: 0.3,
@@ -519,6 +529,8 @@
                             <button class="w-full text-center text-xs font-semibold bg-brand text-white py-1.5 rounded-full">View</button>
                         </div>
                     </div>`;
+                // ✅ CLICK → REDIRECT (poora card clickable)
+                card.addEventListener('click', () => goToItemPage(item));
                 topPicksContainer.appendChild(card);
             });
         }
@@ -589,15 +601,13 @@
         }
 
         // ==========================================
-        // ⭐ ANIMATION LOGIC (SLOWED)
+        // ⭐ ANIMATION LOGIC
         // ==========================================
         function animateMenuRendering(items, startIndex) {
-            // 🐢 SLOWED OUT (0.3 -> 0.6)
             gsap.to("#menuList > div", {
                 opacity: 0, y: -10, stagger: 0.04, duration: 0.6, ease: "power2.in",
                 onComplete: () => {
                     renderMenuItems(items, startIndex);
-                    // 🐢 SLOWED IN (0.5 -> 1.2)
                     gsap.fromTo("#menuList > div", 
                         { opacity: 0, y: 50, scale: 0.9 }, 
                         { opacity: 1, y: 0, scale: 1, stagger: 0.08, duration: 1.2, ease: "back.out(1.2)" }
@@ -632,6 +642,8 @@
                             <img src="${item.img}" class="w-full h-full object-cover">
                         </div>
                     </div>`;
+                // ✅ CLICK → REDIRECT (poora card clickable)
+                card.addEventListener('click', () => goToItemPage(item));
                 menuList.appendChild(card);
             });
         }
@@ -645,13 +657,11 @@
 
             searchBtn.addEventListener('click', () => {
                 searchOverlay.classList.remove('hidden');
-                // 🐢 SLOWED (0.3 -> 0.6)
                 gsap.fromTo(searchOverlay, { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" });
                 setTimeout(() => searchInput.focus(), 100);
             });
 
             const closeSearch = () => {
-                // 🐢 SLOWED (0.2 -> 0.4)
                 gsap.to(searchOverlay, { y: -20, opacity: 0, duration: 0.4, onComplete: () => searchOverlay.classList.add('hidden') });
                 searchInput.value = '';
                 applyFilter(currentFilter);
