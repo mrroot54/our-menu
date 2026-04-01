@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -18,7 +19,6 @@
                         sidebar: '#0c1222',
                         sidebarHover: '#151f32',
                         surface: '#f8fafc',
-                        card: '#ffffff',
                         accent: '#10b981',
                         info: '#06b6d4',
                         warning: '#f59e0b',
@@ -37,485 +37,588 @@
         }
     </script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; }
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .sidebar { transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
-        .sidebar-overlay { transition: opacity 0.3s ease; }
-        .nav-item { position: relative; transition: all 0.2s ease; }
-        .nav-item.active { background: rgba(217, 119, 6, 0.12); }
-        .nav-item.active::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px; background: #d97706; border-radius: 0 4px 4px 0; }
-        .nav-item:hover:not(.active) { background: #151f32; }
-        .stat-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
-        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); }
-        .stat-card:active { transform: translateY(-1px); }
-        .table-row { transition: background 0.15s ease; }
-        .table-row:hover { background: #f8fafc; }
-        .badge-pulse { animation: pulse-dot 2s infinite; }
-        @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .toast-enter { animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        @keyframes slideInRight { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        .toast-exit { animation: slideOutRight 0.3s ease forwards; }
-        @keyframes slideOutRight { to { transform: translateX(120%); opacity: 0; } }
-        .page-btn { min-width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 14px; font-weight: 500; transition: all 0.15s ease; }
-        .page-btn:hover:not(.active):not(:disabled) { background: #f1f5f9; }
-        .page-btn.active { background: #d97706; color: white; }
-        .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-        @media (max-width: 640px) { .stat-card { border-radius: 12px; } }
+        body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc}
+        ::-webkit-scrollbar{width:5px;height:5px}
+        ::-webkit-scrollbar-track{background:transparent}
+        ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:10px}
+        .sidebar{transition:transform .35s cubic-bezier(.4,0,.2,1)}
+        .sidebar-overlay{transition:opacity .3s ease}
+        .nav-item{position:relative;transition:all .2s ease}
+        .nav-item.active{background:rgba(217,119,6,.12)}
+        .nav-item.active::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;background:#d97706;border-radius:0 4px 4px 0}
+        .nav-item:hover:not(.active){background:#151f32}
+        .stat-card{transition:transform .25s ease,box-shadow .25s ease}
+        .stat-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,.08)}
+        .stat-card:active{transform:translateY(-1px)}
+        .table-row{transition:background .15s ease}
+        .table-row:hover{background:#f8fafc}
+        .badge-pulse{animation:pulse-dot 2s infinite}
+        @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.5}}
+        .toast-enter{animation:slideInRight .4s cubic-bezier(.16,1,.3,1)}
+        @keyframes slideInRight{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
+        .toast-exit{animation:slideOutRight .3s ease forwards}
+        @keyframes slideOutRight{to{transform:translateX(120%);opacity:0}}
+        .page-btn{min-width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:14px;font-weight:500;transition:all .15s ease}
+        .page-btn:hover:not(.active):not(:disabled){background:#f1f5f9}
+        .page-btn.active{background:#d97706;color:white}
+        .page-btn:disabled{opacity:.4;cursor:not-allowed}
+        .status-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+        .glow{position:fixed;border-radius:50%;filter:blur(80px);opacity:.04;pointer-events:none;z-index:0}
+        .quick-card{transition:all .2s ease}
+        .quick-card:hover{transform:translateX(4px)}
     </style>
 </head>
 <body>
 
-    <!-- Sidebar Overlay -->
-    <div id="sidebarOverlay" class="sidebar-overlay fixed inset-0 bg-black/50 z-40 opacity-0 pointer-events-none lg:hidden" onclick="toggleSidebar()"></div>
+<div class="glow w-[400px] h-[400px] bg-brand top-[10%] right-[-100px]"></div>
+<div class="glow w-[300px] h-[300px] bg-info bottom-[10%] left-[-80px]"></div>
 
-    <!-- ==================== SIDEBAR ==================== -->
-    <aside id="sidebar" class="sidebar fixed top-0 left-0 h-full w-[260px] bg-sidebar z-50 flex flex-col -translate-x-full lg:translate-x-0">
-        <!-- Logo -->
-        <div class="flex items-center gap-3 px-5 py-5 border-b border-white/5">
-            <div class="w-9 h-9 rounded-xl bg-brand flex items-center justify-center flex-shrink-0">
-                <i class="fa-solid fa-building text-white text-base"></i>
+<!-- Sidebar Overlay -->
+<div id="sidebarOverlay" class="sidebar-overlay fixed inset-0 bg-black/50 z-40 opacity-0 pointer-events-none lg:hidden" onclick="toggleSidebar()"></div>
+
+<!-- ==================== SIDEBAR ==================== -->
+<aside id="sidebar" class="sidebar fixed top-0 left-0 h-full w-[260px] bg-sidebar z-50 flex flex-col -translate-x-full lg:translate-x-0">
+    <div class="flex items-center gap-3 px-5 py-5 border-b border-white/5">
+        <div class="w-9 h-9 rounded-xl bg-brand flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-building text-white text-base"></i></div>
+        <div class="flex-1 min-w-0">
+            <h1 class="font-display font-bold text-white text-lg leading-tight">Prop<span class="text-brand">QR</span></h1>
+            <p class="text-[10px] text-textMuted tracking-wide">Admin Panel</p>
+        </div>
+        <button onclick="toggleSidebar()" class="lg:hidden text-textMuted hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+
+    <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+        <p class="text-[10px] uppercase tracking-widest text-textMuted/50 font-semibold px-3 mb-2">Main Menu</p>
+        <a href="#" class="nav-item active flex items-center gap-3 px-3 py-2.5 rounded-lg text-white text-sm font-medium">
+            <i class="fa-solid fa-grid-2 w-5 text-center text-brand"></i><span>Dashboard</span>
+        </a>
+        <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-textMuted hover:text-white text-sm font-medium">
+            <i class="fa-solid fa-building w-5 text-center"></i><span>Properties</span>
+        </a>
+        <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-textMuted hover:text-white text-sm font-medium">
+            <i class="fa-solid fa-plus w-5 text-center"></i><span>Add Property</span>
+        </a>
+        <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-textMuted hover:text-white text-sm font-medium">
+            <i class="fa-solid fa-users w-5 text-center"></i><span>Leads</span>
+            <span class="ml-auto bg-brand text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">47</span>
+        </a>
+        <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-textMuted hover:text-white text-sm font-medium">
+            <i class="fa-solid fa-qrcode w-5 text-center"></i><span>QR Codes</span>
+        </a>
+
+        <p class="text-[10px] uppercase tracking-widest text-textMuted/50 font-semibold px-3 mb-2 mt-6">Settings</p>
+        <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-textMuted hover:text-white text-sm font-medium">
+            <i class="fa-solid fa-gear w-5 text-center"></i><span>Settings</span>
+        </a>
+        <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-textMuted hover:text-white text-sm font-medium">
+            <i class="fa-solid fa-circle-question w-5 text-center"></i><span>Help</span>
+        </a>
+    </nav>
+
+    <div class="border-t border-white/5 p-4">
+        <div class="flex items-center gap-3">
+            <div class="relative flex-shrink-0">
+                <div class="w-10 h-10 rounded-full bg-brand/20 flex items-center justify-center"><i class="fa-solid fa-user text-brand"></i></div>
+                <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-accent border-2 border-sidebar rounded-full badge-pulse"></span>
             </div>
             <div class="flex-1 min-w-0">
-                <h1 class="font-display font-bold text-white text-lg leading-tight">Prop<span class="text-brand">QR</span></h1>
-                <p class="text-[10px] text-textMuted tracking-wide">Admin Panel</p>
+                <p class="text-white text-sm font-semibold truncate">Rahul Sharma</p>
+                <p class="text-textMuted text-[11px] truncate">rahul@propqr.in</p>
             </div>
-            <button onclick="toggleSidebar()" class="lg:hidden text-textMuted hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <button class="text-textMuted hover:text-danger transition" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+    </div>
+</aside>
+
+<!-- ==================== MAIN ==================== -->
+<div class="lg:ml-[260px] min-h-screen relative z-10">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-border">
+        <div class="flex items-center gap-3 px-4 sm:px-6 py-3">
+            <button onclick="toggleSidebar()" class="lg:hidden flex items-center justify-center w-10 h-10 rounded-xl hover:bg-surface transition text-textPrimary"><i class="fa-solid fa-bars text-lg"></i></button>
+            <div class="flex-1 min-w-0">
+                <h2 class="font-display font-bold text-textPrimary text-lg sm:text-xl truncate">Dashboard</h2>
+                <p class="text-textMuted text-xs sm:text-sm hidden sm:block">Welcome back, Rahul. Here's your property overview.</p>
+            </div>
+            <div class="hidden sm:flex items-center bg-surface rounded-xl px-3 py-2 w-56 border border-transparent focus-within:border-brand/40 focus-within:bg-white transition">
+                <i class="fa-solid fa-magnifying-glass text-textMuted text-sm mr-2"></i>
+                <input type="text" placeholder="Search properties..." class="bg-transparent outline-none text-sm text-textPrimary placeholder-textMuted w-full">
+            </div>
+            <div class="relative">
+                <button onclick="toggleNotif()" class="flex items-center justify-center w-10 h-10 rounded-xl hover:bg-surface transition text-textSecondary relative">
+                    <i class="fa-solid fa-bell text-lg"></i>
+                    <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-danger rounded-full border-2 border-white badge-pulse"></span>
+                </button>
+                <div id="notifPanel" class="hidden absolute right-0 top-full mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-border overflow-hidden">
+                    <div class="px-4 py-3 border-b border-border flex items-center justify-between">
+                        <h3 class="font-display font-bold text-textPrimary text-sm">Notifications</h3>
+                        <span class="text-[11px] text-brand font-semibold cursor-pointer hover:underline">Mark all read</span>
+                    </div>
+                    <div class="max-h-64 overflow-y-auto">
+                        <div class="px-4 py-3 hover:bg-surface transition border-l-2 border-brand"><p class="text-sm text-textPrimary font-medium">New lead for Luxury 3BHK</p><p class="text-xs text-textMuted mt-0.5">Vikram Singh — 2 min ago</p></div>
+                        <div class="px-4 py-3 hover:bg-surface transition border-l-2 border-brand"><p class="text-sm text-textPrimary font-medium">New lead for Premium Villa</p><p class="text-xs text-textMuted mt-0.5">Priya Patel — 15 min ago</p></div>
+                        <div class="px-4 py-3 hover:bg-surface transition border-l-2 border-transparent"><p class="text-sm text-textPrimary font-medium">Property "Modern 2BHK" updated</p><p class="text-xs text-textMuted mt-0.5">1 hour ago</p></div>
+                        <div class="px-4 py-3 hover:bg-surface transition border-l-2 border-transparent"><p class="text-sm text-textPrimary font-medium">QR code downloaded</p><p class="text-xs text-textMuted mt-0.5">3 hours ago</p></div>
+                    </div>
+                    <div class="px-4 py-2.5 border-t border-border text-center"><a href="#" class="text-xs text-brand font-semibold hover:underline">View all</a></div>
+                </div>
+            </div>
+            <div class="hidden sm:flex items-center gap-2.5 pl-3 border-l border-border ml-1">
+                <div class="w-9 h-9 rounded-full bg-brand/10 flex items-center justify-center"><i class="fa-solid fa-user text-brand text-sm"></i></div>
+                <div class="hidden md:block">
+                    <p class="text-sm font-semibold text-textPrimary leading-tight">Rahul Sharma</p>
+                    <p class="text-[11px] text-textMuted">Admin</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Content -->
+    <main class="p-4 sm:p-6 space-y-6">
+
+        <!-- Date + Actions -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-2 text-sm text-textSecondary">
+                <i class="fa-regular fa-calendar text-brand"></i>
+                <span id="currentDate" class="font-medium"></span>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="showToast('Leads exported successfully!','success')" class="flex items-center gap-2 px-4 py-2.5 bg-white border border-border rounded-xl text-sm font-medium text-textPrimary hover:bg-surface transition active:scale-95">
+                    <i class="fa-solid fa-file-export text-brand text-xs"></i><span class="hidden xs:inline">Export Leads</span>
+                </button>
+                <button onclick="showToast('Redirecting to Add Property...','info')" class="flex items-center gap-2 px-4 py-2.5 bg-brand hover:bg-brandDark text-white rounded-xl text-sm font-semibold transition active:scale-95 shadow-lg shadow-brand/20">
+                    <i class="fa-solid fa-plus text-xs"></i> Add Property
+                </button>
+            </div>
         </div>
 
-        <!-- Nav -->
-        <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-            <p class="text-[10px] uppercase tracking-widest text-textMuted/50 font-semibold px-3 mb-2">Main Menu</p>
-            
-            <a href="/dashboard" class="nav-item active flex items-center gap-3 px-3 py-2.5 rounded-lg text-white text-sm font-medium">
-                <i class="fa-solid fa-grid-2 w-5 text-center text-brand"></i><span>Dashboard</span>
-            </a>
-            <a href="/admin/properties" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-textMuted hover:text-white text-sm font-medium">
-                <i class="fa-solid fa-building w-5 text-center"></i><span>Properties</span>
-            </a>
-            <a href="/admin/properties/create" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-textMuted hover:text-white text-sm font-medium">
-                <i class="fa-solid fa-plus w-5 text-center"></i><span>Add Property</span>
-            </a>
-            <a href="/admin/leads" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-textMuted hover:text-white text-sm font-medium">
-                <i class="fa-solid fa-users w-5 text-center"></i><span>Leads</span>
-                <span class="ml-auto bg-brand text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full" id="leadCountBadge">0</span>
-            </a>
-
-            <p class="text-[10px] uppercase tracking-widest text-textMuted/50 font-semibold px-3 mb-2 mt-6">Settings</p>
-            <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-textMuted hover:text-white text-sm font-medium">
-                <i class="fa-solid fa-gear w-5 text-center"></i><span>Settings</span>
-            </a>
-        </nav>
-
-        <!-- User -->
-        <div class="border-t border-white/5 p-4">
-            <div class="flex items-center gap-3">
-                <div class="relative flex-shrink-0">
-                    <div class="w-10 h-10 rounded-full bg-brand/20 flex items-center justify-center">
-                        <i class="fa-solid fa-user text-brand"></i>
-                    </div>
-                    <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-accent border-2 border-sidebar rounded-full badge-pulse"></span>
+        <!-- ==================== STAT CARDS ==================== -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div class="stat-card bg-white rounded-2xl p-4 sm:p-5 border border-border/60">
+                <div class="flex items-start justify-between mb-3">
+                    <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brandLight flex items-center justify-center"><i class="fa-solid fa-building text-brand text-lg"></i></div>
+                    <span class="flex items-center gap-1 text-[11px] font-semibold text-accent bg-emerald-50 px-2 py-0.5 rounded-full"><i class="fa-solid fa-arrow-up text-[8px]"></i>12%</span>
                 </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-white text-sm font-semibold truncate">{{ Auth::user()->name ?? 'Admin' }}</p>
-                    <p class="text-textMuted text-[11px] truncate">{{ Auth::user()->email ?? 'admin@propqr.in' }}</p>
+                <p class="text-textMuted text-xs sm:text-sm mb-1">Total Properties</p>
+                <p class="font-display font-bold text-textPrimary text-xl sm:text-2xl">24</p>
+                <div class="mt-3 h-1 bg-surface rounded-full overflow-hidden"><div class="h-full bg-brand rounded-full" style="width:60%"></div></div>
+            </div>
+            <div class="stat-card bg-white rounded-2xl p-4 sm:p-5 border border-border/60">
+                <div class="flex items-start justify-between mb-3">
+                    <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-emerald-50 flex items-center justify-center"><i class="fa-solid fa-users text-accent text-lg"></i></div>
+                    <span class="flex items-center gap-1 text-[11px] font-semibold text-accent bg-emerald-50 px-2 py-0.5 rounded-full"><i class="fa-solid fa-arrow-up text-[8px]"></i>24%</span>
                 </div>
-                <form method="POST" action="{{ route('logout') }}" class="flex-shrink-0">
-                    @csrf
-                    <button type="submit" class="text-textMuted hover:text-danger transition" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
-                </form>
+                <p class="text-textMuted text-xs sm:text-sm mb-1">Total Leads</p>
+                <p class="font-display font-bold text-textPrimary text-xl sm:text-2xl">47</p>
+                <div class="mt-3 h-1 bg-surface rounded-full overflow-hidden"><div class="h-full bg-accent rounded-full" style="width:78%"></div></div>
+            </div>
+            <div class="stat-card bg-white rounded-2xl p-4 sm:p-5 border border-border/60">
+                <div class="flex items-start justify-between mb-3">
+                    <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-cyan-50 flex items-center justify-center"><i class="fa-solid fa-user-plus text-info text-lg"></i></div>
+                    <span class="flex items-center gap-1 text-[11px] font-semibold text-info bg-cyan-50 px-2 py-0.5 rounded-full"><i class="fa-solid fa-arrow-up text-[8px]"></i>8%</span>
+                </div>
+                <p class="text-textMuted text-xs sm:text-sm mb-1">Today's Leads</p>
+                <p class="font-display font-bold text-textPrimary text-xl sm:text-2xl">6</p>
+                <div class="mt-3 h-1 bg-surface rounded-full overflow-hidden"><div class="h-full bg-info rounded-full" style="width:45%"></div></div>
+            </div>
+            <div class="stat-card bg-white rounded-2xl p-4 sm:p-5 border border-border/60">
+                <div class="flex items-start justify-between mb-3">
+                    <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-violet-50 flex items-center justify-center"><i class="fa-solid fa-qrcode text-violet-500 text-lg"></i></div>
+                    <span class="flex items-center gap-1 text-[11px] font-semibold text-violet-500 bg-violet-50 px-2 py-0.5 rounded-full"><i class="fa-solid fa-check text-[8px]"></i>All</span>
+                </div>
+                <p class="text-textMuted text-xs sm:text-sm mb-1">QR Generated</p>
+                <p class="font-display font-bold text-textPrimary text-xl sm:text-2xl">24</p>
+                <div class="mt-3 h-1 bg-surface rounded-full overflow-hidden"><div class="h-full bg-violet-500 rounded-full" style="width:100%"></div></div>
             </div>
         </div>
-    </aside>
 
-    <!-- ==================== MAIN ==================== -->
-    <div class="lg:ml-[260px] min-h-screen">
+        <!-- ==================== CHART + LEADS TABLE ==================== -->
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
 
-        <!-- Header -->
-        <header class="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-border">
-            <div class="flex items-center gap-3 px-4 sm:px-6 py-3">
-                <button onclick="toggleSidebar()" class="lg:hidden flex items-center justify-center w-10 h-10 rounded-xl hover:bg-surface transition text-textPrimary"><i class="fa-solid fa-bars text-lg"></i></button>
-                <div class="flex-1 min-w-0">
-                    <h2 class="font-display font-bold text-textPrimary text-lg sm:text-xl truncate">Dashboard</h2>
-                    <p class="text-textMuted text-xs sm:text-sm hidden sm:block">Property management overview</p>
+            <!-- Leads Chart -->
+            <div class="xl:col-span-2 bg-white rounded-2xl border border-border/60 p-4 sm:p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+                    <div>
+                        <h3 class="font-display font-bold text-textPrimary text-base sm:text-lg">Leads Overview</h3>
+                        <p class="text-textMuted text-xs sm:text-sm mt-0.5">Weekly lead generation trend</p>
+                    </div>
+                    <div class="flex items-center gap-1 bg-surface rounded-lg p-1">
+                        <button onclick="updateChart('week')" id="btn-week" class="chart-tab px-3 py-1.5 rounded-md text-xs font-medium transition bg-brand text-white">Week</button>
+                        <button onclick="updateChart('month')" id="btn-month" class="chart-tab px-3 py-1.5 rounded-md text-xs font-medium transition">Month</button>
+                        <button onclick="updateChart('year')" id="btn-year" class="chart-tab px-3 py-1.5 rounded-md text-xs font-medium transition">Year</button>
+                    </div>
                 </div>
-                <!-- Search Desktop -->
-                <div class="hidden sm:flex items-center bg-surface rounded-xl px-3 py-2 w-56 border border-transparent focus-within:border-brand/40 focus-within:bg-white transition">
-                    <i class="fa-solid fa-magnifying-glass text-textMuted text-sm mr-2"></i>
-                    <input type="text" placeholder="Search..." class="bg-transparent outline-none text-sm text-textPrimary placeholder-textMuted w-full">
-                </div>
-                <a href="/admin/properties/create" class="flex items-center gap-2 px-4 py-2.5 bg-brand hover:bg-brandDark text-white rounded-xl text-sm font-semibold transition active:scale-95 shadow-lg shadow-brand/20">
-                    <i class="fa-solid fa-plus text-xs"></i>
-                    <span class="hidden xs:inline">Add Property</span>
-                </a>
-            </div>
-        </header>
-
-        <!-- Content -->
-        <main class="p-4 sm:p-6 space-y-6">
-
-            <!-- Quick Actions Row -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div class="flex items-center gap-2 text-sm text-textSecondary">
-                    <i class="fa-regular fa-calendar text-brand"></i>
-                    <span id="currentDate" class="font-medium"></span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <a href="/admin/leads" class="flex items-center gap-2 px-4 py-2.5 bg-white border border-border rounded-xl text-sm font-medium text-textPrimary hover:bg-surface transition active:scale-95">
-                        <i class="fa-solid fa-download text-brand text-xs"></i> Export Leads
-                    </a>
-                </div>
+                <div style="height:260px"><canvas id="leadsChart"></canvas></div>
             </div>
 
-            <!-- ==================== STAT CARDS ==================== -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-
-                <!-- Total Properties -->
-                <div class="stat-card bg-white rounded-2xl p-4 sm:p-5 border border-border/60">
-                    <div class="flex items-start justify-between mb-3">
-                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brandLight flex items-center justify-center">
-                            <i class="fa-solid fa-building text-brand text-lg"></i>
-                        </div>
-                        <a href="/admin/properties" class="text-textMuted hover:text-brand transition text-xs"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-                    </div>
-                    <p class="text-textMuted text-xs sm:text-sm mb-1">Total Properties</p>
-                    <p class="font-display font-bold text-textPrimary text-xl sm:text-2xl">{{ $totalProperties ?? 0 }}</p>
-                    <div class="mt-3 h-1 bg-surface rounded-full overflow-hidden">
-                        <div class="h-full bg-brand rounded-full" style="width: {{ min(($totalProperties ?? 0) * 5, 100) }}%"></div>
-                    </div>
+            <!-- Property Type Donut -->
+            <div class="bg-white rounded-2xl border border-border/60 p-4 sm:p-6">
+                <div class="mb-5">
+                    <h3 class="font-display font-bold text-textPrimary text-base sm:text-lg">Property Types</h3>
+                    <p class="text-textMuted text-xs sm:text-sm mt-0.5">Distribution by category</p>
                 </div>
-
-                <!-- Total Leads -->
-                <div class="stat-card bg-white rounded-2xl p-4 sm:p-5 border border-border/60">
-                    <div class="flex items-start justify-between mb-3">
-                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-emerald-50 flex items-center justify-center">
-                            <i class="fa-solid fa-users text-accent text-lg"></i>
-                        </div>
-                        <a href="/admin/leads" class="text-textMuted hover:text-accent transition text-xs"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-                    </div>
-                    <p class="text-textMuted text-xs sm:text-sm mb-1">Total Leads</p>
-                    <p class="font-display font-bold text-textPrimary text-xl sm:text-2xl">{{ $totalLeads ?? 0 }}</p>
-                    <div class="mt-3 h-1 bg-surface rounded-full overflow-hidden">
-                        <div class="h-full bg-accent rounded-full" style="width: {{ min(($totalLeads ?? 0) * 2, 100) }}%"></div>
-                    </div>
-                </div>
-
-                <!-- Today's Leads -->
-                <div class="stat-card bg-white rounded-2xl p-4 sm:p-5 border border-border/60">
-                    <div class="flex items-start justify-between mb-3">
-                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-cyan-50 flex items-center justify-center">
-                            <i class="fa-solid fa-user-plus text-info text-lg"></i>
-                        </div>
-                    </div>
-                    <p class="text-textMuted text-xs sm:text-sm mb-1">Today's Leads</p>
-                    <p class="font-display font-bold text-textPrimary text-xl sm:text-2xl">{{ $todayLeads ?? 0 }}</p>
-                    <div class="mt-3 h-1 bg-surface rounded-full overflow-hidden">
-                        <div class="h-full bg-info rounded-full" style="width: {{ min(($todayLeads ?? 0) * 10, 100) }}%"></div>
-                    </div>
-                </div>
-
-                <!-- QR Generated -->
-                <div class="stat-card bg-white rounded-2xl p-4 sm:p-5 border border-border/60">
-                    <div class="flex items-start justify-between mb-3">
-                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-violet-50 flex items-center justify-center">
-                            <i class="fa-solid fa-qrcode text-violet-500 text-lg"></i>
-                        </div>
-                    </div>
-                    <p class="text-textMuted text-xs sm:text-sm mb-1">QR Generated</p>
-                    <p class="font-display font-bold text-textPrimary text-xl sm:text-2xl">{{ $totalProperties ?? 0 }}</p>
-                    <div class="mt-3 h-1 bg-surface rounded-full overflow-hidden">
-                        <div class="h-full bg-violet-500 rounded-full" style="width: {{ min(($totalProperties ?? 0) * 5, 100) }}%"></div>
-                    </div>
+                <div class="flex items-center justify-center" style="height:180px"><canvas id="donutChart"></canvas></div>
+                <div class="mt-5 space-y-2.5">
+                    <div class="flex items-center justify-between text-sm"><div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-brand"></span><span class="text-textSecondary">Apartment</span></div><span class="font-semibold text-textPrimary">42%</span></div>
+                    <div class="flex items-center justify-between text-sm"><div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-info"></span><span class="text-textSecondary">Villa</span></div><span class="font-semibold text-textPrimary">25%</span></div>
+                    <div class="flex items-center justify-between text-sm"><div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-accent"></span><span class="text-textSecondary">Flat</span></div><span class="font-semibold text-textPrimary">21%</span></div>
+                    <div class="flex items-center justify-between text-sm"><div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-violet-500"></span><span class="text-textSecondary">Plot</span></div><span class="font-semibold text-textPrimary">12%</span></div>
                 </div>
             </div>
+        </div>
 
-            <!-- ==================== RECENT LEADS TABLE + QUICK ACTIONS ==================== -->
-            <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
+        <!-- ==================== RECENT LEADS + QUICK ACTIONS ==================== -->
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
 
-                <!-- Recent Leads Table -->
-                <div class="xl:col-span-2 bg-white rounded-2xl border border-border/60 overflow-hidden">
-                    <div class="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-border">
-                        <div>
-                            <h3 class="font-display font-bold text-textPrimary text-base sm:text-lg">Recent Leads</h3>
-                            <p class="text-textMuted text-xs mt-0.5">Latest property enquiries</p>
-                        </div>
-                        <a href="/admin/leads" class="text-brand text-xs font-semibold hover:underline">View All</a>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="w-full min-w-[550px]">
-                            <thead>
-                                <tr class="bg-surface/60">
-                                    <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 sm:px-6 py-3">Name</th>
-                                    <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Phone</th>
-                                    <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Property</th>
-                                    <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Budget</th>
-                                    <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if(isset($recentLeads) && $recentLeads->count() > 0)
-                                    @foreach($recentLeads as $lead)
-                                    <tr class="table-row border-b border-border/40 last:border-0">
-                                        <td class="px-4 sm:px-6 py-3.5">
-                                            <div class="flex items-center gap-2.5">
-                                                <div class="w-8 h-8 rounded-full bg-brandLight flex items-center justify-center flex-shrink-0">
-                                                    <span class="text-brand text-xs font-bold">{{ strtoupper(substr($lead->name, 0, 1)) }}</span>
-                                                </div>
-                                                <span class="text-sm text-textPrimary font-medium whitespace-nowrap">{{ $lead->name }}</span>
-                                            </div>
-                                        </td>
-                                        <td class="px-4 py-3.5">
-                                            <span class="text-sm text-textSecondary whitespace-nowrap">{{ $lead->phone }}</span>
-                                        </td>
-                                        <td class="px-4 py-3.5">
-                                            <span class="text-sm text-textSecondary truncate max-w-[120px] block" title="{{ $lead->property->title ?? 'N/A' }}">{{ $lead->property->title ?? 'N/A' }}</span>
-                                        </td>
-                                        <td class="px-4 py-3.5">
-                                            <span class="text-sm text-textPrimary font-semibold whitespace-nowrap">{{ $lead->budget ?? 'N/A' }}</span>
-                                        </td>
-                                        <td class="px-4 py-3.5">
-                                            <span class="text-xs text-textMuted whitespace-nowrap">{{ $lead->created_at->format('d M Y') }}</span>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                @else
-                                    <tr>
-                                        <td colspan="5" class="px-6 py-16 text-center">
-                                            <div class="flex flex-col items-center">
-                                                <div class="w-16 h-16 rounded-2xl bg-surface flex items-center justify-center mb-4">
-                                                    <i class="fa-solid fa-inbox text-textMuted text-2xl"></i>
-                                                </div>
-                                                <p class="text-sm font-semibold text-textPrimary mb-1">No Leads Yet</p>
-                                                <p class="text-xs text-textMuted max-w-[240px]">Add properties and generate QR codes. When visitors scan QR and submit enquiry, leads will appear here.</p>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endif
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Right Side Panel -->
-                <div class="space-y-4 sm:space-y-6">
-
-                    <!-- Quick Actions -->
-                    <div class="bg-white rounded-2xl border border-border/60 p-5 sm:p-6">
-                        <h3 class="font-display font-bold text-textPrimary text-base sm:text-lg mb-4">Quick Actions</h3>
-                        <div class="space-y-2.5">
-                            <a href="/admin/properties/create" class="flex items-center gap-3 p-3 rounded-xl bg-surface hover:bg-brandLight border border-transparent hover:border-brand/20 transition group">
-                                <div class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center flex-shrink-0 group-hover:bg-brand transition">
-                                    <i class="fa-solid fa-plus text-brand group-hover:text-white transition text-sm"></i>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-semibold text-textPrimary">Add Property</p>
-                                    <p class="text-[11px] text-textMuted">List a new property</p>
-                                </div>
-                                <i class="fa-solid fa-chevron-right text-textMuted text-xs ml-auto group-hover:text-brand transition"></i>
-                            </a>
-                            <a href="/admin/leads" class="flex items-center gap-3 p-3 rounded-xl bg-surface hover:bg-emerald-50 border border-transparent hover:border-emerald-200 transition group">
-                                <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0 group-hover:bg-emerald-500 transition">
-                                    <i class="fa-solid fa-users text-emerald-500 group-hover:text-white transition text-sm"></i>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-semibold text-textPrimary">View Leads</p>
-                                    <p class="text-[11px] text-textMuted">All property enquiries</p>
-                                </div>
-                                <i class="fa-solid fa-chevron-right text-textMuted text-xs ml-auto group-hover:text-emerald-500 transition"></i>
-                            </a>
-                            <a href="/admin/properties" class="flex items-center gap-3 p-3 rounded-xl bg-surface hover:bg-violet-50 border border-transparent hover:border-violet-200 transition group">
-                                <div class="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center flex-shrink-0 group-hover:bg-violet-500 transition">
-                                    <i class="fa-solid fa-qrcode text-violet-500 group-hover:text-white transition text-sm"></i>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-semibold text-textPrimary">Generate QR</p>
-                                    <p class="text-[11px] text-textMuted">Download QR codes</p>
-                                </div>
-                                <i class="fa-solid fa-chevron-right text-textMuted text-xs ml-auto group-hover:text-violet-500 transition"></i>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Recent Properties Mini List -->
-                    <div class="bg-white rounded-2xl border border-border/60 p-5 sm:p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-display font-bold text-textPrimary text-base sm:text-lg">Recent Properties</h3>
-                            <a href="/admin/properties" class="text-brand text-xs font-semibold hover:underline">View All</a>
-                        </div>
-                        @if(isset($recentProperties) && $recentProperties->count() > 0)
-                        <div class="space-y-3">
-                            @foreach($recentProperties->take(4) as $property)
-                            <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-surface/80 transition cursor-pointer group">
-                                <div class="w-12 h-12 rounded-xl bg-surface overflow-hidden flex-shrink-0">
-                                    @if($property->images && $property->images->count() > 0)
-                                        <img src="{{ asset('storage/' . $property->images->first()->image_path) }}" class="w-full h-full object-cover" alt="">
-                                    @else
-                                        <div class="w-full h-full flex items-center justify-center"><i class="fa-solid fa-building text-textMuted text-sm"></i></div>
-                                    @endif
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm text-textPrimary font-semibold truncate group-hover:text-brand transition">{{ $property->title }}</p>
-                                    <p class="text-xs text-textMuted truncate">{{ $property->location ?? 'N/A' }}</p>
-                                </div>
-                                <div class="text-right flex-shrink-0">
-                                    <p class="text-xs font-semibold text-brand">₹{{ number_format($property->price) }}</p>
-                                    <a href="/admin/qr/{{ $property->id }}" class="text-[10px] text-textMuted hover:text-violet-500 transition"><i class="fa-solid fa-qrcode"></i> QR</a>
-                                </div>
-                            </div>
-                            @endforeach
-                        </div>
-                        @else
-                            <div class="text-center py-8">
-                                <i class="fa-solid fa-building text-textMuted/30 text-3xl mb-3"></i>
-                                <p class="text-sm text-textMuted">No properties added yet</p>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-            </div>
-
-            <!-- ==================== PROPERTIES TABLE ==================== -->
-            <div class="bg-white rounded-2xl border border-border/60 overflow-hidden">
+            <!-- Recent Leads Table -->
+            <div class="xl:col-span-2 bg-white rounded-2xl border border-border/60 overflow-hidden">
                 <div class="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-border">
                     <div>
-                        <h3 class="font-display font-bold text-textPrimary text-base sm:text-lg">All Properties</h3>
-                        <p class="text-textMuted text-xs mt-0.5">Manage your property listings</p>
+                        <h3 class="font-display font-bold text-textPrimary text-base sm:text-lg">Recent Leads</h3>
+                        <p class="text-textMuted text-xs mt-0.5">Latest property enquiries</p>
                     </div>
-                    <a href="/admin/properties/create" class="flex items-center gap-2 px-4 py-2.5 bg-brand hover:bg-brandDark text-white rounded-xl text-xs font-semibold transition active:scale-95">
-                        <i class="fa-solid fa-plus text-[10px]"></i> Add New
-                    </a>
+                    <a href="#" class="text-brand text-xs font-semibold hover:underline">View All</a>
                 </div>
-
                 <div class="overflow-x-auto">
-                    <table class="w-full min-w-[650px]">
+                    <table class="w-full min-w-[550px]">
                         <thead>
                             <tr class="bg-surface/60">
-                                <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 sm:px-6 py-3">Property</th>
-                                <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Location</th>
-                                <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Price</th>
-                                <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Size</th>
-                                <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Leads</th>
-                                <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Actions</th>
+                                <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 sm:px-6 py-3">Name</th>
+                                <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Phone</th>
+                                <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Property</th>
+                                <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Budget</th>
+                                <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Date</th>
+                                <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @if(isset($recentProperties) && $recentProperties->count() > 0)
-                                @foreach($recentProperties as $property)
-                                <tr class="table-row border-b border-border/40 last:border-0">
-                                    <td class="px-4 sm:px-6 py-3.5">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-11 h-11 rounded-xl bg-surface overflow-hidden flex-shrink-0">
-                                                @if($property->images && $property->images->count() > 0)
-                                                    <img src="{{ asset('storage/' . $property->images->first()->image_path) }}" class="w-full h-full object-cover" alt="">
-                                                @else
-                                                    <div class="w-full h-full flex items-center justify-center"><i class="fa-solid fa-building text-textMuted text-xs"></i></div>
-                                                @endif
-                                            </div>
-                                            <span class="text-sm text-textPrimary font-medium whitespace-nowrap">{{ $property->title }}</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3.5">
-                                        <span class="text-sm text-textSecondary whitespace-nowrap"><i class="fa-solid fa-location-dot text-brand mr-1 text-xs"></i>{{ $property->location ?? 'N/A' }}</span>
-                                    </td>
-                                    <td class="px-4 py-3.5">
-                                        <span class="text-sm text-textPrimary font-semibold whitespace-nowrap">₹{{ number_format($property->price) }}</span>
-                                    </td>
-                                    <td class="px-4 py-3.5">
-                                        <span class="text-sm text-textSecondary whitespace-nowrap">{{ $property->size ?? 'N/A' }} sq.ft</span>
-                                    </td>
-                                    <td class="px-4 py-3.5">
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700">
-                                            <span class="status-dot" style="background:currentColor"></span>
-                                            {{ $property->leads->count() }}
-                                        </span>
-                                    </td>
-                                    <td class="px-4 py-3.5">
-                                        <div class="flex items-center gap-1.5">
-                                            <a href="/property/{{ $property->id }}" target="_blank" class="w-8 h-8 rounded-lg bg-surface hover:bg-info/10 flex items-center justify-center transition" title="View Page">
-                                                <i class="fa-solid fa-eye text-info text-xs"></i>
-                                            </a>
-                                            <a href="/admin/qr/{{ $property->id }}" class="w-8 h-8 rounded-lg bg-surface hover:bg-violet-100 flex items-center justify-center transition" title="QR Code">
-                                                <i class="fa-solid fa-qrcode text-violet-500 text-xs"></i>
-                                            </a>
-                                            <a href="/admin/properties/{{ $property->id }}/edit" class="w-8 h-8 rounded-lg bg-surface hover:bg-brandLight flex items-center justify-center transition" title="Edit">
-                                                <i class="fa-solid fa-pen text-brand text-xs"></i>
-                                            </a>
-                                            <form method="POST" action="/admin/properties/{{ $property->id }}" onsubmit="return confirm('Are you sure? This will delete the property permanently.')" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="w-8 h-8 rounded-lg bg-surface hover:bg-rose-50 flex items-center justify-center transition" title="Delete">
-                                                    <i class="fa-solid fa-trash text-danger text-xs"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td colspan="6" class="px-6 py-16 text-center">
-                                        <div class="flex flex-col items-center">
-                                            <div class="w-16 h-16 rounded-2xl bg-surface flex items-center justify-center mb-4">
-                                                <i class="fa-solid fa-building text-textMuted text-2xl"></i>
-                                            </div>
-                                            <p class="text-sm font-semibold text-textPrimary mb-1">No Properties Added</p>
-                                            <p class="text-xs text-textMuted max-w-[280px] mb-4">Start by adding your first property. Generate QR code and start getting leads.</p>
-                                            <a href="/admin/properties/create" class="inline-flex items-center gap-2 px-5 py-2.5 bg-brand hover:bg-brandDark text-white rounded-xl text-xs font-semibold transition">
-                                                <i class="fa-solid fa-plus text-[10px]"></i> Add First Property
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endif
+                            <tr class="table-row border-b border-border/40">
+                                <td class="px-4 sm:px-6 py-3.5"><div class="flex items-center gap-2.5"><div class="w-8 h-8 rounded-full bg-brandLight flex items-center justify-center flex-shrink-0"><span class="text-brand text-xs font-bold">V</span></div><span class="text-sm text-textPrimary font-medium whitespace-nowrap">Vikram Singh</span></div></td>
+                                <td class="px-4 py-3.5"><span class="text-sm text-textSecondary whitespace-nowrap">98765 43210</span></td>
+                                <td class="px-4 py-3.5"><span class="text-sm text-textSecondary truncate max-w-[120px] block">Luxury 3BHK Apartment</span></td>
+                                <td class="px-4 py-3.5"><span class="text-sm text-textPrimary font-semibold whitespace-nowrap">80L - 90L</span></td>
+                                <td class="px-4 py-3.5"><span class="text-xs text-textMuted whitespace-nowrap">25 Jun 2025</span></td>
+                                <td class="px-4 py-3.5"><span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700"><span class="status-dot" style="background:currentColor"></span>New</span></td>
+                            </tr>
+                            <tr class="table-row border-b border-border/40">
+                                <td class="px-4 sm:px-6 py-3.5"><div class="flex items-center gap-2.5"><div class="w-8 h-8 rounded-full bg-cyan-50 flex items-center justify-center flex-shrink-0"><span class="text-info text-xs font-bold">P</span></div><span class="text-sm text-textPrimary font-medium whitespace-nowrap">Priya Patel</span></div></td>
+                                <td class="px-4 py-3.5"><span class="text-sm text-textSecondary whitespace-nowrap">87654 32109</span></td>
+                                <td class="px-4 py-3.5"><span class="text-sm text-textSecondary truncate max-w-[120px] block">Premium Villa</span></td>
+                                <td class="px-4 py-3.5"><span class="text-sm text-textPrimary font-semibold whitespace-nowrap">1.5Cr - 2Cr</span></td>
+                                <td class="px-4 py-3.5"><span class="text-xs text-textMuted whitespace-nowrap">25 Jun 2025</span></td>
+                                <td class="px-4 py-3.5"><span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700"><span class="status-dot" style="background:currentColor"></span>New</span></td>
+                            </tr>
+                            <tr class="table-row border-b border-border/40">
+                                <td class="px-4 sm:px-6 py-3.5"><div class="flex items-center gap-2.5"><div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0"><span class="text-accent text-xs font-bold">A</span></div><span class="text-sm text-textPrimary font-medium whitespace-nowrap">Amit Kumar</span></div></td>
+                                <td class="px-4 py-3.5"><span class="text-sm text-textSecondary whitespace-nowrap">76543 21098</span></td>
+                                <td class="px-4 py-3.5"><span class="text-sm text-textSecondary truncate max-w-[120px] block">Modern 2BHK Flat</span></td>
+                                <td class="px-4 py-3.5"><span class="text-sm text-textPrimary font-semibold whitespace-nowrap">40L - 50L</span></td>
+                                <td class="px-4 py-3.5"><span class="text-xs text-textMuted whitespace-nowrap">24 Jun 2025</span></td>
+                                <td class="px-4 py-3.5"><span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700"><span class="status-dot" style="background:currentColor"></span>Contacted</span></td>
+                            </tr>
+                            <tr class="table-row border-b border-border/40">
+                                <td class="px-4 sm:px-6 py-3.5"><div class="flex items-center gap-2.5"><div class="w-8 h-8 rounded-full bg-violet-50 flex items-center justify-center flex-shrink-0"><span class="text-violet-500 text-xs font-bold">S</span></div><span class="text-sm text-textPrimary font-medium whitespace-nowrap">Sneha Roy</span></div></td>
+                                <td class="px-4 py-3.5"><span class="text-sm text-textSecondary whitespace-nowrap">65432 10987</span></td>
+                                <td class="px-4 py-3.5"><span class="text-sm text-textSecondary truncate max-w-[120px] block">Commercial Plot</span></td>
+                                <td class="px-4 py-3.5"><span class="text-sm text-textPrimary font-semibold whitespace-nowrap">50L - 70L</span></td>
+                                <td class="px-4 py-3.5"><span class="text-xs text-textMuted whitespace-nowrap">24 Jun 2025</span></td>
+                                <td class="px-4 py-3.5"><span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700"><span class="status-dot" style="background:currentColor"></span>Converted</span></td>
+                            </tr>
+                            <tr class="table-row">
+                                <td class="px-4 sm:px-6 py-3.5"><div class="flex items-center gap-2.5"><div class="w-8 h-8 rounded-full bg-rose-50 flex items-center justify-center flex-shrink-0"><span class="text-danger text-xs font-bold">R</span></div><span class="text-sm text-textPrimary font-medium whitespace-nowrap">Rajesh Nair</span></div></td>
+                                <td class="px-4 py-3.5"><span class="text-sm text-textSecondary whitespace-nowrap">54321 09876</span></td>
+                                <td class="px-4 py-3.5"><span class="text-sm text-textSecondary truncate max-w-[120px] block">Luxury 3BHK Apartment</span></td>
+                                <td class="px-4 py-3.5"><span class="text-sm text-textPrimary font-semibold whitespace-nowrap">70L - 85L</span></td>
+                                <td class="px-4 py-3.5"><span class="text-xs text-textMuted whitespace-nowrap">23 Jun 2025</span></td>
+                                <td class="px-4 py-3.5"><span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700"><span class="status-dot" style="background:currentColor"></span>Lost</span></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
+                <div class="flex items-center justify-between px-4 sm:px-6 py-3 border-t border-border">
+                    <p class="text-xs text-textMuted">Showing 1-5 of 47 leads</p>
+                    <div class="flex items-center gap-1">
+                        <button class="page-btn" disabled><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <button class="page-btn">...</button>
+                        <button class="page-btn">10</button>
+                        <button class="page-btn"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    </div>
+                </div>
             </div>
 
-            <div class="pb-8"></div>
-        </main>
+            <!-- Right Panel -->
+            <div class="space-y-4 sm:space-y-6">
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-2xl border border-border/60 p-5 sm:p-6">
+                    <h3 class="font-display font-bold text-textPrimary text-base sm:text-lg mb-4">Quick Actions</h3>
+                    <div class="space-y-2.5">
+                        <a href="#" class="quick-card flex items-center gap-3 p-3 rounded-xl bg-surface hover:bg-brandLight border border-transparent hover:border-brand/20 transition group">
+                            <div class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center flex-shrink-0 group-hover:bg-brand transition"><i class="fa-solid fa-plus text-brand group-hover:text-white transition text-sm"></i></div>
+                            <div class="flex-1"><p class="text-sm font-semibold text-textPrimary">Add Property</p><p class="text-[11px] text-textMuted">List a new property</p></div>
+                            <i class="fa-solid fa-chevron-right text-textMuted text-xs group-hover:text-brand transition"></i>
+                        </a>
+                        <a href="#" class="quick-card flex items-center gap-3 p-3 rounded-xl bg-surface hover:bg-emerald-50 border border-transparent hover:border-emerald-200 transition group">
+                            <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0 group-hover:bg-emerald-500 transition"><i class="fa-solid fa-users text-emerald-500 group-hover:text-white transition text-sm"></i></div>
+                            <div class="flex-1"><p class="text-sm font-semibold text-textPrimary">View Leads</p><p class="text-[11px] text-textMuted">47 total enquiries</p></div>
+                            <i class="fa-solid fa-chevron-right text-textMuted text-xs group-hover:text-emerald-500 transition"></i>
+                        </a>
+                        <a href="#" class="quick-card flex items-center gap-3 p-3 rounded-xl bg-surface hover:bg-violet-50 border border-transparent hover:border-violet-200 transition group">
+                            <div class="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center flex-shrink-0 group-hover:bg-violet-500 transition"><i class="fa-solid fa-qrcode text-violet-500 group-hover:text-white transition text-sm"></i></div>
+                            <div class="flex-1"><p class="text-sm font-semibold text-textPrimary">Download QR</p><p class="text-[11px] text-textMuted">Print QR codes</p></div>
+                            <i class="fa-solid fa-chevron-right text-textMuted text-xs group-hover:text-violet-500 transition"></i>
+                        </a>
+                        <a href="#" class="quick-card flex items-center gap-3 p-3 rounded-xl bg-surface hover:bg-rose-50 border border-transparent hover:border-rose-200 transition group">
+                            <div class="w-10 h-10 rounded-lg bg-rose-500/10 flex items-center justify-center flex-shrink-0 group-hover:bg-rose-500 transition"><i class="fa-solid fa-file-pdf text-rose-500 group-hover:text-white transition text-sm"></i></div>
+                            <div class="flex-1"><p class="text-sm font-semibold text-textPrimary">PDF Brochure</p><p class="text-[11px] text-textMuted">Download brochures</p></div>
+                            <i class="fa-solid fa-chevron-right text-textMuted text-xs group-hover:text-rose-500 transition"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Top Properties -->
+                <div class="bg-white rounded-2xl border border-border/60 p-5 sm:p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-display font-bold text-textPrimary text-base sm:text-lg">Top Properties</h3>
+                        <a href="#" class="text-brand text-xs font-semibold hover:underline">All</a>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-surface/80 transition cursor-pointer group">
+                            <div class="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0"><img src="https://picsum.photos/seed/dash-prop1/100/100.jpg" class="w-full h-full object-cover" alt=""></div>
+                            <div class="flex-1 min-w-0"><p class="text-sm text-textPrimary font-semibold truncate group-hover:text-brand transition">Luxury 3BHK Apartment</p><p class="text-xs text-textMuted truncate">Vijay Nagar, Indore</p></div>
+                            <div class="text-right flex-shrink-0"><p class="text-xs font-semibold text-brand">12 leads</p></div>
+                        </div>
+                        <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-surface/80 transition cursor-pointer group">
+                            <div class="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0"><img src="https://picsum.photos/seed/dash-prop2/100/100.jpg" class="w-full h-full object-cover" alt=""></div>
+                            <div class="flex-1 min-w-0"><p class="text-sm text-textPrimary font-semibold truncate group-hover:text-brand transition">Premium Villa</p><p class="text-xs text-textMuted truncate">Super Corridor, Indore</p></div>
+                            <div class="text-right flex-shrink-0"><p class="text-xs font-semibold text-brand">9 leads</p></div>
+                        </div>
+                        <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-surface/80 transition cursor-pointer group">
+                            <div class="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0"><img src="https://picsum.photos/seed/dash-prop3/100/100.jpg" class="w-full h-full object-cover" alt=""></div>
+                            <div class="flex-1 min-w-0"><p class="text-sm text-textPrimary font-semibold truncate group-hover:text-brand transition">Modern 2BHK Flat</p><p class="text-xs text-textMuted truncate">Palasia, Indore</p></div>
+                            <div class="text-right flex-shrink-0"><p class="text-xs font-semibold text-brand">8 leads</p></div>
+                        </div>
+                        <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-surface/80 transition cursor-pointer group">
+                            <div class="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0"><img src="https://picsum.photos/seed/dash-prop4/100/100.jpg" class="w-full h-full object-cover" alt=""></div>
+                            <div class="flex-1 min-w-0"><p class="text-sm text-textPrimary font-semibold truncate group-hover:text-brand transition">Commercial Plot</p><p class="text-xs text-textMuted truncate">MR-10, Indore</p></div>
+                            <div class="text-right flex-shrink-0"><p class="text-xs font-semibold text-brand">6 leads</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== ALL PROPERTIES TABLE ==================== -->
+        <div class="bg-white rounded-2xl border border-border/60 overflow-hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-6 py-4 border-b border-border gap-3">
+                <div>
+                    <h3 class="font-display font-bold text-textPrimary text-base sm:text-lg">All Properties</h3>
+                    <p class="text-textMuted text-xs mt-0.5">24 properties listed</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="flex items-center bg-surface rounded-lg px-3 py-2 border border-transparent focus-within:border-brand/30">
+                        <i class="fa-solid fa-magnifying-glass text-textMuted text-xs mr-2"></i>
+                        <input type="text" placeholder="Search..." class="bg-transparent outline-none text-sm text-textPrimary placeholder-textMuted w-32 sm:w-40">
+                    </div>
+                    <button onclick="showToast('Opening Add Property form...','info')" class="flex items-center gap-2 px-4 py-2.5 bg-brand hover:bg-brandDark text-white rounded-xl text-xs font-semibold transition active:scale-95">
+                        <i class="fa-solid fa-plus text-[10px]"></i> Add New
+                    </button>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full min-w-[700px]">
+                    <thead>
+                        <tr class="bg-surface/60">
+                            <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 sm:px-6 py-3">Property</th>
+                            <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Location</th>
+                            <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Price</th>
+                            <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Size</th>
+                            <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Leads</th>
+                            <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="table-row border-b border-border/40">
+                            <td class="px-4 sm:px-6 py-3.5"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-xl overflow-hidden flex-shrink-0"><img src="https://picsum.photos/seed/dash-prop1/100/100.jpg" class="w-full h-full object-cover" alt=""></div><div><span class="text-sm text-textPrimary font-medium block whitespace-nowrap">Luxury 3BHK Apartment</span><span class="text-[11px] text-textMuted">Apartment</span></div></div></td>
+                            <td class="px-4 py-3.5"><span class="text-sm text-textSecondary whitespace-nowrap"><i class="fa-solid fa-location-dot text-brand mr-1 text-xs"></i>Vijay Nagar, Indore</span></td>
+                            <td class="px-4 py-3.5"><span class="text-sm text-textPrimary font-semibold whitespace-nowrap">₹85,00,000</span></td>
+                            <td class="px-4 py-3.5"><span class="text-sm text-textSecondary whitespace-nowrap">1450 sq.ft</span></td>
+                            <td class="px-4 py-3.5"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700"><span class="status-dot" style="background:currentColor"></span>12</span></td>
+                            <td class="px-4 py-3.5"><div class="flex items-center gap-1.5">
+                                <button onclick="showToast('Opening property page...','info')" class="w-8 h-8 rounded-lg bg-surface hover:bg-cyan-50 flex items-center justify-center transition" title="View"><i class="fa-solid fa-eye text-info text-xs"></i></button>
+                                <button onclick="showToast('QR Code downloaded!','success')" class="w-8 h-8 rounded-lg bg-surface hover:bg-violet-50 flex items-center justify-center transition" title="QR"><i class="fa-solid fa-qrcode text-violet-500 text-xs"></i></button>
+                                <button onclick="showToast('Opening edit form...','info')" class="w-8 h-8 rounded-lg bg-surface hover:bg-brandLight flex items-center justify-center transition" title="Edit"><i class="fa-solid fa-pen text-brand text-xs"></i></button>
+                                <button onclick="confirmDelete('Luxury 3BHK Apartment')" class="w-8 h-8 rounded-lg bg-surface hover:bg-rose-50 flex items-center justify-center transition" title="Delete"><i class="fa-solid fa-trash text-danger text-xs"></i></button>
+                            </div></td>
+                        </tr>
+                        <tr class="table-row border-b border-border/40">
+                            <td class="px-4 sm:px-6 py-3.5"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-xl overflow-hidden flex-shrink-0"><img src="https://picsum.photos/seed/dash-prop2/100/100.jpg" class="w-full h-full object-cover" alt=""></div><div><span class="text-sm text-textPrimary font-medium block whitespace-nowrap">Premium Villa</span><span class="text-[11px] text-textMuted">Villa</span></div></div></td>
+                            <td class="px-4 py-3.5"><span class="text-sm text-textSecondary whitespace-nowrap"><i class="fa-solid fa-location-dot text-brand mr-1 text-xs"></i>Super Corridor, Indore</span></td>
+                            <td class="px-4 py-3.5"><span class="text-sm text-textPrimary font-semibold whitespace-nowrap">₹1,80,00,000</span></td>
+                            <td class="px-4 py-3.5"><span class="text-sm text-textSecondary whitespace-nowrap">2800 sq.ft</span></td>
+                            <td class="px-4 py-3.5"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700"><span class="status-dot" style="background:currentColor"></span>9</span></td>
+                            <td class="px-4 py-3.5"><div class="flex items-center gap-1.5">
+                                <button onclick="showToast('Opening property page...','info')" class="w-8 h-8 rounded-lg bg-surface hover:bg-cyan-50 flex items-center justify-center transition" title="View"><i class="fa-solid fa-eye text-info text-xs"></i></button>
+                                <button onclick="showToast('QR Code downloaded!','success')" class="w-8 h-8 rounded-lg bg-surface hover:bg-violet-50 flex items-center justify-center transition" title="QR"><i class="fa-solid fa-qrcode text-violet-500 text-xs"></i></button>
+                                <button onclick="showToast('Opening edit form...','info')" class="w-8 h-8 rounded-lg bg-surface hover:bg-brandLight flex items-center justify-center transition" title="Edit"><i class="fa-solid fa-pen text-brand text-xs"></i></button>
+                                <button onclick="confirmDelete('Premium Villa')" class="w-8 h-8 rounded-lg bg-surface hover:bg-rose-50 flex items-center justify-center transition" title="Delete"><i class="fa-solid fa-trash text-danger text-xs"></i></button>
+                            </div></td>
+                        </tr>
+                        <tr class="table-row border-b border-border/40">
+                            <td class="px-4 sm:px-6 py-3.5"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-xl overflow-hidden flex-shrink-0"><img src="https://picsum.photos/seed/dash-prop3/100/100.jpg" class="w-full h-full object-cover" alt=""></div><div><span class="text-sm text-textPrimary font-medium block whitespace-nowrap">Modern 2BHK Flat</span><span class="text-[11px] text-textMuted">Flat</span></div></div></td>
+                            <td class="px-4 py-3.5"><span class="text-sm text-textSecondary whitespace-nowrap"><i class="fa-solid fa-location-dot text-brand mr-1 text-xs"></i>Palasia, Indore</span></td>
+                            <td class="px-4 py-3.5"><span class="text-sm text-textPrimary font-semibold whitespace-nowrap">₹45,00,000</span></td>
+                            <td class="px-4 py-3.5"><span class="text-sm text-textSecondary whitespace-nowrap">980 sq.ft</span></td>
+                            <td class="px-4 py-3.5"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700"><span class="status-dot" style="background:currentColor"></span>8</span></td>
+                            <td class="px-4 py-3.5"><div class="flex items-center gap-1.5">
+                                <button onclick="showToast('Opening property page...','info')" class="w-8 h-8 rounded-lg bg-surface hover:bg-cyan-50 flex items-center justify-center transition" title="View"><i class="fa-solid fa-eye text-info text-xs"></i></button>
+                                <button onclick="showToast('QR Code downloaded!','success')" class="w-8 h-8 rounded-lg bg-surface hover:bg-violet-50 flex items-center justify-center transition" title="QR"><i class="fa-solid fa-qrcode text-violet-500 text-xs"></i></button>
+                                <button onclick="showToast('Opening edit form...','info')" class="w-8 h-8 rounded-lg bg-surface hover:bg-brandLight flex items-center justify-center transition" title="Edit"><i class="fa-solid fa-pen text-brand text-xs"></i></button>
+                                <button onclick="confirmDelete('Modern 2BHK Flat')" class="w-8 h-8 rounded-lg bg-surface hover:bg-rose-50 flex items-center justify-center transition" title="Delete"><i class="fa-solid fa-trash text-danger text-xs"></i></button>
+                            </div></td>
+                        </tr>
+                        <tr class="table-row border-b border-border/40">
+                            <td class="px-4 sm:px-6 py-3.5"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-xl overflow-hidden flex-shrink-0"><img src="https://picsum.photos/seed/dash-prop4/100/100.jpg" class="w-full h-full object-cover" alt=""></div><div><span class="text-sm text-textPrimary font-medium block whitespace-nowrap">Commercial Plot</span><span class="text-[11px] text-textMuted">Plot</span></div></div></td>
+                            <td class="px-4 py-3.5"><span class="text-sm text-textSecondary whitespace-nowrap"><i class="fa-solid fa-location-dot text-brand mr-1 text-xs"></i>MR-10, Indore</span></td>
+                            <td class="px-4 py-3.5"><span class="text-sm text-textPrimary font-semibold whitespace-nowrap">₹62,00,000</span></td>
+                            <td class="px-4 py-3.5"><span class="text-sm text-textSecondary whitespace-nowrap">2400 sq.ft</span></td>
+                            <td class="px-4 py-3.5"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700"><span class="status-dot" style="background:currentColor"></span>6</span></td>
+                            <td class="px-4 py-3.5"><div class="flex items-center gap-1.5">
+                                <button onclick="showToast('Opening property page...','info')" class="w-8 h-8 rounded-lg bg-surface hover:bg-cyan-50 flex items-center justify-center transition" title="View"><i class="fa-solid fa-eye text-info text-xs"></i></button>
+                                <button onclick="showToast('QR Code downloaded!','success')" class="w-8 h-8 rounded-lg bg-surface hover:bg-violet-50 flex items-center justify-center transition" title="QR"><i class="fa-solid fa-qrcode text-violet-500 text-xs"></i></button>
+                                <button onclick="showToast('Opening edit form...','info')" class="w-8 h-8 rounded-lg bg-surface hover:bg-brandLight flex items-center justify-center transition" title="Edit"><i class="fa-solid fa-pen text-brand text-xs"></i></button>
+                                <button onclick="confirmDelete('Commercial Plot')" class="w-8 h-8 rounded-lg bg-surface hover:bg-rose-50 flex items-center justify-center transition" title="Delete"><i class="fa-solid fa-trash text-danger text-xs"></i></button>
+                            </div></td>
+                        </tr>
+                        <tr class="table-row border-b border-border/40">
+                            <td class="px-4 sm:px-6 py-3.5"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-xl overflow-hidden flex-shrink-0"><img src="https://picsum.photos/seed/dash-prop5/100/100.jpg" class="w-full h-full object-cover" alt=""></div><div><span class="text-sm text-textPrimary font-medium block whitespace-nowrap">Semi-Furnished 4BHK</span><span class="text-[11px] text-textMuted">Apartment</span></div></div></td>
+                            <td class="px-4 py-3.5"><span class="text-sm text-textSecondary whitespace-nowrap"><i class="fa-solid fa-location-dot text-brand mr-1 text-xs"></i>Scheme No. 78, Indore</span></td>
+                            <td class="px-4 py-3.5"><span class="text-sm text-textPrimary font-semibold whitespace-nowrap">₹1,20,00,000</span></td>
+                            <td class="px-4 py-3.5"><span class="text-sm text-textSecondary whitespace-nowrap">2200 sq.ft</span></td>
+                            <td class="px-4 py-3.5"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700"><span class="status-dot" style="background:currentColor"></span>5</span></td>
+                            <td class="px-4 py-3.5"><div class="flex items-center gap-1.5">
+                                <button onclick="showToast('Opening property page...','info')" class="w-8 h-8 rounded-lg bg-surface hover:bg-cyan-50 flex items-center justify-center transition" title="View"><i class="fa-solid fa-eye text-info text-xs"></i></button>
+                                <button onclick="showToast('QR Code downloaded!','success')" class="w-8 h-8 rounded-lg bg-surface hover:bg-violet-50 flex items-center justify-center transition" title="QR"><i class="fa-solid fa-qrcode text-violet-500 text-xs"></i></button>
+                                <button onclick="showToast('Opening edit form...','info')" class="w-8 h-8 rounded-lg bg-surface hover:bg-brandLight flex items-center justify-center transition" title="Edit"><i class="fa-solid fa-pen text-brand text-xs"></i></button>
+                                <button onclick="confirmDelete('Semi-Furnished 4BHK')" class="w-8 h-8 rounded-lg bg-surface hover:bg-rose-50 flex items-center justify-center transition" title="Delete"><i class="fa-solid fa-trash text-danger text-xs"></i></button>
+                            </div></td>
+                        </tr>
+                        <tr class="table-row">
+                            <td class="px-4 sm:px-6 py-3.5"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-xl overflow-hidden flex-shrink-0"><img src="https://picsum.photos/seed/dash-prop6/100/100.jpg" class="w-full h-full object-cover" alt=""></div><div><span class="text-sm text-textPrimary font-medium block whitespace-nowrap">Studio Apartment</span><span class="text-[11px] text-textMuted">Flat</span></div></div></td>
+                            <td class="px-4 py-3.5"><span class="text-sm text-textSecondary whitespace-nowrap"><i class="fa-solid fa-location-dot text-brand mr-1 text-xs"></i>Bhawarkuan, Indore</span></td>
+                            <td class="px-4 py-3.5"><span class="text-sm text-textPrimary font-semibold whitespace-nowrap">₹22,00,000</span></td>
+                            <td class="px-4 py-3.5"><span class="text-sm text-textSecondary whitespace-nowrap">450 sq.ft</span></td>
+                            <td class="px-4 py-3.5"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700"><span class="status-dot" style="background:currentColor"></span>4</span></td>
+                            <td class="px-4 py-3.5"><div class="flex items-center gap-1.5">
+                                <button onclick="showToast('Opening property page...','info')" class="w-8 h-8 rounded-lg bg-surface hover:bg-cyan-50 flex items-center justify-center transition" title="View"><i class="fa-solid fa-eye text-info text-xs"></i></button>
+                                <button onclick="showToast('QR Code downloaded!','success')" class="w-8 h-8 rounded-lg bg-surface hover:bg-violet-50 flex items-center justify-center transition" title="QR"><i class="fa-solid fa-qrcode text-violet-500 text-xs"></i></button>
+                                <button onclick="showToast('Opening edit form...','info')" class="w-8 h-8 rounded-lg bg-surface hover:bg-brandLight flex items-center justify-center transition" title="Edit"><i class="fa-solid fa-pen text-brand text-xs"></i></button>
+                                <button onclick="confirmDelete('Studio Apartment')" class="w-8 h-8 rounded-lg bg-surface hover:bg-rose-50 flex items-center justify-center transition" title="Delete"><i class="fa-solid fa-trash text-danger text-xs"></i></button>
+                            </div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="flex items-center justify-between px-4 sm:px-6 py-3 border-t border-border">
+                <p class="text-xs text-textMuted">Showing 1-6 of 24 properties</p>
+                <div class="flex items-center gap-1">
+                    <button class="page-btn" disabled><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn">4</button>
+                    <button class="page-btn"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="pb-8"></div>
+    </main>
+</div>
+
+<!-- Delete Confirm Modal -->
+<div id="deleteModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4" style="background:rgba(0,0,0,0.5)">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center">
+        <div class="w-14 h-14 rounded-full bg-rose-50 flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-triangle-exclamation text-danger text-2xl"></i></div>
+        <h3 class="font-display font-bold text-lg text-textPrimary mb-2">Delete Property?</h3>
+        <p class="text-sm text-textSecondary mb-6">Are you sure you want to delete <strong id="deletePropertyName" class="text-textPrimary"></strong>? This action cannot be undone.</p>
+        <div class="flex items-center gap-3">
+            <button onclick="closeDeleteModal()" class="flex-1 py-3 bg-surface hover:bg-border text-textPrimary rounded-xl text-sm font-semibold transition">Cancel</button>
+            <button onclick="closeDeleteModal();showToast('Property deleted successfully!','error')" class="flex-1 py-3 bg-danger hover:bg-red-600 text-white rounded-xl text-sm font-semibold transition">Delete</button>
+        </div>
     </div>
+</div>
 
-    <!-- Toast Container -->
-    <div id="toastContainer" class="fixed top-4 right-4 z-[200] space-y-2 pointer-events-none" style="max-width:360px;"></div>
+<!-- Toast Container -->
+<div id="toastContainer" class="fixed top-4 right-4 z-[200] space-y-2 pointer-events-none" style="max-width:360px;"></div>
 
-    <!-- ==================== SCRIPTS ==================== -->
-    <script>
-        // Date
-        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+<script>
+// Date
+document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
-        // Sidebar toggle
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const isOpen = !sidebar.classList.contains('-translate-x-full');
-            if (isOpen) {
-                sidebar.classList.add('-translate-x-full');
-                overlay.classList.add('opacity-0', 'pointer-events-none');
-                overlay.classList.remove('opacity-100', 'pointer-events-auto');
-                document.body.style.overflow = '';
-            } else {
-                sidebar.classList.remove('-translate-x-full');
-                overlay.classList.remove('opacity-0', 'pointer-events-none');
-                overlay.classList.add('opacity-100', 'pointer-events-auto');
-                document.body.style.overflow = 'hidden';
-            }
-        }
+// Sidebar
+function toggleSidebar(){
+    const s=document.getElementById('sidebar'),o=document.getElementById('sidebarOverlay'),open=!s.classList.contains('-translate-x-full');
+    if(open){s.classList.add('-translate-x-full');o.classList.add('opacity-0','pointer-events-none');o.classList.remove('opacity-100','pointer-events-auto');document.body.style.overflow=''}
+    else{s.classList.remove('-translate-x-full');o.classList.remove('opacity-0','pointer-events-none');o.classList.add('opacity-100','pointer-events-auto');document.body.style.overflow='hidden'}
+}
 
-        // Toast notification (for delete confirmations etc)
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', info: 'fa-circle-info' };
-            const colors = { success: 'text-accent', error: 'text-danger', info: 'text-info' };
-            toast.className = 'toast-enter pointer-events-auto flex items-start gap-3 bg-white rounded-xl shadow-2xl border border-border p-4';
-            toast.innerHTML = `<i class="fa-solid ${icons[type]} ${colors[type]} text-lg mt-0.5 flex-shrink-0"></i><div class="flex-1 min-w-0"><p class="text-sm text-textPrimary font-medium">${message}</p></div><button onclick="this.closest('.toast-enter,.toast-exit').classList.add('toast-exit');setTimeout(()=>this.closest('.toast-exit')?.remove(),300)" class="text-textMuted hover:text-textPrimary transition flex-shrink-0"><i class="fa-solid fa-xmark text-sm"></i></button>`;
-            container.appendChild(toast);
-            setTimeout(() => { if (toast.parentNode) { toast.classList.remove('toast-enter'); toast.classList.add('toast-exit'); setTimeout(() => toast.remove(), 300); } }, 4000);
-        }
-    </script>
+// Notification panel
+function toggleNotif(){document.getElementById('notifPanel').classList.toggle('hidden')}
+document.addEventListener('click',function(e){const p=document.getElementById('notifPanel'),b=p?.previousElementSibling;if(!p.contains(e.target)&&!b?.contains(e.target))p?.classList.add('hidden')});
+
+// Toast
+function showToast(msg,type='success'){
+    const c=document.getElementById('toastContainer'),t=document.createElement('div');
+    const icons={success:'fa-circle-check',error:'fa-circle-xmark',info:'fa-circle-info'};
+    const colors={success:'text-accent',error:'text-danger',info:'text-info'};
+    t.className='toast-enter pointer-events-auto flex items-start gap-3 bg-white rounded-xl shadow-2xl border border-border p-4';
+    t.innerHTML=`<i class="fa-solid ${icons[type]} ${colors[type]} text-lg mt-0.5 flex-shrink-0"></i><div class="flex-1 min-w-0"><p class="text-sm text-textPrimary font-medium">${msg}</p><p class="text-xs text-textMuted mt-0.5">Just now</p></div><button onclick="this.closest('.toast-enter,.toast-exit').classList.add('toast-exit');setTimeout(()=>this.closest('.toast-exit')?.remove(),300)" class="text-textMuted hover:text-textPrimary transition flex-shrink-0"><i class="fa-solid fa-xmark text-sm"></i></button>`;
+    c.appendChild(t);
+    setTimeout(()=>{if(t.parentNode){t.classList.remove('toast-enter');t.classList.add('toast-exit');setTimeout(()=>t.remove(),300)}},4000);
+}
+
+// Delete modal
+function confirmDelete(name){document.getElementById('deletePropertyName').textContent=name;const m=document.getElementById('deleteModal');m.classList.remove('hidden');m.classList.add('flex')}
+function closeDeleteModal(){const m=document.getElementById('deleteModal');m.classList.add('hidden');m.classList.remove('flex')}
+
+// Pagination click
+document.addEventListener('click',function(e){const b=e.target.closest('.page-btn');if(b&&!b.disabled&&!b.classList.contains('active')){b.parentElement.querySelectorAll('.page-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active')}});
+
+// ==================== CHARTS ====================
+const chartData={
+    week:{labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],data:[4,2,6,8,5,9,6]},
+    month:{labels:['Week 1','Week 2','Week 3','Week 4'],data:[8,12,15,12]},
+    year:{labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],data:[2,3,5,4,8,11,14,12,10,15,18,22]}
+};
+
+const ctx=document.getElementById('leadsChart').getContext('2d');
+const grad=ctx.createLinearGradient(0,0,0,260);
+grad.addColorStop(0,'rgba(217,119,6,0.15)');grad.addColorStop(1,'rgba(217,119,6,0)');
+
+const leadsChart=new Chart(ctx,{
+    type:'line',
+    data:{labels:chartData.week.labels,datasets:[{label:'Leads',data:chartData.week.data,borderColor:'#d97706',backgroundColor:grad,borderWidth:2.5,fill:true,tension:.4,pointBackgroundColor:'#d97706',pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:0,pointHoverRadius:6}]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:'#0c1222',titleFont:{family:'Plus Jakarta Sans',size:12},bodyFont:{family:'Plus Jakarta Sans',size:11},padding:12,cornerRadius:10}},scales:{x:{grid:{display:false},ticks:{font:{size:11,family:'Plus Jakarta Sans'},color:'#94a3b8'},border:{display:false}},y:{grid:{color:'rgba(0,0,0,0.04)',drawBorder:false},ticks:{font:{size:11,family:'Plus Jakarta Sans'},color:'#94a3b8',stepSize:5},border:{display:false},beginAtZero:true}}}
+});
+
+function updateChart(period){
+    document.querySelectorAll('.chart-tab').forEach(b=>{b.classList.remove('bg-brand','text-white')});
+    document.getElementById('btn-'+period).classList.add('bg-brand','text-white');
+    leadsChart.data.labels=chartData[period].labels;
+    leadsChart.data.datasets[0].data=chartData[period].data;
+    leadsChart.update('active');
+}
+
+// Donut
+new Chart(document.getElementById('donutChart').getContext('2d'),{
+    type:'doughnut',
+    data:{labels:['Apartment','Villa','Flat','Plot'],datasets:[{data:[42,25,21,12],backgroundColor:['#d97706','#06b6d4','#10b981','#8b5cf6'],borderWidth:0,spacing:3,borderRadius:6}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false},tooltip:{backgroundColor:'#0c1222',titleFont:{family:'Plus Jakarta Sans',size:12},bodyFont:{family:'Plus Jakarta Sans',size:11},padding:10,cornerRadius:8,callbacks:{label:c=>' '+c.label+': '+c.parsed+'%'}}}}
+});
+</script>
 </body>
 </html>
