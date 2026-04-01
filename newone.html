@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - PropQR Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#d97706',
+                        brandDark: '#b45309',
+                        brandLight: '#fffbeb',
+                        sidebar: '#0c1222',
+                        sidebarHover: '#151f32',
+                        surface: '#f8fafc',
+                        card: '#ffffff',
+                        accent: '#10b981',
+                        info: '#06b6d4',
+                        warning: '#f59e0b',
+                        danger: '#ef4444',
+                        textPrimary: '#1e293b',
+                        textSecondary: '#64748b',
+                        textMuted: '#94a3b8',
+                        border: '#e2e8f0',
+                    },
+                    fontFamily: {
+                        display: ['Space Grotesk', 'sans-serif'],
+                        body: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .sidebar { transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+        .sidebar-overlay { transition: opacity 0.3s ease; }
+        .nav-item { position: relative; transition: all 0.2s ease; }
+        .nav-item.active { background: rgba(217, 119, 6, 0.12); }
+        .nav-item.active::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px; background: #d97706; border-radius: 0 4px 4px 0; }
+        .nav-item:hover:not(.active) { background: #151f32; }
+        .stat-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); }
+        .stat-card:active { transform: translateY(-1px); }
+        .table-row { transition: background 0.15s ease; }
+        .table-row:hover { background: #f8fafc; }
+        .badge-pulse { animation: pulse-dot 2s infinite; }
+        @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .toast-enter { animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes slideInRight { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .toast-exit { animation: slideOutRight 0.3s ease forwards; }
+        @keyframes slideOutRight { to { transform: translateX(120%); opacity: 0; } }
+        .page-btn { min-width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 14px; font-weight: 500; transition: all 0.15s ease; }
+        .page-btn:hover:not(.active):not(:disabled) { background: #f1f5f9; }
+        .page-btn.active { background: #d97706; color: white; }
+        .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        @media (max-width: 640px) { .stat-card { border-radius: 12px; } }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Overlay -->
+    <div id="sidebarOverlay" class="sidebar-overlay fixed inset-0 bg-black/50 z-40 opacity-0 pointer-events-none lg:hidden" onclick="toggleSidebar()"></div>
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside id="sidebar" class="sidebar fixed top-0 left-0 h-full w-[260px] bg-sidebar z-50 flex flex-col -translate-x-full lg:translate-x-0">
+        <!-- Logo -->
+        <div class="flex items-center gap-3 px-5 py-5 border-b border-white/5">
+            <div class="w-9 h-9 rounded-xl bg-brand flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-building text-white text-base"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+                <h1 class="font-display font-bold text-white text-lg leading-tight">Prop<span class="text-brand">QR</span></h1>
+                <p class="text-[10px] text-textMuted tracking-wide">Admin Panel</p>
+            </div>
+            <button onclick="toggleSidebar()" class="lg:hidden text-textMuted hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+
+        <!-- Nav -->
+        <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+            <p class="text-[10px] uppercase tracking-widest text-textMuted/50 font-semibold px-3 mb-2">Main Menu</p>
+            
+            <a href="/dashboard" class="nav-item active flex items-center gap-3 px-3 py-2.5 rounded-lg text-white text-sm font-medium">
+                <i class="fa-solid fa-grid-2 w-5 text-center text-brand"></i><span>Dashboard</span>
+            </a>
+            <a href="/admin/properties" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-textMuted hover:text-white text-sm font-medium">
+                <i class="fa-solid fa-building w-5 text-center"></i><span>Properties</span>
+            </a>
+            <a href="/admin/properties/create" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-textMuted hover:text-white text-sm font-medium">
+                <i class="fa-solid fa-plus w-5 text-center"></i><span>Add Property</span>
+            </a>
+            <a href="/admin/leads" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-textMuted hover:text-white text-sm font-medium">
+                <i class="fa-solid fa-users w-5 text-center"></i><span>Leads</span>
+                <span class="ml-auto bg-brand text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full" id="leadCountBadge">0</span>
+            </a>
+
+            <p class="text-[10px] uppercase tracking-widest text-textMuted/50 font-semibold px-3 mb-2 mt-6">Settings</p>
+            <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-textMuted hover:text-white text-sm font-medium">
+                <i class="fa-solid fa-gear w-5 text-center"></i><span>Settings</span>
+            </a>
+        </nav>
+
+        <!-- User -->
+        <div class="border-t border-white/5 p-4">
+            <div class="flex items-center gap-3">
+                <div class="relative flex-shrink-0">
+                    <div class="w-10 h-10 rounded-full bg-brand/20 flex items-center justify-center">
+                        <i class="fa-solid fa-user text-brand"></i>
+                    </div>
+                    <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-accent border-2 border-sidebar rounded-full badge-pulse"></span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-white text-sm font-semibold truncate">{{ Auth::user()->name ?? 'Admin' }}</p>
+                    <p class="text-textMuted text-[11px] truncate">{{ Auth::user()->email ?? 'admin@propqr.in' }}</p>
+                </div>
+                <form method="POST" action="{{ route('logout') }}" class="flex-shrink-0">
+                    @csrf
+                    <button type="submit" class="text-textMuted hover:text-danger transition" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+                </form>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ==================== MAIN ==================== -->
+    <div class="lg:ml-[260px] min-h-screen">
+
+        <!-- Header -->
+        <header class="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-border">
+            <div class="flex items-center gap-3 px-4 sm:px-6 py-3">
+                <button onclick="toggleSidebar()" class="lg:hidden flex items-center justify-center w-10 h-10 rounded-xl hover:bg-surface transition text-textPrimary"><i class="fa-solid fa-bars text-lg"></i></button>
+                <div class="flex-1 min-w-0">
+                    <h2 class="font-display font-bold text-textPrimary text-lg sm:text-xl truncate">Dashboard</h2>
+                    <p class="text-textMuted text-xs sm:text-sm hidden sm:block">Property management overview</p>
+                </div>
+                <!-- Search Desktop -->
+                <div class="hidden sm:flex items-center bg-surface rounded-xl px-3 py-2 w-56 border border-transparent focus-within:border-brand/40 focus-within:bg-white transition">
+                    <i class="fa-solid fa-magnifying-glass text-textMuted text-sm mr-2"></i>
+                    <input type="text" placeholder="Search..." class="bg-transparent outline-none text-sm text-textPrimary placeholder-textMuted w-full">
+                </div>
+                <a href="/admin/properties/create" class="flex items-center gap-2 px-4 py-2.5 bg-brand hover:bg-brandDark text-white rounded-xl text-sm font-semibold transition active:scale-95 shadow-lg shadow-brand/20">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                    <span class="hidden xs:inline">Add Property</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="p-4 sm:p-6 space-y-6">
+
+            <!-- Quick Actions Row -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-2 text-sm text-textSecondary">
+                    <i class="fa-regular fa-calendar text-brand"></i>
+                    <span id="currentDate" class="font-medium"></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="/admin/leads" class="flex items-center gap-2 px-4 py-2.5 bg-white border border-border rounded-xl text-sm font-medium text-textPrimary hover:bg-surface transition active:scale-95">
+                        <i class="fa-solid fa-download text-brand text-xs"></i> Export Leads
+                    </a>
+                </div>
+            </div>
+
+            <!-- ==================== STAT CARDS ==================== -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+
+                <!-- Total Properties -->
+                <div class="stat-card bg-white rounded-2xl p-4 sm:p-5 border border-border/60">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brandLight flex items-center justify-center">
+                            <i class="fa-solid fa-building text-brand text-lg"></i>
+                        </div>
+                        <a href="/admin/properties" class="text-textMuted hover:text-brand transition text-xs"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                    </div>
+                    <p class="text-textMuted text-xs sm:text-sm mb-1">Total Properties</p>
+                    <p class="font-display font-bold text-textPrimary text-xl sm:text-2xl">{{ $totalProperties ?? 0 }}</p>
+                    <div class="mt-3 h-1 bg-surface rounded-full overflow-hidden">
+                        <div class="h-full bg-brand rounded-full" style="width: {{ min(($totalProperties ?? 0) * 5, 100) }}%"></div>
+                    </div>
+                </div>
+
+                <!-- Total Leads -->
+                <div class="stat-card bg-white rounded-2xl p-4 sm:p-5 border border-border/60">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-emerald-50 flex items-center justify-center">
+                            <i class="fa-solid fa-users text-accent text-lg"></i>
+                        </div>
+                        <a href="/admin/leads" class="text-textMuted hover:text-accent transition text-xs"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                    </div>
+                    <p class="text-textMuted text-xs sm:text-sm mb-1">Total Leads</p>
+                    <p class="font-display font-bold text-textPrimary text-xl sm:text-2xl">{{ $totalLeads ?? 0 }}</p>
+                    <div class="mt-3 h-1 bg-surface rounded-full overflow-hidden">
+                        <div class="h-full bg-accent rounded-full" style="width: {{ min(($totalLeads ?? 0) * 2, 100) }}%"></div>
+                    </div>
+                </div>
+
+                <!-- Today's Leads -->
+                <div class="stat-card bg-white rounded-2xl p-4 sm:p-5 border border-border/60">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-cyan-50 flex items-center justify-center">
+                            <i class="fa-solid fa-user-plus text-info text-lg"></i>
+                        </div>
+                    </div>
+                    <p class="text-textMuted text-xs sm:text-sm mb-1">Today's Leads</p>
+                    <p class="font-display font-bold text-textPrimary text-xl sm:text-2xl">{{ $todayLeads ?? 0 }}</p>
+                    <div class="mt-3 h-1 bg-surface rounded-full overflow-hidden">
+                        <div class="h-full bg-info rounded-full" style="width: {{ min(($todayLeads ?? 0) * 10, 100) }}%"></div>
+                    </div>
+                </div>
+
+                <!-- QR Generated -->
+                <div class="stat-card bg-white rounded-2xl p-4 sm:p-5 border border-border/60">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-violet-50 flex items-center justify-center">
+                            <i class="fa-solid fa-qrcode text-violet-500 text-lg"></i>
+                        </div>
+                    </div>
+                    <p class="text-textMuted text-xs sm:text-sm mb-1">QR Generated</p>
+                    <p class="font-display font-bold text-textPrimary text-xl sm:text-2xl">{{ $totalProperties ?? 0 }}</p>
+                    <div class="mt-3 h-1 bg-surface rounded-full overflow-hidden">
+                        <div class="h-full bg-violet-500 rounded-full" style="width: {{ min(($totalProperties ?? 0) * 5, 100) }}%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== RECENT LEADS TABLE + QUICK ACTIONS ==================== -->
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
+
+                <!-- Recent Leads Table -->
+                <div class="xl:col-span-2 bg-white rounded-2xl border border-border/60 overflow-hidden">
+                    <div class="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-border">
+                        <div>
+                            <h3 class="font-display font-bold text-textPrimary text-base sm:text-lg">Recent Leads</h3>
+                            <p class="text-textMuted text-xs mt-0.5">Latest property enquiries</p>
+                        </div>
+                        <a href="/admin/leads" class="text-brand text-xs font-semibold hover:underline">View All</a>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full min-w-[550px]">
+                            <thead>
+                                <tr class="bg-surface/60">
+                                    <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 sm:px-6 py-3">Name</th>
+                                    <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Phone</th>
+                                    <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Property</th>
+                                    <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Budget</th>
+                                    <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if(isset($recentLeads) && $recentLeads->count() > 0)
+                                    @foreach($recentLeads as $lead)
+                                    <tr class="table-row border-b border-border/40 last:border-0">
+                                        <td class="px-4 sm:px-6 py-3.5">
+                                            <div class="flex items-center gap-2.5">
+                                                <div class="w-8 h-8 rounded-full bg-brandLight flex items-center justify-center flex-shrink-0">
+                                                    <span class="text-brand text-xs font-bold">{{ strtoupper(substr($lead->name, 0, 1)) }}</span>
+                                                </div>
+                                                <span class="text-sm text-textPrimary font-medium whitespace-nowrap">{{ $lead->name }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3.5">
+                                            <span class="text-sm text-textSecondary whitespace-nowrap">{{ $lead->phone }}</span>
+                                        </td>
+                                        <td class="px-4 py-3.5">
+                                            <span class="text-sm text-textSecondary truncate max-w-[120px] block" title="{{ $lead->property->title ?? 'N/A' }}">{{ $lead->property->title ?? 'N/A' }}</span>
+                                        </td>
+                                        <td class="px-4 py-3.5">
+                                            <span class="text-sm text-textPrimary font-semibold whitespace-nowrap">{{ $lead->budget ?? 'N/A' }}</span>
+                                        </td>
+                                        <td class="px-4 py-3.5">
+                                            <span class="text-xs text-textMuted whitespace-nowrap">{{ $lead->created_at->format('d M Y') }}</span>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-16 text-center">
+                                            <div class="flex flex-col items-center">
+                                                <div class="w-16 h-16 rounded-2xl bg-surface flex items-center justify-center mb-4">
+                                                    <i class="fa-solid fa-inbox text-textMuted text-2xl"></i>
+                                                </div>
+                                                <p class="text-sm font-semibold text-textPrimary mb-1">No Leads Yet</p>
+                                                <p class="text-xs text-textMuted max-w-[240px]">Add properties and generate QR codes. When visitors scan QR and submit enquiry, leads will appear here.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Right Side Panel -->
+                <div class="space-y-4 sm:space-y-6">
+
+                    <!-- Quick Actions -->
+                    <div class="bg-white rounded-2xl border border-border/60 p-5 sm:p-6">
+                        <h3 class="font-display font-bold text-textPrimary text-base sm:text-lg mb-4">Quick Actions</h3>
+                        <div class="space-y-2.5">
+                            <a href="/admin/properties/create" class="flex items-center gap-3 p-3 rounded-xl bg-surface hover:bg-brandLight border border-transparent hover:border-brand/20 transition group">
+                                <div class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center flex-shrink-0 group-hover:bg-brand transition">
+                                    <i class="fa-solid fa-plus text-brand group-hover:text-white transition text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-textPrimary">Add Property</p>
+                                    <p class="text-[11px] text-textMuted">List a new property</p>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-textMuted text-xs ml-auto group-hover:text-brand transition"></i>
+                            </a>
+                            <a href="/admin/leads" class="flex items-center gap-3 p-3 rounded-xl bg-surface hover:bg-emerald-50 border border-transparent hover:border-emerald-200 transition group">
+                                <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0 group-hover:bg-emerald-500 transition">
+                                    <i class="fa-solid fa-users text-emerald-500 group-hover:text-white transition text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-textPrimary">View Leads</p>
+                                    <p class="text-[11px] text-textMuted">All property enquiries</p>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-textMuted text-xs ml-auto group-hover:text-emerald-500 transition"></i>
+                            </a>
+                            <a href="/admin/properties" class="flex items-center gap-3 p-3 rounded-xl bg-surface hover:bg-violet-50 border border-transparent hover:border-violet-200 transition group">
+                                <div class="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center flex-shrink-0 group-hover:bg-violet-500 transition">
+                                    <i class="fa-solid fa-qrcode text-violet-500 group-hover:text-white transition text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-textPrimary">Generate QR</p>
+                                    <p class="text-[11px] text-textMuted">Download QR codes</p>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-textMuted text-xs ml-auto group-hover:text-violet-500 transition"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Recent Properties Mini List -->
+                    <div class="bg-white rounded-2xl border border-border/60 p-5 sm:p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-display font-bold text-textPrimary text-base sm:text-lg">Recent Properties</h3>
+                            <a href="/admin/properties" class="text-brand text-xs font-semibold hover:underline">View All</a>
+                        </div>
+                        @if(isset($recentProperties) && $recentProperties->count() > 0)
+                        <div class="space-y-3">
+                            @foreach($recentProperties->take(4) as $property)
+                            <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-surface/80 transition cursor-pointer group">
+                                <div class="w-12 h-12 rounded-xl bg-surface overflow-hidden flex-shrink-0">
+                                    @if($property->images && $property->images->count() > 0)
+                                        <img src="{{ asset('storage/' . $property->images->first()->image_path) }}" class="w-full h-full object-cover" alt="">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center"><i class="fa-solid fa-building text-textMuted text-sm"></i></div>
+                                    @endif
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm text-textPrimary font-semibold truncate group-hover:text-brand transition">{{ $property->title }}</p>
+                                    <p class="text-xs text-textMuted truncate">{{ $property->location ?? 'N/A' }}</p>
+                                </div>
+                                <div class="text-right flex-shrink-0">
+                                    <p class="text-xs font-semibold text-brand">₹{{ number_format($property->price) }}</p>
+                                    <a href="/admin/qr/{{ $property->id }}" class="text-[10px] text-textMuted hover:text-violet-500 transition"><i class="fa-solid fa-qrcode"></i> QR</a>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                        @else
+                            <div class="text-center py-8">
+                                <i class="fa-solid fa-building text-textMuted/30 text-3xl mb-3"></i>
+                                <p class="text-sm text-textMuted">No properties added yet</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== PROPERTIES TABLE ==================== -->
+            <div class="bg-white rounded-2xl border border-border/60 overflow-hidden">
+                <div class="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-border">
+                    <div>
+                        <h3 class="font-display font-bold text-textPrimary text-base sm:text-lg">All Properties</h3>
+                        <p class="text-textMuted text-xs mt-0.5">Manage your property listings</p>
+                    </div>
+                    <a href="/admin/properties/create" class="flex items-center gap-2 px-4 py-2.5 bg-brand hover:bg-brandDark text-white rounded-xl text-xs font-semibold transition active:scale-95">
+                        <i class="fa-solid fa-plus text-[10px]"></i> Add New
+                    </a>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full min-w-[650px]">
+                        <thead>
+                            <tr class="bg-surface/60">
+                                <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 sm:px-6 py-3">Property</th>
+                                <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Location</th>
+                                <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Price</th>
+                                <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Size</th>
+                                <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Leads</th>
+                                <th class="text-left text-xs font-semibold text-textMuted uppercase tracking-wider px-4 py-3">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(isset($recentProperties) && $recentProperties->count() > 0)
+                                @foreach($recentProperties as $property)
+                                <tr class="table-row border-b border-border/40 last:border-0">
+                                    <td class="px-4 sm:px-6 py-3.5">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-11 h-11 rounded-xl bg-surface overflow-hidden flex-shrink-0">
+                                                @if($property->images && $property->images->count() > 0)
+                                                    <img src="{{ asset('storage/' . $property->images->first()->image_path) }}" class="w-full h-full object-cover" alt="">
+                                                @else
+                                                    <div class="w-full h-full flex items-center justify-center"><i class="fa-solid fa-building text-textMuted text-xs"></i></div>
+                                                @endif
+                                            </div>
+                                            <span class="text-sm text-textPrimary font-medium whitespace-nowrap">{{ $property->title }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3.5">
+                                        <span class="text-sm text-textSecondary whitespace-nowrap"><i class="fa-solid fa-location-dot text-brand mr-1 text-xs"></i>{{ $property->location ?? 'N/A' }}</span>
+                                    </td>
+                                    <td class="px-4 py-3.5">
+                                        <span class="text-sm text-textPrimary font-semibold whitespace-nowrap">₹{{ number_format($property->price) }}</span>
+                                    </td>
+                                    <td class="px-4 py-3.5">
+                                        <span class="text-sm text-textSecondary whitespace-nowrap">{{ $property->size ?? 'N/A' }} sq.ft</span>
+                                    </td>
+                                    <td class="px-4 py-3.5">
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700">
+                                            <span class="status-dot" style="background:currentColor"></span>
+                                            {{ $property->leads->count() }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3.5">
+                                        <div class="flex items-center gap-1.5">
+                                            <a href="/property/{{ $property->id }}" target="_blank" class="w-8 h-8 rounded-lg bg-surface hover:bg-info/10 flex items-center justify-center transition" title="View Page">
+                                                <i class="fa-solid fa-eye text-info text-xs"></i>
+                                            </a>
+                                            <a href="/admin/qr/{{ $property->id }}" class="w-8 h-8 rounded-lg bg-surface hover:bg-violet-100 flex items-center justify-center transition" title="QR Code">
+                                                <i class="fa-solid fa-qrcode text-violet-500 text-xs"></i>
+                                            </a>
+                                            <a href="/admin/properties/{{ $property->id }}/edit" class="w-8 h-8 rounded-lg bg-surface hover:bg-brandLight flex items-center justify-center transition" title="Edit">
+                                                <i class="fa-solid fa-pen text-brand text-xs"></i>
+                                            </a>
+                                            <form method="POST" action="/admin/properties/{{ $property->id }}" onsubmit="return confirm('Are you sure? This will delete the property permanently.')" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="w-8 h-8 rounded-lg bg-surface hover:bg-rose-50 flex items-center justify-center transition" title="Delete">
+                                                    <i class="fa-solid fa-trash text-danger text-xs"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="6" class="px-6 py-16 text-center">
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-16 h-16 rounded-2xl bg-surface flex items-center justify-center mb-4">
+                                                <i class="fa-solid fa-building text-textMuted text-2xl"></i>
+                                            </div>
+                                            <p class="text-sm font-semibold text-textPrimary mb-1">No Properties Added</p>
+                                            <p class="text-xs text-textMuted max-w-[280px] mb-4">Start by adding your first property. Generate QR code and start getting leads.</p>
+                                            <a href="/admin/properties/create" class="inline-flex items-center gap-2 px-5 py-2.5 bg-brand hover:bg-brandDark text-white rounded-xl text-xs font-semibold transition">
+                                                <i class="fa-solid fa-plus text-[10px]"></i> Add First Property
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="pb-8"></div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-[200] space-y-2 pointer-events-none" style="max-width:360px;"></div>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <script>
+        // Date
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+        // Sidebar toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const isOpen = !sidebar.classList.contains('-translate-x-full');
+            if (isOpen) {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+                overlay.classList.remove('opacity-100', 'pointer-events-auto');
+                document.body.style.overflow = '';
+            } else {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+                overlay.classList.add('opacity-100', 'pointer-events-auto');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // Toast notification (for delete confirmations etc)
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', info: 'fa-circle-info' };
+            const colors = { success: 'text-accent', error: 'text-danger', info: 'text-info' };
+            toast.className = 'toast-enter pointer-events-auto flex items-start gap-3 bg-white rounded-xl shadow-2xl border border-border p-4';
+            toast.innerHTML = `<i class="fa-solid ${icons[type]} ${colors[type]} text-lg mt-0.5 flex-shrink-0"></i><div class="flex-1 min-w-0"><p class="text-sm text-textPrimary font-medium">${message}</p></div><button onclick="this.closest('.toast-enter,.toast-exit').classList.add('toast-exit');setTimeout(()=>this.closest('.toast-exit')?.remove(),300)" class="text-textMuted hover:text-textPrimary transition flex-shrink-0"><i class="fa-solid fa-xmark text-sm"></i></button>`;
+            container.appendChild(toast);
+            setTimeout(() => { if (toast.parentNode) { toast.classList.remove('toast-enter'); toast.classList.add('toast-exit'); setTimeout(() => toast.remove(), 300); } }, 4000);
+        }
+    </script>
+</body>
+</html>
